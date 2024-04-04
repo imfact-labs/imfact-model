@@ -55,7 +55,7 @@ var CLI struct { //nolint:govet //...
 		New     currencycmds.KeyNewCommand     `cmd:"" help:"generate new key"`
 		Address currencycmds.KeyAddressCommand `cmd:"" help:"generate address from key"`
 		Load    currencycmds.KeyLoadCommand    `cmd:"" help:"load key"`
-		Sign    launchcmd.KeySignCommand       `cmd:"" help:"sign"`
+		Sign    currencycmds.KeySignCommand    `cmd:"" help:"sign"`
 	} `cmd:"" help:"key"`
 	Handover launchcmd.HandoverCommands `cmd:""`
 	Version  struct{}                   `cmd:"" help:"version"`
@@ -69,6 +69,11 @@ var flagDefaults = kong.Vars{
 	"design_uri":                        launch.DefaultDesignURI,
 	"create_account_threshold":          "100",
 	"create_contract_account_threshold": "100",
+	"suffrage_candidate_limiter_limit":  "77",
+	"max_operation_in_proposal":         "99",
+	"suffrage candidate lifespan":       "33",
+	"max suffrage size":                 "33",
+	"suffrage expel lifespan":           "44",
 	"safe_threshold":                    base.SafeThreshold.String(),
 	"network_id":                        "mitum",
 }

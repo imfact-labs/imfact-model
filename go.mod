@@ -3,15 +3,15 @@ module github.com/ProtoconNet/mitum-minic
 go 1.21
 
 require (
-	github.com/ProtoconNet/mitum-credential v0.0.0-20240313024525-4fd67d8e6e83
-	github.com/ProtoconNet/mitum-currency/v3 v3.0.0-alpha.0.20240311015208-04f46a341f7a
+	github.com/ProtoconNet/mitum-credential v0.0.0-20240313024545-8bd959b63cd4
+	github.com/ProtoconNet/mitum-currency/v3 v3.0.0-alpha.0.20240404075657-6bc846881b46
 	github.com/ProtoconNet/mitum-dao v0.0.0-20240313022305-fc8997802fbe
 	github.com/ProtoconNet/mitum-nft/v2 v2.0.0-20240313025949-b904e79e84d8
 	github.com/ProtoconNet/mitum-point v0.0.0-20240313020447-1e101b8be090
 	github.com/ProtoconNet/mitum-sto v0.0.0-20240313021003-ffae43e66c9d
 	github.com/ProtoconNet/mitum-timestamp v0.0.0-20240313022800-390575ea18d7
-	github.com/ProtoconNet/mitum-token v0.0.0-20240313020740-4a04f352a072
-	github.com/ProtoconNet/mitum2 v0.0.0-20240304003123-6f2bcc584965
+	github.com/ProtoconNet/mitum-token v0.0.0-20240326003808-ce483dd90ecd
+	github.com/ProtoconNet/mitum2 v0.0.0-20240314235709-96ca7f16c4a7
 	github.com/alecthomas/kong v0.8.1
 	github.com/arl/statsviz v0.6.0
 	github.com/gorilla/mux v1.8.1
