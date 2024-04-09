@@ -48,8 +48,8 @@ var (
 	HandlerPathSTOHolderPartitionBalance   = `/sto/{contract:\w+}/holder/{address:(?i)` + base.REStringAddressString + `}/partition/{partition:\w+}/balance`
 	HandlerPathSTOHolderPartitionOperators = `/sto/{contract:\w+}/holder/{address:(?i)` + base.REStringAddressString + `}/partition/{partition:\w+}/operators`
 	HandlerPathSTOPartitionBalance         = `/sto/{contract:\w+}/partition/{partition:\w+}/balance`
-	//HandlerPathSTOPartitionControllers     = `/sto/{contract:\w+}/partition/{partition:\w+}/controllers`
-	HandlerPathSTOOperatorHolders = `/sto/{contract:\w+}/operator/{address:(?i)` + base.REStringAddressString + `}/holders`
+	HandlerPathResource                    = `/resource`
+	HandlerPathSTOOperatorHolders          = `/sto/{contract:\w+}/operator/{address:(?i)` + base.REStringAddressString + `}/holders`
 )
 
 func init() {
@@ -192,9 +192,9 @@ func (hd *Handlers) setHandlers() {
 		Methods(http.MethodOptions, "GET")
 	_ = hd.setHandler(HandlerPathSTOPartitionBalance, hd.handleSTOPartitionBalance, true).
 		Methods(http.MethodOptions, "GET")
-	//_ = hd.setHandler(HandlerPathSTOPartitionControllers, hd.handleSTOPartitionControllers, true).
-	//	Methods(http.MethodOptions, "GET")
 	_ = hd.setHandler(HandlerPathSTOOperatorHolders, hd.handleSTOOperatorHolders, true).
+		Methods(http.MethodOptions, "GET")
+	_ = hd.setHandler(HandlerPathResource, hd.handleResource, true).
 		Methods(http.MethodOptions, "GET")
 }
 
