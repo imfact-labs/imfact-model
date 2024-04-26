@@ -7,6 +7,7 @@ import (
 	crcystate "github.com/ProtoconNet/mitum-currency/v3/state"
 	nftstate "github.com/ProtoconNet/mitum-nft/v2/state"
 	"go.mongodb.org/mongo-driver/bson"
+	"strconv"
 	"sync"
 	"time"
 
@@ -198,12 +199,13 @@ func (bs *BlockSession) Commit(ctx context.Context) error {
 				if err != nil {
 					return nil, err
 				}
+				i, _ := strconv.ParseInt(parsedKey[2], 10, 64)
 				err = bs.st.CleanByHeightColName(
 					ctx,
 					bs.block.Manifest().Height(),
 					defaultColNameNFT,
 					bson.D{{"contract", parsedKey[1]}},
-					bson.D{{"nftid", parsedKey[2]}},
+					bson.D{{"nftid", i}},
 				)
 				if err != nil {
 					return nil, err
