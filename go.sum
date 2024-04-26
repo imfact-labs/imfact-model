@@ -3,12 +3,12 @@ github.com/Masterminds/semver/v3 v3.2.1 h1:RN9w6+7QoMeJVGyfmbcgs28Br8cvmnucEXnY0
 github.com/Masterminds/semver/v3 v3.2.1/go.mod h1:qvl/7zhW3nngYb5+80sSMF+FG2BjYrf8m9wsX0PNOMQ=
 github.com/ProtoconNet/mitum-credential v0.0.0-20240313024545-8bd959b63cd4 h1:zhbu2iCklTSdRQKiAGEhBhzgKx66PEOqP3ixiqhc+AE=
 github.com/ProtoconNet/mitum-credential v0.0.0-20240313024545-8bd959b63cd4/go.mod h1:hteXfjihB7fybUpjjInuUFbjDU7qot0JTsCiJdbT1HE=
-github.com/ProtoconNet/mitum-currency/v3 v3.0.0-alpha.0.20240422065127-8943f2829e9c h1:7kHrbS6pmw6EvbYcl7trDofe8z2ZFhmlQ9CvkMaIbOY=
-github.com/ProtoconNet/mitum-currency/v3 v3.0.0-alpha.0.20240422065127-8943f2829e9c/go.mod h1:jdkOXxE9yBGMtNj26OPLbxWr19wtHPFH4b8O8MT1cxU=
+github.com/ProtoconNet/mitum-currency/v3 v3.0.0-alpha.0.20240426061733-e5a6d4988b0b h1:Iblf+1m0gDwC0SnblDX6E5Y/+5UDM7Ha118Agj/gO58=
+github.com/ProtoconNet/mitum-currency/v3 v3.0.0-alpha.0.20240426061733-e5a6d4988b0b/go.mod h1:jdkOXxE9yBGMtNj26OPLbxWr19wtHPFH4b8O8MT1cxU=
 github.com/ProtoconNet/mitum-dao v0.0.0-20240313022305-fc8997802fbe h1:JZUWqt9n9LdmlJKreOt+Un9NC9mqInd79DI/uLYCsHU=
 github.com/ProtoconNet/mitum-dao v0.0.0-20240313022305-fc8997802fbe/go.mod h1:f65PbGF/+TgtnIkmtMueNlsiCv+OzmnCTzkjyHTLAjE=
-github.com/ProtoconNet/mitum-nft/v2 v2.0.0-20240313025949-b904e79e84d8 h1:PuOL5E16MTWKRw2ZLikr69XVWuNk91A1v1bZVHshso0=
-github.com/ProtoconNet/mitum-nft/v2 v2.0.0-20240313025949-b904e79e84d8/go.mod h1:ZR6ymPcL+rkl6PJuki3mtrc5hPFtWpLhM+ZMkp4TkUA=
+github.com/ProtoconNet/mitum-nft/v2 v2.0.0-20240426073635-7f13935a8858 h1:LJ4oOxfluOZjlAL+ckJg+Z2no4zQS/zKr4u3R1i9ojg=
+github.com/ProtoconNet/mitum-nft/v2 v2.0.0-20240426073635-7f13935a8858/go.mod h1:qYonjgCmS4erMdkZ04sjmpBFDlqdVTml0wm5DsKFp6I=
 github.com/ProtoconNet/mitum-point v0.0.0-20240313020447-1e101b8be090 h1:v5MGSMzFUZkgqOKGqCnSiAVQzWl5x71ZOh55yQb7UKU=
 github.com/ProtoconNet/mitum-point v0.0.0-20240313020447-1e101b8be090/go.mod h1:V9Q4Mj/uPFQa4LUf0qrm+ZuJ0YsWise12MYBm77XqaM=
 github.com/ProtoconNet/mitum-sto v0.0.0-20240313021003-ffae43e66c9d h1:u752Do7b+4JJezdzy3x47zmYolGjWbxo/4y5bgcrwZY=
