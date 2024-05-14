@@ -15,6 +15,11 @@ import (
 )
 
 func ProcessDigester(ctx context.Context) (context.Context, error) {
+	var vs util.Version
+	if err := util.LoadFromContextOK(ctx, launch.VersionContextKey, &vs); err != nil {
+		return ctx, err
+	}
+
 	var log *logging.Logging
 	if err := util.LoadFromContextOK(ctx, launch.LoggingContextKey, &log); err != nil {
 		return ctx, err
@@ -53,8 +58,7 @@ func ProcessDigester(ctx context.Context) (context.Context, error) {
 	default:
 		sourceReaders = i
 	}
-
-	di := digest.NewDigester(st, root, sourceReaders, fromRemotes, design.NetworkID, nil)
+	di := digest.NewDigester(st, root, sourceReaders, fromRemotes, design.NetworkID, vs.String(), nil)
 	_ = di.SetLogging(log)
 
 	return context.WithValue(ctx, currencycmds.ContextValueDigester, di), nil
@@ -118,6 +122,11 @@ func PDigesterFollowUp(ctx context.Context) (context.Context, error) {
 }
 
 func digestFollowup(ctx context.Context, height base.Height) error {
+	var vs util.Version
+	if err := util.LoadFromContextOK(ctx, launch.VersionContextKey, &vs); err != nil {
+		return err
+	}
+
 	var st *currencydigest.Database
 	if err := util.LoadFromContextOK(ctx, currencycmds.ContextValueDigestDatabase, &st); err != nil {
 		return err
@@ -178,7 +187,7 @@ func digestFollowup(ctx context.Context, height base.Height) error {
 			return err
 		}
 
-		if err := digest.DigestBlock(ctx, st, bm, ops, opsTree, sts, pr); err != nil {
+		if err := digest.DigestBlock(ctx, st, bm, ops, opsTree, sts, pr, vs.String()); err != nil {
 			return err
 		}
 

@@ -1,30 +1,31 @@
 module github.com/ProtoconNet/mitum-minic
 
-go 1.21
+go 1.22
+
+toolchain go1.22.1
 
 require (
 	github.com/ProtoconNet/mitum-credential v0.0.0-20240313024545-8bd959b63cd4
-	github.com/ProtoconNet/mitum-currency/v3 v3.0.0-alpha.0.20240426061733-e5a6d4988b0b
-	github.com/ProtoconNet/mitum-dao v0.0.0-20240313022305-fc8997802fbe
-	github.com/ProtoconNet/mitum-nft/v2 v2.0.0-20240426073635-7f13935a8858
-	github.com/ProtoconNet/mitum-point v0.0.0-20240313020447-1e101b8be090
-	github.com/ProtoconNet/mitum-sto v0.0.0-20240313021003-ffae43e66c9d
-	github.com/ProtoconNet/mitum-timestamp v0.0.0-20240313022800-390575ea18d7
-	github.com/ProtoconNet/mitum-token v0.0.0-20240326003808-ce483dd90ecd
-	github.com/ProtoconNet/mitum2 v0.0.0-20240415083536-4ac73fa8ba0b
+	github.com/ProtoconNet/mitum-currency/v3 v3.0.0-alpha.0.20240514083335-53a45c56a146
+	github.com/ProtoconNet/mitum-dao v0.0.0-20240502072522-5a837f9d152b
+	github.com/ProtoconNet/mitum-nft/v2 v2.0.0-20240502060306-c0a821c423a5
+	github.com/ProtoconNet/mitum-point v0.0.0-20240502064113-b244813f0830
+	github.com/ProtoconNet/mitum-sto v0.0.0-20240502070345-24a150429115
+	github.com/ProtoconNet/mitum-timestamp v0.0.0-20240502032821-d5d86696135d
+	github.com/ProtoconNet/mitum-token v0.0.0-20240502062712-cf394ec364d5
+	github.com/ProtoconNet/mitum2 v0.0.0-20240514051137-1a856cf657db
 	github.com/alecthomas/kong v0.9.0
 	github.com/arl/statsviz v0.6.0
 	github.com/gorilla/mux v1.8.1
 	github.com/pkg/errors v0.9.1
 	github.com/rs/zerolog v1.32.0
-	github.com/shirou/gopsutil v3.21.4-0.20210419000835-c7a38de76ee5+incompatible
-	go.mongodb.org/mongo-driver v1.13.1
+	github.com/shirou/gopsutil v3.21.11+incompatible
+	go.mongodb.org/mongo-driver v1.15.0
 	golang.org/x/sync v0.6.0
 )
 
 require (
 	github.com/Masterminds/semver/v3 v3.2.1 // indirect
-	github.com/StackExchange/wmi v1.2.1 // indirect
 	github.com/armon/go-metrics v0.4.1 // indirect
 	github.com/beevik/ntp v1.3.1 // indirect
 	github.com/bluele/gcache v0.0.2 // indirect
@@ -43,7 +44,7 @@ require (
 	github.com/fatih/color v1.16.0 // indirect
 	github.com/felixge/httpsnoop v1.0.3 // indirect
 	github.com/go-jose/go-jose/v3 v3.0.3 // indirect
-	github.com/go-ole/go-ole v1.2.5 // indirect
+	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/go-task/slim-sprig v0.0.0-20230315185526-52ccab3ef572 // indirect
 	github.com/gofrs/uuid v4.4.0+incompatible // indirect
 	github.com/golang/snappy v0.0.5-0.20220116011046-fa5810519dcb // indirect
@@ -56,7 +57,6 @@ require (
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-hclog v1.6.3 // indirect
 	github.com/hashicorp/go-immutable-radix v1.3.1 // indirect
-	github.com/hashicorp/go-msgpack v1.1.5 // indirect
 	github.com/hashicorp/go-msgpack/v2 v2.1.1 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hashicorp/go-retryablehttp v0.7.5 // indirect
@@ -72,7 +72,7 @@ require (
 	github.com/holiman/uint256 v1.2.4 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/justinas/alice v1.2.0 // indirect
-	github.com/klauspost/compress v1.17.5 // indirect
+	github.com/klauspost/compress v1.17.8 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.7 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
@@ -85,8 +85,7 @@ require (
 	github.com/oklog/ulid/v2 v2.1.0 // indirect
 	github.com/onsi/ginkgo/v2 v2.17.1 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
-	github.com/quic-go/qtls-go1-20 v0.3.4 // indirect
-	github.com/quic-go/quic-go v0.39.1 // indirect
+	github.com/quic-go/quic-go v0.42.0 // indirect
 	github.com/rainycape/memcache v0.0.0-20150622160815-1031fa0ce2f2 // indirect
 	github.com/redis/go-redis/v9 v9.5.1 // indirect
 	github.com/rs/xid v1.5.0 // indirect
@@ -98,15 +97,16 @@ require (
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.1.2 // indirect
 	github.com/xdg-go/stringprep v1.0.4 // indirect
-	github.com/youmark/pkcs8 v0.0.0-20201027041543-1326539a0a0a // indirect
+	github.com/youmark/pkcs8 v0.0.0-20240424034433-3c2c7870ae76 // indirect
+	github.com/yusufpapurcu/wmi v1.2.4 // indirect
 	github.com/zeebo/blake3 v0.2.3 // indirect
 	go.uber.org/mock v0.4.0 // indirect
 	golang.org/x/arch v0.7.0 // indirect
-	golang.org/x/crypto v0.21.0 // indirect
+	golang.org/x/crypto v0.22.0 // indirect
 	golang.org/x/exp v0.0.0-20240325151524-a685a6edb6d8 // indirect
 	golang.org/x/mod v0.16.0 // indirect
 	golang.org/x/net v0.22.0 // indirect
-	golang.org/x/sys v0.18.0 // indirect
+	golang.org/x/sys v0.19.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
 	golang.org/x/tools v0.19.0 // indirect

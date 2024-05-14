@@ -69,6 +69,7 @@ type BlockSession struct {
 	balanceAddressList                []string
 	nftMap                            map[string]struct{}
 	credentialMap                     map[string]struct{}
+	buildinfo                         string
 }
 
 func NewBlockSession(
@@ -78,6 +79,7 @@ func NewBlockSession(
 	opstree fixedtree.Tree,
 	sts []mitumbase.State,
 	proposal mitumbase.ProposalSignFact,
+	vs string,
 ) (*BlockSession, error) {
 	if st.Readonly() {
 		return nil, errors.Errorf("readonly mode")
@@ -98,6 +100,7 @@ func NewBlockSession(
 		statesValue:   &sync.Map{},
 		nftMap:        map[string]struct{}{},
 		credentialMap: map[string]struct{}{},
+		buildinfo:     vs,
 	}, nil
 }
 
@@ -660,7 +663,7 @@ func (bs *BlockSession) prepareBlock() error {
 		bs.block.Manifest().ProposedAt(),
 	)
 
-	doc, err := currencydigest.NewManifestDoc(manifest, bs.st.DatabaseEncoder(), bs.block.Manifest().Height(), bs.ops, bs.block.SignedAt(), bs.proposal.ProposalFact().Proposer(), bs.proposal.ProposalFact().Point().Round())
+	doc, err := currencydigest.NewManifestDoc(manifest, bs.st.DatabaseEncoder(), bs.block.Manifest().Height(), bs.ops, bs.block.SignedAt(), bs.proposal.ProposalFact().Proposer(), bs.proposal.ProposalFact().Point().Round(), bs.buildinfo)
 	if err != nil {
 		return err
 	}
