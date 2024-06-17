@@ -15,7 +15,7 @@ import (
 	currencycmds "github.com/ProtoconNet/mitum-currency/v3/cmds"
 	currencydigest "github.com/ProtoconNet/mitum-currency/v3/digest"
 	"github.com/ProtoconNet/mitum-minic/digest"
-	nftcmds "github.com/ProtoconNet/mitum-nft/v2/cmds"
+	nftcmds "github.com/ProtoconNet/mitum-nft/cmds"
 	timestampcmds "github.com/ProtoconNet/mitum-timestamp/cmds"
 	tokencmds "github.com/ProtoconNet/mitum-token/cmds"
 	"github.com/ProtoconNet/mitum2/base"

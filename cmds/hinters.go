@@ -4,7 +4,7 @@ import (
 	credentialcmds "github.com/ProtoconNet/mitum-credential/cmds"
 	currencycmds "github.com/ProtoconNet/mitum-currency/v3/cmds"
 	daocmds "github.com/ProtoconNet/mitum-dao/cmds"
-	nftcmds "github.com/ProtoconNet/mitum-nft/v2/cmds"
+	nftcmds "github.com/ProtoconNet/mitum-nft/cmds"
 	pointcmds "github.com/ProtoconNet/mitum-point/cmds"
 	stocmds "github.com/ProtoconNet/mitum-sto/cmds"
 	timestampcmds "github.com/ProtoconNet/mitum-timestamp/cmds"
