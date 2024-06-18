@@ -10,7 +10,6 @@ require (
 	github.com/ProtoconNet/mitum-dao v0.0.0-20240617061001-72c274f66820
 	github.com/ProtoconNet/mitum-nft v0.0.0-20240617061216-22815e42c636
 	github.com/ProtoconNet/mitum-point v0.0.0-20240617060352-308533004eb4
-	github.com/ProtoconNet/mitum-sto v0.0.0-20240531052755-cfcf2634f141
 	github.com/ProtoconNet/mitum-timestamp v0.0.0-20240617055722-6d72361c927c
 	github.com/ProtoconNet/mitum-token v0.0.0-20240617060607-993e16ec008e
 	github.com/ProtoconNet/mitum2 v0.0.0-20240516232940-9c065b66904b

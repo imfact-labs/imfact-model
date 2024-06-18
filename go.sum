@@ -11,8 +11,6 @@ github.com/ProtoconNet/mitum-nft v0.0.0-20240617061216-22815e42c636 h1:GHWr1JFc4
 github.com/ProtoconNet/mitum-nft v0.0.0-20240617061216-22815e42c636/go.mod h1:AryLEOIvIvYvPT9YXkqeqx8CBh7YYrxGIPPQmlQ+NQA=
 github.com/ProtoconNet/mitum-point v0.0.0-20240617060352-308533004eb4 h1:S3B13HN3hap6Ge8BYYSjwZmsHJcfyi+w2tNIUNUvH6s=
 github.com/ProtoconNet/mitum-point v0.0.0-20240617060352-308533004eb4/go.mod h1:Q3bbtGYSdWuLq+DNUCS/q8c0/BPGMDlYpGCV5N554x4=
-github.com/ProtoconNet/mitum-sto v0.0.0-20240531052755-cfcf2634f141 h1:TR3XLvDqpxp5khIzlBmEU2u2Aj3zJ8Ju3TSt3xygSDg=
-github.com/ProtoconNet/mitum-sto v0.0.0-20240531052755-cfcf2634f141/go.mod h1:iGU3PKjw86ZukHCh9TRlrL8UJaxAH6bHDD74Bmv03rw=
 github.com/ProtoconNet/mitum-timestamp v0.0.0-20240617055722-6d72361c927c h1:3AUncEszs1IjUZFvP19CPElb+HVNc0kQ53oyUFMf9W0=
 github.com/ProtoconNet/mitum-timestamp v0.0.0-20240617055722-6d72361c927c/go.mod h1:jjPAPb2HC7pXwRUOOZo3gVgI6WGYrCj2HG5X+DGzyKE=
 github.com/ProtoconNet/mitum-token v0.0.0-20240617060607-993e16ec008e h1:/rD4uoAEso4GaIFptP+1DriYqOSR8t18CJbVIZ5opuM=

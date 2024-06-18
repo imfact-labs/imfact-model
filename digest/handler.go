@@ -22,34 +22,28 @@ import (
 )
 
 var (
-	HandlerPathNFTOperators                = `/nft/{contract:.*}/account/{address:(?i)` + base.REStringAddressString + `}/operators` // revive:disable-line:line-length-limit
-	HandlerPathNFTCollection               = `/nft/{contract:.*}/collection`
-	HandlerPathNFT                         = `/nft/{contract:.*}/{id:.*}`
-	HandlerPathNFTs                        = `/nft/{contract:.*}/nfts`
-	HandlerPathNFTCount                    = `/nft/{contract:.*}/count`
-	HandlerPathDIDService                  = `/did/{contract:.+}/service`
-	HandlerPathDIDCredential               = `/did/{contract:.+}/template/{templateid:.+}/credential/{credentialid:.+}`
-	HandlerPathDIDTemplate                 = `/did/{contract:.+}/template/{templateid:.+}`
-	HandlerPathDIDCredentials              = `/did/{contract:.+}/template/{templateid:.+}/credentials`
-	HandlerPathDIDHolder                   = `/did/{contract:.+}/holder/{holder:(?i)` + base.REStringAddressString + `}` // revive:disable-line:line-length-limit
-	HandlerPathTimeStampService            = `/timestamp/{contract:.*}/service`
-	HandlerPathTimeStampItem               = `/timestamp/{contract:.*}/project/{project:.+}/id/{tid:[0-9]+}`
-	HandlerPathToken                       = `/token/{contract:.*}`
-	HandlerPathTokenBalance                = `/token/{contract:.*}/account/{address:(?i)` + base.REStringAddressString + `}` // revive:disable-line:line-length-limit
-	HandlerPathPoint                       = `/point/{contract:.*}`
-	HandlerPathPointBalance                = `/point/{contract:.*}/account/{address:(?i)` + base.REStringAddressString + `}` // revive:disable-line:line-length-limit
-	HandlerPathDAOService                  = `/dao/{contract:\w+}/service`
-	HandlerPathDAOProposal                 = `/dao/{contract:\w+}/proposal/{proposal_id:\w+}`
-	HandlerPathDAODelegator                = `/dao/{contract:\w+}/proposal/{proposal_id:\w+}/delegator/{address:(?i)` + base.REStringAddressString + `}`
-	HandlerPathDAOVoters                   = `/dao/{contract:\w+}/proposal/{proposal_id:\w+}/voter`
-	HandlerPathDAOVotingPowerBox           = `/dao/{contract:\w+}/proposal/{proposal_id:\w+}/votingpower` // revive:disable-line:line-length-limit
-	HandlerPathSTOService                  = `/sto/{contract:\w+}`
-	HandlerPathSTOHolderPartitions         = `/sto/{contract:\w+}/holder/{address:(?i)` + base.REStringAddressString + `}/partitions`
-	HandlerPathSTOHolderPartitionBalance   = `/sto/{contract:\w+}/holder/{address:(?i)` + base.REStringAddressString + `}/partition/{partition:\w+}/balance`
-	HandlerPathSTOHolderPartitionOperators = `/sto/{contract:\w+}/holder/{address:(?i)` + base.REStringAddressString + `}/partition/{partition:\w+}/operators`
-	HandlerPathSTOPartitionBalance         = `/sto/{contract:\w+}/partition/{partition:\w+}/balance`
-	HandlerPathResource                    = `/resource`
-	HandlerPathSTOOperatorHolders          = `/sto/{contract:\w+}/operator/{address:(?i)` + base.REStringAddressString + `}/holders`
+	HandlerPathNFTOperators      = `/nft/{contract:.*}/account/{address:(?i)` + base.REStringAddressString + `}/operators` // revive:disable-line:line-length-limit
+	HandlerPathNFTCollection     = `/nft/{contract:.*}/collection`
+	HandlerPathNFT               = `/nft/{contract:.*}/{id:.*}`
+	HandlerPathNFTs              = `/nft/{contract:.*}/nfts`
+	HandlerPathNFTCount          = `/nft/{contract:.*}/count`
+	HandlerPathDIDService        = `/did/{contract:.+}/service`
+	HandlerPathDIDCredential     = `/did/{contract:.+}/template/{templateid:.+}/credential/{credentialid:.+}`
+	HandlerPathDIDTemplate       = `/did/{contract:.+}/template/{templateid:.+}`
+	HandlerPathDIDCredentials    = `/did/{contract:.+}/template/{templateid:.+}/credentials`
+	HandlerPathDIDHolder         = `/did/{contract:.+}/holder/{holder:(?i)` + base.REStringAddressString + `}` // revive:disable-line:line-length-limit
+	HandlerPathTimeStampService  = `/timestamp/{contract:.*}/service`
+	HandlerPathTimeStampItem     = `/timestamp/{contract:.*}/project/{project:.+}/id/{tid:[0-9]+}`
+	HandlerPathToken             = `/token/{contract:.*}`
+	HandlerPathTokenBalance      = `/token/{contract:.*}/account/{address:(?i)` + base.REStringAddressString + `}` // revive:disable-line:line-length-limit
+	HandlerPathPoint             = `/point/{contract:.*}`
+	HandlerPathPointBalance      = `/point/{contract:.*}/account/{address:(?i)` + base.REStringAddressString + `}` // revive:disable-line:line-length-limit
+	HandlerPathDAOService        = `/dao/{contract:\w+}/service`
+	HandlerPathDAOProposal       = `/dao/{contract:\w+}/proposal/{proposal_id:\w+}`
+	HandlerPathDAODelegator      = `/dao/{contract:\w+}/proposal/{proposal_id:\w+}/delegator/{address:(?i)` + base.REStringAddressString + `}`
+	HandlerPathDAOVoters         = `/dao/{contract:\w+}/proposal/{proposal_id:\w+}/voter`
+	HandlerPathDAOVotingPowerBox = `/dao/{contract:\w+}/proposal/{proposal_id:\w+}/votingpower` // revive:disable-line:line-length-limit
+	HandlerPathResource          = `/resource`
 )
 
 func init() {
@@ -181,18 +175,6 @@ func (hd *Handlers) setHandlers() {
 	_ = hd.setHandler(HandlerPathDAOVoters, hd.handleDAOVoters, true).
 		Methods(http.MethodOptions, "GET")
 	_ = hd.setHandler(HandlerPathDAOVotingPowerBox, hd.handleDAOVotingPowerBox, true).
-		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathSTOService, hd.handleSTOService, true).
-		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathSTOHolderPartitions, hd.handleSTOHolderPartitions, true).
-		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathSTOHolderPartitionBalance, hd.handleSTOHolderPartitionBalance, true).
-		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathSTOHolderPartitionOperators, hd.handleSTOHolderPartitionOperators, true).
-		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathSTOPartitionBalance, hd.handleSTOPartitionBalance, true).
-		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathSTOOperatorHolders, hd.handleSTOOperatorHolders, true).
 		Methods(http.MethodOptions, "GET")
 	_ = hd.setHandler(HandlerPathResource, hd.handleResource, true).
 		Methods(http.MethodOptions, "GET")
