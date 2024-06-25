@@ -4,11 +4,11 @@ import (
 	"github.com/ProtoconNet/mitum-currency/v3/common"
 	mongodbstorage "github.com/ProtoconNet/mitum-currency/v3/digest/mongodb"
 	bsonenc "github.com/ProtoconNet/mitum-currency/v3/digest/util/bson"
+	crcystate "github.com/ProtoconNet/mitum-currency/v3/state"
 	"github.com/ProtoconNet/mitum-point/state"
 	"github.com/ProtoconNet/mitum-point/types"
 	"github.com/ProtoconNet/mitum2/base"
 	"github.com/ProtoconNet/mitum2/util/encoder"
-	crcystate "github.com/ProtoconNet/mitum-currency/v3/state"
 )
 
 type PointDoc struct {

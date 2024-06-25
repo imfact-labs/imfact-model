@@ -3,6 +3,7 @@ package digest
 import (
 	"context"
 	currencydigest "github.com/ProtoconNet/mitum-currency/v3/digest"
+	"github.com/ProtoconNet/mitum-currency/v3/types"
 	isaacnetwork "github.com/ProtoconNet/mitum2/isaac/network"
 	"github.com/ProtoconNet/mitum2/network/quicmemberlist"
 	"github.com/ProtoconNet/mitum2/network/quicstream"
@@ -22,27 +23,27 @@ import (
 )
 
 var (
-	HandlerPathNFTOperators      = `/nft/{contract:.*}/account/{address:(?i)` + base.REStringAddressString + `}/operators` // revive:disable-line:line-length-limit
-	HandlerPathNFTCollection     = `/nft/{contract:.*}/collection`
-	HandlerPathNFT               = `/nft/{contract:.*}/{id:.*}`
-	HandlerPathNFTs              = `/nft/{contract:.*}/nfts`
-	HandlerPathNFTCount          = `/nft/{contract:.*}/count`
-	HandlerPathDIDService        = `/did/{contract:.+}/service`
-	HandlerPathDIDCredential     = `/did/{contract:.+}/template/{templateid:.+}/credential/{credentialid:.+}`
-	HandlerPathDIDTemplate       = `/did/{contract:.+}/template/{templateid:.+}`
-	HandlerPathDIDCredentials    = `/did/{contract:.+}/template/{templateid:.+}/credentials`
-	HandlerPathDIDHolder         = `/did/{contract:.+}/holder/{holder:(?i)` + base.REStringAddressString + `}` // revive:disable-line:line-length-limit
-	HandlerPathTimeStampService  = `/timestamp/{contract:.*}/service`
-	HandlerPathTimeStampItem     = `/timestamp/{contract:.*}/project/{project:.+}/id/{tid:[0-9]+}`
-	HandlerPathToken             = `/token/{contract:.*}`
-	HandlerPathTokenBalance      = `/token/{contract:.*}/account/{address:(?i)` + base.REStringAddressString + `}` // revive:disable-line:line-length-limit
-	HandlerPathPoint             = `/point/{contract:.*}`
-	HandlerPathPointBalance      = `/point/{contract:.*}/account/{address:(?i)` + base.REStringAddressString + `}` // revive:disable-line:line-length-limit
-	HandlerPathDAOService        = `/dao/{contract:\w+}/service`
-	HandlerPathDAOProposal       = `/dao/{contract:\w+}/proposal/{proposal_id:\w+}`
-	HandlerPathDAODelegator      = `/dao/{contract:\w+}/proposal/{proposal_id:\w+}/delegator/{address:(?i)` + base.REStringAddressString + `}`
-	HandlerPathDAOVoters         = `/dao/{contract:\w+}/proposal/{proposal_id:\w+}/voter`
-	HandlerPathDAOVotingPowerBox = `/dao/{contract:\w+}/proposal/{proposal_id:\w+}/votingpower` // revive:disable-line:line-length-limit
+	HandlerPathNFTOperators      = `/nft/{contract:(?i)` + types.REStringAddressString + `}/account/{address:(?i)` + types.REStringAddressString + `}/allapproved` // revive:disable-line:line-length-limit
+	HandlerPathNFTCollection     = `/nft/{contract:(?i)` + types.REStringAddressString + `}`
+	HandlerPathNFT               = `/nft/{contract:(?i)` + types.REStringAddressString + `}/nftidx/{nft_idx:.*}`
+	HandlerPathNFTs              = `/nft/{contract:(?i)` + types.REStringAddressString + `}/nfts`
+	HandlerPathNFTCount          = `/nft/{contract:(?i)` + types.REStringAddressString + `}/totalsupply`
+	HandlerPathDIDService        = `/did/{contract:(?i)` + types.REStringAddressString + `}`
+	HandlerPathDIDCredential     = `/did/{contract:(?i)` + types.REStringAddressString + `}/template/{template_id:.+}/credential/{credential_id:.+}`
+	HandlerPathDIDTemplate       = `/did/{contract:(?i)` + types.REStringAddressString + `}/template/{template_id:.+}`
+	HandlerPathDIDCredentials    = `/did/{contract:(?i)` + types.REStringAddressString + `}/template/{template_id:.+}/credentials`
+	HandlerPathDIDHolder         = `/did/{contract:(?i)` + types.REStringAddressString + `}/holder/{holder:(?i)` + types.REStringAddressString + `}` // revive:disable-line:line-length-limit
+	HandlerPathTimeStampDesign   = `/timestamp/{contract:(?i)` + types.REStringAddressString + `}`
+	HandlerPathTimeStampItem     = `/timestamp/{contract:(?i)` + types.REStringAddressString + `}/project/{project_id:.+}/idx/{timestamp_idx:[0-9]+}`
+	HandlerPathToken             = `/token/{contract:(?i)` + types.REStringAddressString + `}`
+	HandlerPathTokenBalance      = `/token/{contract:(?i)` + types.REStringAddressString + `}/account/{address:(?i)` + base.REStringAddressString + `}` // revive:disable-line:line-length-limit
+	HandlerPathPoint             = `/point/{contract:(?i)` + types.REStringAddressString + `}`
+	HandlerPathPointBalance      = `/point/{contract:(?i)` + types.REStringAddressString + `}/account/{address:(?i)` + base.REStringAddressString + `}` // revive:disable-line:line-length-limit
+	HandlerPathDAOService        = `/dao/{contract:(?i)` + types.REStringAddressString + `}`
+	HandlerPathDAOProposal       = `/dao/{contract:(?i)` + types.REStringAddressString + `}/proposal/{proposal_id:\w+}`
+	HandlerPathDAODelegator      = `/dao/{contract:(?i)` + types.REStringAddressString + `}/proposal/{proposal_id:\w+}/registrant/{address:(?i)` + types.REStringAddressString + `}`
+	HandlerPathDAOVoters         = `/dao/{contract:(?i)` + types.REStringAddressString + `}/proposal/{proposal_id:\w+}/voter`
+	HandlerPathDAOVotingPowerBox = `/dao/{contract:(?i)` + types.REStringAddressString + `}/proposal/{proposal_id:\w+}/votingpower` // revive:disable-line:line-length-limit
 	HandlerPathResource          = `/resource`
 )
 
@@ -156,7 +157,7 @@ func (hd *Handlers) setHandlers() {
 		Methods(http.MethodOptions, "GET")
 	_ = hd.setHandler(HandlerPathTimeStampItem, hd.handleTimeStampItem, true).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathTimeStampService, hd.handleTimeStamp, true).
+	_ = hd.setHandler(HandlerPathTimeStampDesign, hd.handleTimeStampDesign, true).
 		Methods(http.MethodOptions, "GET")
 	_ = hd.setHandler(HandlerPathTokenBalance, hd.handleTokenBalance, true).
 		Methods(http.MethodOptions, "GET")

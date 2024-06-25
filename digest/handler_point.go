@@ -1,11 +1,12 @@
 package digest
 
 import (
+	"net/http"
+	"time"
+
 	"github.com/ProtoconNet/mitum-currency/v3/common"
 	currencydigest "github.com/ProtoconNet/mitum-currency/v3/digest"
 	"github.com/ProtoconNet/mitum-point/types"
-	"net/http"
-	"time"
 )
 
 func (hd *Handlers) handlePoint(w http.ResponseWriter, r *http.Request) {
@@ -28,7 +29,7 @@ func (hd *Handlers) handlePoint(w http.ResponseWriter, r *http.Request) {
 	} else {
 		currencydigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
 		if !shared {
-			currencydigest.HTTP2WriteCache(w, cachekey, time.Millisecond*500)
+			currencydigest.HTTP2WriteCache(w, cachekey, time.Second*3)
 		}
 	}
 }
@@ -84,7 +85,7 @@ func (hd *Handlers) handlePointBalance(w http.ResponseWriter, r *http.Request) {
 	} else {
 		currencydigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
 		if !shared {
-			currencydigest.HTTP2WriteCache(w, cachekey, time.Millisecond*500)
+			currencydigest.HTTP2WriteCache(w, cachekey, time.Second*3)
 		}
 	}
 }
@@ -102,15 +103,21 @@ func (hd *Handlers) handlePointBalanceInGroup(contract, account string) (interfa
 	}
 }
 
-func (hd *Handlers) buildPointBalanceHal(contract, account string, amount common.Big) (currencydigest.Hal, error) {
-	h, err := hd.combineURL(HandlerPathPointBalance, "contract", contract, "address", account)
-	if err != nil {
-		return nil, err
-	}
+func (hd *Handlers) buildPointBalanceHal(contract, account string, amount *common.Big) (currencydigest.Hal, error) {
+	var hal currencydigest.Hal
 
-	hal := currencydigest.NewBaseHal(struct {
-		Amount common.Big `json:"amount"`
-	}{Amount: amount}, currencydigest.NewHalLink(h, nil))
+	if amount == nil {
+		hal = currencydigest.NewEmptyHal()
+	} else {
+		h, err := hd.combineURL(HandlerPathPointBalance, "contract", contract, "address", account)
+		if err != nil {
+			return nil, err
+		}
+
+		hal = currencydigest.NewBaseHal(struct {
+			Amount common.Big `json:"amount"`
+		}{Amount: *amount}, currencydigest.NewHalLink(h, nil))
+	}
 
 	return hal, nil
 }

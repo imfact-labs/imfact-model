@@ -49,7 +49,7 @@ func CheckDuplication(opr *currencyprocessor.OperationProcessor, op base.Operati
 		if !ok {
 			return errors.Errorf("expected UpdateKeyFact, not %T", t.Fact())
 		}
-		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Target().String(), DuplicationTypeSender)
+		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
 	case currency.Transfer:
 		fact, ok := t.Fact().(currency.TransferFact)
 		if !ok {
@@ -87,17 +87,17 @@ func CheckDuplication(opr *currencyprocessor.OperationProcessor, op base.Operati
 			return errors.Errorf("expected WithdrawFact, not %T", t.Fact())
 		}
 		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
-	case nft.CreateCollection:
-		fact, ok := t.Fact().(nft.CreateCollectionFact)
+	case nft.RegisterModel:
+		fact, ok := t.Fact().(nft.RegisterModelFact)
 		if !ok {
-			return errors.Errorf("expected CreateCollectionFact, not %T", t.Fact())
+			return errors.Errorf("expected RegisterModelFact, not %T", t.Fact())
 		}
 		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
 		duplicationTypeContractID = currencyprocessor.DuplicationKey(fact.Contract().String(), DuplicationTypeContract)
-	case nft.UpdateCollectionPolicy:
-		fact, ok := t.Fact().(nft.UpdateCollectionPolicyFact)
+	case nft.UpdateModelConfig:
+		fact, ok := t.Fact().(nft.UpdateModelConfigFact)
 		if !ok {
-			return errors.Errorf("expected UpdateCollectionPolicyFact, not %T", t.Fact())
+			return errors.Errorf("expected UpdateModelConfigFact, not %T", t.Fact())
 		}
 		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
 	case nft.Mint:
@@ -112,10 +112,10 @@ func CheckDuplication(opr *currencyprocessor.OperationProcessor, op base.Operati
 			return errors.Errorf("expected TransferFact, not %T", t.Fact())
 		}
 		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
-	case nft.Delegate:
-		fact, ok := t.Fact().(nft.DelegateFact)
+	case nft.ApproveAll:
+		fact, ok := t.Fact().(nft.ApproveAllFact)
 		if !ok {
-			return errors.Errorf("expected DelegateFact, not %T", t.Fact())
+			return errors.Errorf("expected ApproveAllFact, not %T", t.Fact())
 		}
 		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
 	case nft.Approve:
@@ -124,29 +124,29 @@ func CheckDuplication(opr *currencyprocessor.OperationProcessor, op base.Operati
 			return errors.Errorf("expected ApproveFact, not %T", t.Fact())
 		}
 		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
-	case nft.Sign:
-		fact, ok := t.Fact().(nft.SignFact)
+	case nft.AddSignature:
+		fact, ok := t.Fact().(nft.AddSignatureFact)
 		if !ok {
-			return errors.Errorf("expected SignFact, not %T", t.Fact())
+			return errors.Errorf("expected AddSignatureFact, not %T", t.Fact())
 		}
 		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
-	case timestamp.CreateService:
-		fact, ok := t.Fact().(timestamp.CreateServiceFact)
+	case timestamp.RegisterModel:
+		fact, ok := t.Fact().(timestamp.RegisterModelFact)
 		if !ok {
-			return errors.Errorf("expected CreateServiceFact, not %T", t.Fact())
+			return errors.Errorf("expected RegisterModelFact, not %T", t.Fact())
 		}
 		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
 		duplicationTypeContractID = currencyprocessor.DuplicationKey(fact.Contract().String(), DuplicationTypeContract)
-	case timestamp.Append:
-		fact, ok := t.Fact().(timestamp.AppendFact)
+	case timestamp.Issue:
+		fact, ok := t.Fact().(timestamp.IssueFact)
 		if !ok {
-			return errors.Errorf("expected AppendFact, not %T", t.Fact())
+			return errors.Errorf("expected IssueFact, not %T", t.Fact())
 		}
 		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
-	case credential.CreateService:
-		fact, ok := t.Fact().(credential.CreateServiceFact)
+	case credential.RegisterModel:
+		fact, ok := t.Fact().(credential.RegisterModelFact)
 		if !ok {
-			return errors.Errorf("expected CreateServiceFact, not %T", t.Fact())
+			return errors.Errorf("expected RegisterModelFact, not %T", t.Fact())
 		}
 		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
 		duplicationTypeContractID = currencyprocessor.DuplicationKey(fact.Contract().String(), DuplicationTypeContract)
@@ -156,15 +156,15 @@ func CheckDuplication(opr *currencyprocessor.OperationProcessor, op base.Operati
 			return errors.Errorf("expected AddTemplateFact, not %T", t.Fact())
 		}
 		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
-	case credential.Assign:
-		fact, ok := t.Fact().(credential.AssignFact)
+	case credential.Issue:
+		fact, ok := t.Fact().(credential.IssueFact)
 		if !ok {
-			return errors.Errorf("expected AssignFact, not %T", t.Fact())
+			return errors.Errorf("expected IssueFact, not %T", t.Fact())
 		}
 		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
 		var credentials []string
 		for _, v := range fact.Items() {
-			key := currencyprocessor.DuplicationKey(fmt.Sprintf("%s-%s-%s", v.Contract().String(), v.TemplateID(), v.ID()), DuplicationTypeCredential)
+			key := currencyprocessor.DuplicationKey(fmt.Sprintf("%s-%s-%s", v.Contract().String(), v.TemplateID(), v.CredentialID()), DuplicationTypeCredential)
 			credentials = append(credentials, key)
 		}
 		duplicationTypeCredentialID = credentials
@@ -176,7 +176,7 @@ func CheckDuplication(opr *currencyprocessor.OperationProcessor, op base.Operati
 		duplicationTypeSenderID = fact.Sender().String()
 		var credentials []string
 		for _, v := range fact.Items() {
-			key := currencyprocessor.DuplicationKey(fmt.Sprintf("%s-%s-%s", v.Contract().String(), v.TemplateID(), v.ID()), DuplicationTypeCredential)
+			key := currencyprocessor.DuplicationKey(fmt.Sprintf("%s-%s-%s", v.Contract().String(), v.TemplateID(), v.CredentialID()), DuplicationTypeCredential)
 			credentials = append(credentials, key)
 		}
 		duplicationTypeCredentialID = credentials
@@ -186,10 +186,10 @@ func CheckDuplication(opr *currencyprocessor.OperationProcessor, op base.Operati
 			return errors.Errorf("expected MintFact, not %T", t.Fact())
 		}
 		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
-	case token.RegisterToken:
-		fact, ok := t.Fact().(token.RegisterTokenFact)
+	case token.RegisterModel:
+		fact, ok := t.Fact().(token.RegisterModelFact)
 		if !ok {
-			return errors.Errorf("expected RegisterTokenFact, not %T", t.Fact())
+			return errors.Errorf("expected RegisterModelFact, not %T", t.Fact())
 		}
 		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
 		duplicationTypeContractID = currencyprocessor.DuplicationKey(fact.Contract().String(), DuplicationTypeContract)
@@ -223,10 +223,10 @@ func CheckDuplication(opr *currencyprocessor.OperationProcessor, op base.Operati
 			return errors.Errorf("expected MintFact, not %T", t.Fact())
 		}
 		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
-	case point.RegisterPoint:
-		fact, ok := t.Fact().(point.RegisterPointFact)
+	case point.RegisterModel:
+		fact, ok := t.Fact().(point.RegisterModelFact)
 		if !ok {
-			return errors.Errorf("expected RegisterPointFact, not %T", t.Fact())
+			return errors.Errorf("expected RegisterModelFact, not %T", t.Fact())
 		}
 		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
 		duplicationTypeContractID = currencyprocessor.DuplicationKey(fact.Contract().String(), DuplicationTypeContract)

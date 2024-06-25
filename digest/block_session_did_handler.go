@@ -32,6 +32,7 @@ func (bs *BlockSession) prepareDID() error {
 			}
 			bs.credentialMap[st.Key()] = struct{}{}
 			didCredentialModels = append(didCredentialModels, j...)
+
 		case state.IsStateHolderDIDKey(st.Key()):
 			j, err := bs.handleHolderDIDState(st)
 			if err != nil {
@@ -58,7 +59,7 @@ func (bs *BlockSession) prepareDID() error {
 }
 
 func (bs *BlockSession) handleDIDServiceState(st mitumbase.State) ([]mongo.WriteModel, error) {
-	if issuerDoc, err := NewServiceDoc(st, bs.st.DatabaseEncoder()); err != nil {
+	if issuerDoc, err := NewServiceDoc(st, bs.st.Encoder()); err != nil {
 		return nil, err
 	} else {
 		return []mongo.WriteModel{
@@ -68,7 +69,7 @@ func (bs *BlockSession) handleDIDServiceState(st mitumbase.State) ([]mongo.Write
 }
 
 func (bs *BlockSession) handleCredentialState(st mitumbase.State) ([]mongo.WriteModel, error) {
-	if credentialDoc, err := NewCredentialDoc(st, bs.st.DatabaseEncoder()); err != nil {
+	if credentialDoc, err := NewCredentialDoc(st, bs.st.Encoder()); err != nil {
 		return nil, err
 	} else {
 		return []mongo.WriteModel{
@@ -78,7 +79,7 @@ func (bs *BlockSession) handleCredentialState(st mitumbase.State) ([]mongo.Write
 }
 
 func (bs *BlockSession) handleHolderDIDState(st mitumbase.State) ([]mongo.WriteModel, error) {
-	if holderDidDoc, err := NewHolderDIDDoc(st, bs.st.DatabaseEncoder()); err != nil {
+	if holderDidDoc, err := NewHolderDIDDoc(st, bs.st.Encoder()); err != nil {
 		return nil, err
 	} else {
 		return []mongo.WriteModel{
@@ -88,7 +89,7 @@ func (bs *BlockSession) handleHolderDIDState(st mitumbase.State) ([]mongo.WriteM
 }
 
 func (bs *BlockSession) handleTemplateState(st mitumbase.State) ([]mongo.WriteModel, error) {
-	if templateDoc, err := NewTemplateDoc(st, bs.st.DatabaseEncoder()); err != nil {
+	if templateDoc, err := NewTemplateDoc(st, bs.st.Encoder()); err != nil {
 		return nil, err
 	} else {
 		return []mongo.WriteModel{

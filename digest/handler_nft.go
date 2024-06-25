@@ -1,14 +1,14 @@
 package digest
 
 import (
-	currencydigest "github.com/ProtoconNet/mitum-currency/v3/digest"
-	"github.com/ProtoconNet/mitum-nft/types"
-	mitumutil "github.com/ProtoconNet/mitum2/util"
 	"net/http"
 	"strconv"
 	"time"
 
+	currencydigest "github.com/ProtoconNet/mitum-currency/v3/digest"
+	"github.com/ProtoconNet/mitum-nft/types"
 	"github.com/ProtoconNet/mitum2/base"
+	mitumutil "github.com/ProtoconNet/mitum2/util"
 )
 
 func (hd *Handlers) handleNFT(w http.ResponseWriter, r *http.Request) {
@@ -23,7 +23,7 @@ func (hd *Handlers) handleNFT(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err, status := parseRequest(w, r, "id")
+	id, err, status := parseRequest(w, r, "nft_idx")
 	if err != nil {
 		currencydigest.HTTP2ProblemWithError(w, err, status)
 		return
@@ -36,7 +36,7 @@ func (hd *Handlers) handleNFT(w http.ResponseWriter, r *http.Request) {
 	} else {
 		currencydigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
 		if !shared {
-			currencydigest.HTTP2WriteCache(w, cachekey, time.Millisecond*500)
+			currencydigest.HTTP2WriteCache(w, cachekey, time.Second*3)
 		}
 	}
 }
@@ -55,7 +55,7 @@ func (hd *Handlers) handleNFTInGroup(contract, id string) (interface{}, error) {
 }
 
 func (hd *Handlers) buildNFTHal(contract string, nft types.NFT) (currencydigest.Hal, error) {
-	h, err := hd.combineURL(HandlerPathNFT, "contract", contract, "id", strconv.FormatUint(nft.ID(), 10))
+	h, err := hd.combineURL(HandlerPathNFT, "contract", contract, "nft_idx", strconv.FormatUint(nft.ID(), 10))
 	if err != nil {
 		return nil, err
 	}
@@ -85,7 +85,7 @@ func (hd *Handlers) handleNFTCollection(w http.ResponseWriter, r *http.Request) 
 	} else {
 		currencydigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
 		if !shared {
-			currencydigest.HTTP2WriteCache(w, cachekey, time.Millisecond*500)
+			currencydigest.HTTP2WriteCache(w, cachekey, time.Second*3)
 		}
 	}
 }
@@ -204,63 +204,6 @@ func (hd *Handlers) handleNFTsInGroup(
 	return b, int64(len(vas)) == limit, err
 }
 
-func (hd *Handlers) buildNFTsHal(
-	contract string,
-	vas []currencydigest.Hal,
-	offset string,
-	reverse bool,
-) (currencydigest.Hal, error) {
-	baseSelf, err := hd.combineURL(HandlerPathNFTs, "contract", contract)
-	if err != nil {
-		return nil, err
-	}
-
-	self := baseSelf
-	if len(offset) > 0 {
-		self = currencydigest.AddQueryValue(baseSelf, currencydigest.StringOffsetQuery(offset))
-	}
-	if reverse {
-		self = currencydigest.AddQueryValue(baseSelf, currencydigest.StringBoolQuery("reverse", reverse))
-	}
-
-	var hal currencydigest.Hal
-	hal = currencydigest.NewBaseHal(vas, currencydigest.NewHalLink(self, nil))
-
-	h, err := hd.combineURL(HandlerPathNFTCollection, "contract", contract)
-	if err != nil {
-		return nil, err
-	}
-	hal = hal.AddLink("collection", currencydigest.NewHalLink(h, nil))
-
-	var nextoffset string
-
-	if len(vas) > 0 {
-		va := vas[len(vas)-1].Interface().(types.NFT)
-		nextoffset = strconv.FormatUint(va.ID(), 10)
-	}
-
-	if len(nextoffset) > 0 {
-		next := baseSelf
-		next = currencydigest.AddQueryValue(next, currencydigest.StringOffsetQuery(nextoffset))
-
-		if reverse {
-			next = currencydigest.AddQueryValue(next, currencydigest.StringBoolQuery("reverse", reverse))
-		}
-
-		hal = hal.AddLink("next", currencydigest.NewHalLink(next, nil))
-	}
-
-	hal = hal.AddLink(
-		"reverse",
-		currencydigest.NewHalLink(
-			currencydigest.AddQueryValue(baseSelf, currencydigest.StringBoolQuery("reverse", !reverse)),
-			nil,
-		),
-	)
-
-	return hal, nil
-}
-
 func (hd *Handlers) handleNFTCount(w http.ResponseWriter, r *http.Request) {
 	cachekey := currencydigest.CacheKey(
 		r.URL.Path,
@@ -338,7 +281,7 @@ func (hd *Handlers) buildNFTCountHal(
 
 	var m struct {
 		Contract string `json:"contract"`
-		NFTCount int64  `json:"nft_count"`
+		NFTCount int64  `json:"nft_total_supply"`
 	}
 
 	m.Contract = contract
@@ -352,6 +295,63 @@ func (hd *Handlers) buildNFTCountHal(
 		return nil, err
 	}
 	hal = hal.AddLink("collection", currencydigest.NewHalLink(h, nil))
+
+	return hal, nil
+}
+
+func (hd *Handlers) buildNFTsHal(
+	contract string,
+	vas []currencydigest.Hal,
+	offset string,
+	reverse bool,
+) (currencydigest.Hal, error) {
+	baseSelf, err := hd.combineURL(HandlerPathNFTs, "contract", contract)
+	if err != nil {
+		return nil, err
+	}
+
+	self := baseSelf
+	if len(offset) > 0 {
+		self = currencydigest.AddQueryValue(baseSelf, currencydigest.StringOffsetQuery(offset))
+	}
+	if reverse {
+		self = currencydigest.AddQueryValue(baseSelf, currencydigest.StringBoolQuery("reverse", reverse))
+	}
+
+	var hal currencydigest.Hal
+	hal = currencydigest.NewBaseHal(vas, currencydigest.NewHalLink(self, nil))
+
+	h, err := hd.combineURL(HandlerPathNFTCollection, "contract", contract)
+	if err != nil {
+		return nil, err
+	}
+	hal = hal.AddLink("collection", currencydigest.NewHalLink(h, nil))
+
+	var nextoffset string
+
+	if len(vas) > 0 {
+		va := vas[len(vas)-1].Interface().(types.NFT)
+		nextoffset = strconv.FormatUint(va.ID(), 10)
+	}
+
+	if len(nextoffset) > 0 {
+		next := baseSelf
+		next = currencydigest.AddQueryValue(next, currencydigest.StringOffsetQuery(nextoffset))
+
+		if reverse {
+			next = currencydigest.AddQueryValue(next, currencydigest.StringBoolQuery("reverse", reverse))
+		}
+
+		hal = hal.AddLink("next", currencydigest.NewHalLink(next, nil))
+	}
+
+	hal = hal.AddLink(
+		"reverse",
+		currencydigest.NewHalLink(
+			currencydigest.AddQueryValue(baseSelf, currencydigest.StringBoolQuery("reverse", !reverse)),
+			nil,
+		),
+	)
 
 	return hal, nil
 }
@@ -383,7 +383,7 @@ func (hd *Handlers) handleNFTOperators(w http.ResponseWriter, r *http.Request) {
 	} else {
 		currencydigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
 		if !shared {
-			currencydigest.HTTP2WriteCache(w, cachekey, time.Millisecond*500)
+			currencydigest.HTTP2WriteCache(w, cachekey, time.Second*3)
 		}
 	}
 }

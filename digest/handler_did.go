@@ -4,11 +4,11 @@ import (
 	"github.com/ProtoconNet/mitum-credential/types"
 	currencydigest "github.com/ProtoconNet/mitum-currency/v3/digest"
 	mitumutil "github.com/ProtoconNet/mitum2/util"
-	"github.com/pkg/errors"
 	"net/http"
 	"time"
 
 	"github.com/ProtoconNet/mitum2/base"
+	"github.com/pkg/errors"
 )
 
 func (hd *Handlers) handleCredentialService(w http.ResponseWriter, r *http.Request) {
@@ -31,7 +31,7 @@ func (hd *Handlers) handleCredentialService(w http.ResponseWriter, r *http.Reque
 	} else {
 		currencydigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
 		if !shared {
-			currencydigest.HTTP2WriteCache(w, cacheKey, time.Millisecond*500)
+			currencydigest.HTTP2WriteCache(w, cacheKey, time.Second*3)
 		}
 	}
 }
@@ -39,9 +39,9 @@ func (hd *Handlers) handleCredentialService(w http.ResponseWriter, r *http.Reque
 func (hd *Handlers) handleCredentialServiceInGroup(contract string) (interface{}, error) {
 	switch design, err := CredentialService(hd.database, contract); {
 	case err != nil:
-		return nil, mitumutil.ErrNotFound.WithMessage(err, "credential service, contract %s", contract)
+		return nil, mitumutil.ErrNotFound.WithMessage(err, "credential design, contract %s", contract)
 	case design == nil:
-		return nil, mitumutil.ErrNotFound.Errorf("credential service, contract %s", contract)
+		return nil, mitumutil.ErrNotFound.Errorf("credential design, contract %s", contract)
 	default:
 		hal, err := hd.buildCredentialServiceHal(contract, *design)
 		if err != nil {
@@ -74,13 +74,13 @@ func (hd *Handlers) handleCredential(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	templateID, err, status := parseRequest(w, r, "templateid")
+	templateID, err, status := parseRequest(w, r, "template_id")
 	if err != nil {
 		currencydigest.HTTP2ProblemWithError(w, err, status)
 		return
 	}
 
-	credentialID, err, status := parseRequest(w, r, "credentialid")
+	credentialID, err, status := parseRequest(w, r, "credential_id")
 	if err != nil {
 		currencydigest.HTTP2ProblemWithError(w, err, status)
 		return
@@ -93,7 +93,7 @@ func (hd *Handlers) handleCredential(w http.ResponseWriter, r *http.Request) {
 	} else {
 		currencydigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
 		if !shared {
-			currencydigest.HTTP2WriteCache(w, cacheKey, time.Millisecond*500)
+			currencydigest.HTTP2WriteCache(w, cacheKey, time.Second*3)
 		}
 	}
 }
@@ -121,8 +121,8 @@ func (hd *Handlers) buildCredentialHal(
 	h, err := hd.combineURL(
 		HandlerPathDIDCredential,
 		"contract", contract,
-		"templateid", credential.TemplateID(),
-		"credentialid", credential.ID(),
+		"template_id", credential.TemplateID(),
+		"credential_id", credential.CredentialID(),
 	)
 	if err != nil {
 		return nil, err
@@ -156,7 +156,7 @@ func (hd *Handlers) handleCredentials(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	templateID, err, status := parseRequest(w, r, "templateid")
+	templateID, err, status := parseRequest(w, r, "template_id")
 	if err != nil {
 		currencydigest.HTTP2ProblemWithError(w, err, status)
 		return
@@ -209,7 +209,7 @@ func (hd *Handlers) handleCredentialsInGroup(
 	}
 
 	var vas []currencydigest.Hal
-	if err := CredentialsByServiceAndTemplate(
+	if err := CredentialsByServiceTemplate(
 		hd.database, contract, templateID, reverse, offset, limit,
 		func(credential types.Credential, isActive bool, st base.State) (bool, error) {
 			hal, err := hd.buildCredentialHal(contract, credential, isActive)
@@ -244,7 +244,7 @@ func (hd *Handlers) buildCredentialsHal(
 	baseSelf, err := hd.combineURL(
 		HandlerPathDIDCredentials,
 		"contract", contract,
-		"templateid", templateID,
+		"template_id", templateID,
 	)
 	if err != nil {
 		return nil, err
@@ -277,8 +277,7 @@ func (hd *Handlers) buildCredentialsHal(
 		if !ok {
 			return nil, errors.Errorf("failed to build credentials hal")
 		}
-		nextOffset = va.Credential.ID()
-
+		nextOffset = va.Credential.CredentialID()
 	}
 
 	if len(nextOffset) > 0 {
@@ -322,7 +321,7 @@ func (hd *Handlers) handleHolderCredential(w http.ResponseWriter, r *http.Reques
 	} else {
 		currencydigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
 		if !shared {
-			currencydigest.HTTP2WriteCache(w, cacheKey, time.Millisecond*500)
+			currencydigest.HTTP2WriteCache(w, cacheKey, time.Second*3)
 		}
 	}
 }
@@ -395,7 +394,7 @@ func (hd *Handlers) handleTemplate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	templateID, err, status := parseRequest(w, r, "templateid")
+	templateID, err, status := parseRequest(w, r, "template_id")
 	if err != nil {
 		currencydigest.HTTP2ProblemWithError(w, err, status)
 		return
@@ -408,7 +407,7 @@ func (hd *Handlers) handleTemplate(w http.ResponseWriter, r *http.Request) {
 	} else {
 		currencydigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
 		if !shared {
-			currencydigest.HTTP2WriteCache(w, cacheKey, time.Millisecond*500)
+			currencydigest.HTTP2WriteCache(w, cacheKey, time.Second*3)
 		}
 	}
 }
@@ -435,7 +434,7 @@ func (hd *Handlers) buildTemplateHal(
 	h, err := hd.combineURL(
 		HandlerPathDIDTemplate,
 		"contract", contract,
-		"templateid", templateID,
+		"template_id", templateID,
 	)
 	if err != nil {
 		return nil, err

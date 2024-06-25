@@ -20,11 +20,11 @@ func NFTCollection(st *currencydigest.Database, contract string) (*types.Design,
 	var design *types.Design
 	var sta mitumbase.State
 	var err error
-	if err := st.DatabaseClient().GetByFilter(
+	if err := st.MongoClient().GetByFilter(
 		defaultColNameNFTCollection,
 		filter.D(),
 		func(res *mongo.SingleResult) error {
-			sta, err = currencydigest.LoadState(res.Decode, st.DatabaseEncoders())
+			sta, err = currencydigest.LoadState(res.Decode, st.Encoders())
 			if err != nil {
 				return err
 			}
@@ -38,7 +38,7 @@ func NFTCollection(st *currencydigest.Database, contract string) (*types.Design,
 		},
 		options.FindOne().SetSort(util.NewBSONFilter("height", -1).D()),
 	); err != nil {
-		return nil, mitumutil.ErrNotFound.WithMessage(err, "nft collection, contract %s", contract)
+		return nil, mitumutil.ErrNotFound.WithMessage(err, "nft collection for contract account %v", contract)
 	}
 
 	return design, nil
@@ -51,15 +51,15 @@ func NFT(st *currencydigest.Database, contract, idx string) (*types.NFT, error) 
 	}
 
 	filter := util.NewBSONFilter("contract", contract)
-	filter = filter.Add("nftid", i)
+	filter = filter.Add("nft_idx", i)
 
 	var nft *types.NFT
 	var sta mitumbase.State
-	if err = st.DatabaseClient().GetByFilter(
+	if err = st.MongoClient().GetByFilter(
 		defaultColNameNFT,
 		filter.D(),
 		func(res *mongo.SingleResult) error {
-			sta, err = currencydigest.LoadState(res.Decode, st.DatabaseEncoders())
+			sta, err = currencydigest.LoadState(res.Decode, st.Encoders())
 			if err != nil {
 				return err
 			}
@@ -72,7 +72,7 @@ func NFT(st *currencydigest.Database, contract, idx string) (*types.NFT, error) 
 		},
 		options.FindOne().SetSort(util.NewBSONFilter("height", -1).D()),
 	); err != nil {
-		return nil, mitumutil.ErrNotFound.Errorf("nft token, contract %s, nftid %s", contract, idx)
+		return nil, mitumutil.ErrNotFound.Errorf("nft token for contract account %v, nft idx %v", contract, idx)
 	}
 
 	return nft, nil
@@ -96,7 +96,7 @@ func NFTsByCollection(
 	}
 
 	opt := options.Find().SetSort(
-		util.NewBSONFilter("nftid", sr).D(),
+		util.NewBSONFilter("nft_idx", sr).D(),
 	)
 
 	switch {
@@ -107,12 +107,12 @@ func NFTsByCollection(
 		opt = opt.SetLimit(limit)
 	}
 
-	return st.DatabaseClient().Find(
+	return st.MongoClient().Find(
 		context.Background(),
 		defaultColNameNFT,
 		filter,
 		func(cursor *mongo.Cursor) (bool, error) {
-			st, err := currencydigest.LoadState(cursor.Decode, st.DatabaseEncoders())
+			st, err := currencydigest.LoadState(cursor.Decode, st.Encoders())
 			if err != nil {
 				return false, err
 			}
@@ -147,7 +147,7 @@ func NFTCountByCollection(
 
 	opt := options.Count()
 
-	return st.DatabaseClient().Count(
+	return st.MongoClient().Count(
 		context.Background(),
 		defaultColNameNFT,
 		filter,
@@ -165,11 +165,11 @@ func NFTOperators(
 	var operators *types.OperatorsBook
 	var sta mitumbase.State
 	var err error
-	if err := st.DatabaseClient().GetByFilter(
+	if err := st.MongoClient().GetByFilter(
 		defaultColNameNFTOperator,
 		filter.D(),
 		func(res *mongo.SingleResult) error {
-			sta, err = currencydigest.LoadState(res.Decode, st.DatabaseEncoders())
+			sta, err = currencydigest.LoadState(res.Decode, st.Encoders())
 			if err != nil {
 				return err
 			}

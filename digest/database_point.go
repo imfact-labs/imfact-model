@@ -8,6 +8,7 @@ import (
 	"github.com/ProtoconNet/mitum-point/types"
 	mitumbase "github.com/ProtoconNet/mitum2/base"
 	mitumutil "github.com/ProtoconNet/mitum2/util"
+	"github.com/pkg/errors"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -18,11 +19,11 @@ func Point(st *currencydigest.Database, contract string) (*types.Design, error) 
 	var design *types.Design
 	var sta mitumbase.State
 	var err error
-	if err := st.DatabaseClient().GetByFilter(
+	if err := st.MongoClient().GetByFilter(
 		defaultColNamePoint,
 		filter.D(),
 		func(res *mongo.SingleResult) error {
-			sta, err = currencydigest.LoadState(res.Decode, st.DatabaseEncoders())
+			sta, err = currencydigest.LoadState(res.Decode, st.Encoders())
 			if err != nil {
 				return err
 			}
@@ -42,18 +43,18 @@ func Point(st *currencydigest.Database, contract string) (*types.Design, error) 
 	return design, nil
 }
 
-func PointBalance(st *currencydigest.Database, contract, account string) (common.Big, error) {
+func PointBalance(st *currencydigest.Database, contract, account string) (*common.Big, error) {
 	filter := util.NewBSONFilter("contract", contract)
 	filter = filter.Add("address", account)
 
 	var amount common.Big
 	var sta mitumbase.State
 	var err error
-	if err := st.DatabaseClient().GetByFilter(
+	if err := st.MongoClient().GetByFilter(
 		defaultColNamePointBalance,
 		filter.D(),
 		func(res *mongo.SingleResult) error {
-			sta, err = currencydigest.LoadState(res.Decode, st.DatabaseEncoders())
+			sta, err = currencydigest.LoadState(res.Decode, st.Encoders())
 			if err != nil {
 				return err
 			}
@@ -67,8 +68,11 @@ func PointBalance(st *currencydigest.Database, contract, account string) (common
 		},
 		options.FindOne().SetSort(util.NewBSONFilter("height", -1).D()),
 	); err != nil {
-		return common.NilBig, mitumutil.ErrNotFound.Errorf("point balance by contract %s, account %s", contract, account)
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			return nil, nil
+		}
+		//return nil, mitumutil.ErrNotFound.Errorf("token balance by contract %s, account %s", contract, account)
 	}
 
-	return amount, nil
+	return &amount, nil
 }

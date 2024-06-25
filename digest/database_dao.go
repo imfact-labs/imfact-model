@@ -17,11 +17,13 @@ func DAOService(st *currencydigest.Database, contract string) (*types.Design, er
 	var design types.Design
 	var sta mitumbase.State
 	var err error
-	if err := st.DatabaseClient().GetByFilter(
+	if st.MongoClient() == nil {
+		return nil, errors.Errorf("empty Database client")
+	} else if err := st.MongoClient().GetByFilter(
 		defaultColNameDAO,
 		filter.D(),
 		func(res *mongo.SingleResult) error {
-			sta, err = currencydigest.LoadState(res.Decode, st.DatabaseEncoders())
+			sta, err = currencydigest.LoadState(res.Decode, st.Encoders())
 			if err != nil {
 				return err
 			}
@@ -52,11 +54,13 @@ func DAODelegatorInfo(st *currencydigest.Database, contract, proposalID, delegat
 	filter := util.NewBSONFilter("contract", contract)
 	filter = filter.Add("proposal_id", proposalID)
 
-	if err = st.DatabaseClient().GetByFilter(
+	if st.MongoClient() == nil {
+		return nil, errors.Errorf("empty Database client")
+	} else if err = st.MongoClient().GetByFilter(
 		defaultColNameDAODelegators,
 		filter.D(),
 		func(res *mongo.SingleResult) error {
-			sta, err = currencydigest.LoadState(res.Decode, st.DatabaseEncoders())
+			sta, err = currencydigest.LoadState(res.Decode, st.Encoders())
 			if err != nil {
 				return err
 			}
@@ -92,11 +96,13 @@ func DAOVoters(st *currencydigest.Database, contract, proposalID string) ([]type
 	var voters []types.VoterInfo
 	var sta mitumbase.State
 	var err error
-	if err = st.DatabaseClient().GetByFilter(
+	if st.MongoClient() == nil {
+		return nil, errors.Errorf("empty Database client")
+	} else if err = st.MongoClient().GetByFilter(
 		defaultColNameDAOVoters,
 		filter.D(),
 		func(res *mongo.SingleResult) error {
-			sta, err = currencydigest.LoadState(res.Decode, st.DatabaseEncoders())
+			sta, err = currencydigest.LoadState(res.Decode, st.Encoders())
 			if err != nil {
 				return err
 			}
@@ -122,11 +128,13 @@ func DAOProposal(st *currencydigest.Database, contract, proposalID string) (*sta
 	var proposal state.ProposalStateValue
 	var sta mitumbase.State
 	var err error
-	if err = st.DatabaseClient().GetByFilter(
+	if st.MongoClient() == nil {
+		return nil, errors.Errorf("empty Database client")
+	} else if err = st.MongoClient().GetByFilter(
 		defaultColNameDAOProposal,
 		filter.D(),
 		func(res *mongo.SingleResult) error {
-			sta, err = currencydigest.LoadState(res.Decode, st.DatabaseEncoders())
+			sta, err = currencydigest.LoadState(res.Decode, st.Encoders())
 			if err != nil {
 				return err
 			}
@@ -152,11 +160,13 @@ func DAOVotingPowerBox(st *currencydigest.Database, contract, proposalID string)
 	var votingPowerBox types.VotingPowerBox
 	var sta mitumbase.State
 	var err error
-	if err = st.DatabaseClient().GetByFilter(
+	if st.MongoClient() == nil {
+		return nil, errors.Errorf("empty Database client")
+	} else if err = st.MongoClient().GetByFilter(
 		defaultColNameDAOVotingPowerBox,
 		filter.D(),
 		func(res *mongo.SingleResult) error {
-			sta, err = currencydigest.LoadState(res.Decode, st.DatabaseEncoders())
+			sta, err = currencydigest.LoadState(res.Decode, st.Encoders())
 			if err != nil {
 				return err
 			}
