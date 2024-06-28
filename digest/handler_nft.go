@@ -1,14 +1,14 @@
 package digest
 
 import (
+	currencydigest "github.com/ProtoconNet/mitum-currency/v3/digest"
+	"github.com/ProtoconNet/mitum-nft/types"
+	mitumutil "github.com/ProtoconNet/mitum2/util"
 	"net/http"
 	"strconv"
 	"time"
 
-	currencydigest "github.com/ProtoconNet/mitum-currency/v3/digest"
-	"github.com/ProtoconNet/mitum-nft/types"
 	"github.com/ProtoconNet/mitum2/base"
-	mitumutil "github.com/ProtoconNet/mitum2/util"
 )
 
 func (hd *Handlers) handleNFT(w http.ResponseWriter, r *http.Request) {
@@ -401,8 +401,8 @@ func (hd *Handlers) handleNFTOperatorsInGroup(contract, account string) (interfa
 	}
 }
 
-func (hd *Handlers) buildNFTOperatorsHal(contract, account string, operators types.OperatorsBook) (currencydigest.Hal, error) {
-	h, err := hd.combineURL(HandlerPathNFTOperators, "contract", contract, "address", account)
+func (hd *Handlers) buildNFTOperatorsHal(contract, account string, operators types.AllApprovedBook) (currencydigest.Hal, error) {
+	h, err := hd.combineURL(HandlerPathNFTAllApproved, "contract", contract, "address", account)
 	if err != nil {
 		return nil, err
 	}
