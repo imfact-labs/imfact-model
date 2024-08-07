@@ -7,6 +7,9 @@ import (
 	crcystate "github.com/ProtoconNet/mitum-currency/v3/state"
 	nftstate "github.com/ProtoconNet/mitum-nft/state"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo/readconcern"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
+	"go.mongodb.org/mongo-driver/mongo/writeconcern"
 	"strconv"
 	"sync"
 	"time"
@@ -144,45 +147,68 @@ func (bs *BlockSession) Commit(ctx context.Context) error {
 
 		_ = bs.close()
 	}()
+	wc := writeconcern.Majority()
+	sessionOpts := options.Session().SetCausalConsistency(true)
 
-	_, err := bs.st.MongoClient().WithSession(func(txnCtx mongo.SessionContext, collection func(string) *mongo.Collection) (interface{}, error) {
+	session, err := bs.st.MongoClient().MongoClient().StartSession(sessionOpts)
+	if err != nil {
+		return err
+	}
+	defer session.EndSession(context.TODO())
+
+	txnOpts := options.Transaction().
+		SetReadConcern(readconcern.Snapshot()).
+		SetWriteConcern(wc).
+		SetReadPreference(readpref.Primary())
+
+	err = mongo.WithSession(ctx, session, func(txnCtx mongo.SessionContext) error {
+		// 트랜잭션 시작
+		if err := session.StartTransaction(txnOpts); err != nil {
+			return err
+		}
+
 		if err := bs.writeModels(txnCtx, defaultColNameBlock, bs.blockModels); err != nil {
-			return nil, err
+			session.AbortTransaction(txnCtx)
+			return err
 		}
 
 		if len(bs.operationModels) > 0 {
 			if err := bs.writeModels(txnCtx, defaultColNameOperation, bs.operationModels); err != nil {
-				return nil, err
+				session.AbortTransaction(txnCtx)
+				return err
 			}
 		}
 
 		if len(bs.currencyModels) > 0 {
 			if err := bs.writeModels(txnCtx, defaultColNameCurrency, bs.currencyModels); err != nil {
-				return nil, err
+				session.AbortTransaction(txnCtx)
+				return err
 			}
 		}
 
 		if len(bs.accountModels) > 0 {
 			if err := bs.writeModels(txnCtx, defaultColNameAccount, bs.accountModels); err != nil {
-				return nil, err
+				session.AbortTransaction(txnCtx)
+				return err
 			}
 		}
 
 		if len(bs.contractAccountModels) > 0 {
 			if err := bs.writeModels(txnCtx, defaultColNameContractAccount, bs.contractAccountModels); err != nil {
-				return nil, err
+				session.AbortTransaction(txnCtx)
+				return err
 			}
 		}
 
 		if len(bs.balanceModels) > 0 {
 			if err := bs.writeModels(txnCtx, defaultColNameBalance, bs.balanceModels); err != nil {
-				return nil, err
+				return err
 			}
 		}
 
 		if len(bs.nftCollectionModels) > 0 {
 			if err := bs.writeModels(txnCtx, defaultColNameNFTCollection, bs.nftCollectionModels); err != nil {
-				return nil, err
+				return err
 			}
 		}
 
@@ -190,47 +216,47 @@ func (bs *BlockSession) Commit(ctx context.Context) error {
 			for key := range bs.nftMap {
 				parsedKey, err := crcystate.ParseStateKey(key, nftstate.NFTPrefix, 4)
 				if err != nil {
-					return nil, err
+					return err
 				}
 				i, _ := strconv.ParseInt(parsedKey[2], 10, 64)
 				err = bs.st.CleanByHeightColName(
-					ctx,
+					txnCtx,
 					bs.block.Manifest().Height(),
 					defaultColNameNFT,
 					bson.D{{"contract", parsedKey[1]}},
-					bson.D{{"nftid", i}},
+					bson.D{{"nft_idx", i}},
 				)
 				if err != nil {
-					return nil, err
+					return err
 				}
 			}
 
 			if err := bs.writeModels(txnCtx, defaultColNameNFT, bs.nftModels); err != nil {
-				return nil, err
+				return err
 			}
 		}
 
 		if len(bs.nftOperatorModels) > 0 {
 			if err := bs.writeModels(txnCtx, defaultColNameNFTOperator, bs.nftOperatorModels); err != nil {
-				return nil, err
+				return err
 			}
 		}
 
 		if len(bs.nftBoxModels) > 0 {
 			if err := bs.writeModels(txnCtx, defaultColNameNFT, bs.nftBoxModels); err != nil {
-				return nil, err
+				return err
 			}
 		}
 
 		if len(bs.balanceModels) > 0 {
 			if err := bs.writeModels(txnCtx, defaultColNameBalance, bs.balanceModels); err != nil {
-				return nil, err
+				return err
 			}
 		}
 
 		if len(bs.didIssuerModels) > 0 {
 			if err := bs.writeModels(txnCtx, defaultColNameDIDCredentialService, bs.didIssuerModels); err != nil {
-				return nil, err
+				return err
 			}
 		}
 
@@ -238,7 +264,7 @@ func (bs *BlockSession) Commit(ctx context.Context) error {
 			for key := range bs.credentialMap {
 				parsedKey, err := crcystate.ParseStateKey(key, didstate.CredentialPrefix, 5)
 				if err != nil {
-					return nil, err
+					return err
 				}
 				err = bs.st.CleanByHeightColName(
 					txnCtx,
@@ -249,89 +275,284 @@ func (bs *BlockSession) Commit(ctx context.Context) error {
 					bson.D{{"credential_id", parsedKey[3]}},
 				)
 				if err != nil {
-					return nil, err
+					return err
 				}
 			}
 
 			if err := bs.writeModels(txnCtx, defaultColNameDIDCredential, bs.didCredentialModels); err != nil {
-				return nil, err
+				return err
 			}
 		}
 
 		if len(bs.didHolderDIDModels) > 0 {
 			if err := bs.writeModels(txnCtx, defaultColNameHolder, bs.didHolderDIDModels); err != nil {
-				return nil, err
+				return err
 			}
 		}
 
 		if len(bs.didTemplateModels) > 0 {
 			if err := bs.writeModels(txnCtx, defaultColNameTemplate, bs.didTemplateModels); err != nil {
-				return nil, err
+				return err
 			}
 		}
 
 		if len(bs.timestampModels) > 0 {
 			if err := bs.writeModels(txnCtx, defaultColNameTimeStamp, bs.timestampModels); err != nil {
-				return nil, err
+				return err
 			}
 		}
 
 		if len(bs.tokenModels) > 0 {
 			if err := bs.writeModels(txnCtx, defaultColNameToken, bs.tokenModels); err != nil {
-				return nil, err
+				return err
 			}
 		}
 
 		if len(bs.tokenBalanceModels) > 0 {
 			if err := bs.writeModels(txnCtx, defaultColNameTokenBalance, bs.tokenBalanceModels); err != nil {
-				return nil, err
+				return err
 			}
 		}
 
 		if len(bs.pointModels) > 0 {
 			if err := bs.writeModels(txnCtx, defaultColNamePoint, bs.pointModels); err != nil {
-				return nil, err
+				return err
 			}
 		}
 
 		if len(bs.pointBalanceModels) > 0 {
 			if err := bs.writeModels(txnCtx, defaultColNamePointBalance, bs.pointBalanceModels); err != nil {
-				return nil, err
+				return err
 			}
 		}
 
 		if len(bs.daoDesignModels) > 0 {
 			if err := bs.writeModels(txnCtx, defaultColNameDAO, bs.daoDesignModels); err != nil {
-				return nil, err
+				return err
 			}
 		}
 
 		if len(bs.daoProposalModels) > 0 {
 			if err := bs.writeModels(txnCtx, defaultColNameDAOProposal, bs.daoProposalModels); err != nil {
-				return nil, err
+				return err
 			}
 		}
 
 		if len(bs.daoDelegatorsModels) > 0 {
 			if err := bs.writeModels(txnCtx, defaultColNameDAODelegators, bs.daoDelegatorsModels); err != nil {
-				return nil, err
+				return err
 			}
 		}
 
 		if len(bs.daoVotersModels) > 0 {
 			if err := bs.writeModels(txnCtx, defaultColNameDAOVoters, bs.daoVotersModels); err != nil {
-				return nil, err
+				return err
 			}
 		}
 
 		if len(bs.daoVotingPowerBoxModels) > 0 {
 			if err := bs.writeModels(txnCtx, defaultColNameDAOVotingPowerBox, bs.daoVotingPowerBoxModels); err != nil {
-				return nil, err
+				return err
 			}
 		}
 
-		return nil, nil
+		if err := session.CommitTransaction(txnCtx); err != nil {
+			return err
+		}
+
+		//time.Sleep(1000 * time.Millisecond)
+
+		return nil
 	})
+
+	//_, err := bs.st.MongoClient().WithSession(func(txnCtx mongo.SessionContext, collection func(string) *mongo.Collection) (interface{}, error) {
+	//	if err := bs.writeModels(txnCtx, defaultColNameBlock, bs.blockModels); err != nil {
+	//		return nil, err
+	//	}
+	//
+	//	if len(bs.operationModels) > 0 {
+	//		if err := bs.writeModels(txnCtx, defaultColNameOperation, bs.operationModels); err != nil {
+	//			return nil, err
+	//		}
+	//	}
+	//
+	//	if len(bs.currencyModels) > 0 {
+	//		if err := bs.writeModels(txnCtx, defaultColNameCurrency, bs.currencyModels); err != nil {
+	//			return nil, err
+	//		}
+	//	}
+	//
+	//	if len(bs.accountModels) > 0 {
+	//		if err := bs.writeModels(txnCtx, defaultColNameAccount, bs.accountModels); err != nil {
+	//			return nil, err
+	//		}
+	//	}
+	//
+	//	if len(bs.contractAccountModels) > 0 {
+	//		if err := bs.writeModels(txnCtx, defaultColNameContractAccount, bs.contractAccountModels); err != nil {
+	//			return nil, err
+	//		}
+	//	}
+	//
+	//	if len(bs.balanceModels) > 0 {
+	//		if err := bs.writeModels(txnCtx, defaultColNameBalance, bs.balanceModels); err != nil {
+	//			return nil, err
+	//		}
+	//	}
+	//
+	//	if len(bs.nftCollectionModels) > 0 {
+	//		if err := bs.writeModels(txnCtx, defaultColNameNFTCollection, bs.nftCollectionModels); err != nil {
+	//			return nil, err
+	//		}
+	//	}
+	//
+	//	if len(bs.nftModels) > 0 {
+	//		for key := range bs.nftMap {
+	//			parsedKey, err := crcystate.ParseStateKey(key, nftstate.NFTPrefix, 4)
+	//			if err != nil {
+	//				return nil, err
+	//			}
+	//			i, _ := strconv.ParseInt(parsedKey[2], 10, 64)
+	//			err = bs.st.CleanByHeightColName(
+	//				txnCtx,
+	//				bs.block.Manifest().Height(),
+	//				defaultColNameNFT,
+	//				bson.D{{"contract", parsedKey[1]}},
+	//				bson.D{{"nft_idx", i}},
+	//			)
+	//			if err != nil {
+	//				return nil, err
+	//			}
+	//		}
+	//
+	//		if err := bs.writeModels(txnCtx, defaultColNameNFT, bs.nftModels); err != nil {
+	//			return nil, err
+	//		}
+	//	}
+	//
+	//	if len(bs.nftOperatorModels) > 0 {
+	//		if err := bs.writeModels(txnCtx, defaultColNameNFTOperator, bs.nftOperatorModels); err != nil {
+	//			return nil, err
+	//		}
+	//	}
+	//
+	//	if len(bs.nftBoxModels) > 0 {
+	//		if err := bs.writeModels(txnCtx, defaultColNameNFT, bs.nftBoxModels); err != nil {
+	//			return nil, err
+	//		}
+	//	}
+	//
+	//	if len(bs.balanceModels) > 0 {
+	//		if err := bs.writeModels(txnCtx, defaultColNameBalance, bs.balanceModels); err != nil {
+	//			return nil, err
+	//		}
+	//	}
+	//
+	//	if len(bs.didIssuerModels) > 0 {
+	//		if err := bs.writeModels(txnCtx, defaultColNameDIDCredentialService, bs.didIssuerModels); err != nil {
+	//			return nil, err
+	//		}
+	//	}
+	//
+	//	if len(bs.didCredentialModels) > 0 {
+	//		for key := range bs.credentialMap {
+	//			parsedKey, err := crcystate.ParseStateKey(key, didstate.CredentialPrefix, 5)
+	//			if err != nil {
+	//				return nil, err
+	//			}
+	//			err = bs.st.CleanByHeightColName(
+	//				txnCtx,
+	//				bs.block.Manifest().Height(),
+	//				defaultColNameDIDCredential,
+	//				bson.D{{"contract", parsedKey[1]}},
+	//				bson.D{{"template", parsedKey[2]}},
+	//				bson.D{{"credential_id", parsedKey[3]}},
+	//			)
+	//			if err != nil {
+	//				return nil, err
+	//			}
+	//		}
+	//
+	//		if err := bs.writeModels(txnCtx, defaultColNameDIDCredential, bs.didCredentialModels); err != nil {
+	//			return nil, err
+	//		}
+	//	}
+	//
+	//	if len(bs.didHolderDIDModels) > 0 {
+	//		if err := bs.writeModels(txnCtx, defaultColNameHolder, bs.didHolderDIDModels); err != nil {
+	//			return nil, err
+	//		}
+	//	}
+	//
+	//	if len(bs.didTemplateModels) > 0 {
+	//		if err := bs.writeModels(txnCtx, defaultColNameTemplate, bs.didTemplateModels); err != nil {
+	//			return nil, err
+	//		}
+	//	}
+	//
+	//	if len(bs.timestampModels) > 0 {
+	//		if err := bs.writeModels(txnCtx, defaultColNameTimeStamp, bs.timestampModels); err != nil {
+	//			return nil, err
+	//		}
+	//	}
+	//
+	//	if len(bs.tokenModels) > 0 {
+	//		if err := bs.writeModels(txnCtx, defaultColNameToken, bs.tokenModels); err != nil {
+	//			return nil, err
+	//		}
+	//	}
+	//
+	//	if len(bs.tokenBalanceModels) > 0 {
+	//		if err := bs.writeModels(txnCtx, defaultColNameTokenBalance, bs.tokenBalanceModels); err != nil {
+	//			return nil, err
+	//		}
+	//	}
+	//
+	//	if len(bs.pointModels) > 0 {
+	//		if err := bs.writeModels(txnCtx, defaultColNamePoint, bs.pointModels); err != nil {
+	//			return nil, err
+	//		}
+	//	}
+	//
+	//	if len(bs.pointBalanceModels) > 0 {
+	//		if err := bs.writeModels(txnCtx, defaultColNamePointBalance, bs.pointBalanceModels); err != nil {
+	//			return nil, err
+	//		}
+	//	}
+	//
+	//	if len(bs.daoDesignModels) > 0 {
+	//		if err := bs.writeModels(txnCtx, defaultColNameDAO, bs.daoDesignModels); err != nil {
+	//			return nil, err
+	//		}
+	//	}
+	//
+	//	if len(bs.daoProposalModels) > 0 {
+	//		if err := bs.writeModels(txnCtx, defaultColNameDAOProposal, bs.daoProposalModels); err != nil {
+	//			return nil, err
+	//		}
+	//	}
+	//
+	//	if len(bs.daoDelegatorsModels) > 0 {
+	//		if err := bs.writeModels(txnCtx, defaultColNameDAODelegators, bs.daoDelegatorsModels); err != nil {
+	//			return nil, err
+	//		}
+	//	}
+	//
+	//	if len(bs.daoVotersModels) > 0 {
+	//		if err := bs.writeModels(txnCtx, defaultColNameDAOVoters, bs.daoVotersModels); err != nil {
+	//			return nil, err
+	//		}
+	//	}
+	//
+	//	if len(bs.daoVotingPowerBoxModels) > 0 {
+	//		if err := bs.writeModels(txnCtx, defaultColNameDAOVotingPowerBox, bs.daoVotingPowerBoxModels); err != nil {
+	//			return nil, err
+	//		}
+	//	}
+	//
+	//	return nil, nil
+	//})
+	time.Sleep(1000 * time.Millisecond)
 
 	return err
 }
@@ -545,7 +766,7 @@ func (bs *BlockSession) writeModels(ctx context.Context, col string, models []mo
 }
 
 func (bs *BlockSession) writeModelsChunk(ctx context.Context, col string, models []mongo.WriteModel) error {
-	opts := options.BulkWrite().SetOrdered(false)
+	opts := options.BulkWrite().SetOrdered(true)
 	if res, err := bs.st.MongoClient().Collection(col).BulkWrite(ctx, models, opts); err != nil {
 		return err
 	} else if res != nil && res.InsertedCount < 1 {
