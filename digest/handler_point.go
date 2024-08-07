@@ -29,7 +29,7 @@ func (hd *Handlers) handlePoint(w http.ResponseWriter, r *http.Request) {
 	} else {
 		currencydigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
 		if !shared {
-			currencydigest.HTTP2WriteCache(w, cachekey, time.Second*3)
+			currencydigest.HTTP2WriteCache(w, cachekey, time.Second*1)
 		}
 	}
 }
@@ -85,7 +85,7 @@ func (hd *Handlers) handlePointBalance(w http.ResponseWriter, r *http.Request) {
 	} else {
 		currencydigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
 		if !shared {
-			currencydigest.HTTP2WriteCache(w, cachekey, time.Second*3)
+			currencydigest.HTTP2WriteCache(w, cachekey, time.Second*1)
 		}
 	}
 }
