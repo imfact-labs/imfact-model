@@ -98,7 +98,7 @@ func NewHandlers(
 		routes:          routes,
 		itemsLimiter:    currencydigest.DefaultItemsLimiter,
 		rg:              &singleflight.Group{},
-		expireNotFilled: time.Second * 3,
+		expireNotFilled: time.Second * 1,
 	}
 }
 
@@ -135,53 +135,54 @@ func (hd *Handlers) Handler() http.Handler {
 }
 
 func (hd *Handlers) setHandlers() {
-	_ = hd.setHandler(HandlerPathNFTCollection, hd.handleNFTCollection, true).
+	get := 1000
+	_ = hd.setHandler(HandlerPathNFTCollection, hd.handleNFTCollection, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathNFTs, hd.handleNFTs, true).
+	_ = hd.setHandler(HandlerPathNFTs, hd.handleNFTs, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathNFTCount, hd.handleNFTCount, true).
+	_ = hd.setHandler(HandlerPathNFTCount, hd.handleNFTCount, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathNFTAllApproved, hd.handleNFTOperators, true).
+	_ = hd.setHandler(HandlerPathNFTAllApproved, hd.handleNFTOperators, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathNFT, hd.handleNFT, true).
+	_ = hd.setHandler(HandlerPathNFT, hd.handleNFT, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathDIDService, hd.handleCredentialService, true).
+	_ = hd.setHandler(HandlerPathDIDService, hd.handleCredentialService, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathDIDCredentials, hd.handleCredentials, true).
+	_ = hd.setHandler(HandlerPathDIDCredentials, hd.handleCredentials, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathDIDCredential, hd.handleCredential, true).
+	_ = hd.setHandler(HandlerPathDIDCredential, hd.handleCredential, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathDIDHolder, hd.handleHolderCredential, true).
+	_ = hd.setHandler(HandlerPathDIDHolder, hd.handleHolderCredential, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathDIDTemplate, hd.handleTemplate, true).
+	_ = hd.setHandler(HandlerPathDIDTemplate, hd.handleTemplate, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathTimeStampItem, hd.handleTimeStampItem, true).
+	_ = hd.setHandler(HandlerPathTimeStampItem, hd.handleTimeStampItem, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathTimeStampDesign, hd.handleTimeStampDesign, true).
+	_ = hd.setHandler(HandlerPathTimeStampDesign, hd.handleTimeStampDesign, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathTokenBalance, hd.handleTokenBalance, true).
+	_ = hd.setHandler(HandlerPathTokenBalance, hd.handleTokenBalance, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathToken, hd.handleToken, true).
+	_ = hd.setHandler(HandlerPathToken, hd.handleToken, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathPointBalance, hd.handlePointBalance, true).
+	_ = hd.setHandler(HandlerPathPointBalance, hd.handlePointBalance, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathPoint, hd.handlePoint, true).
+	_ = hd.setHandler(HandlerPathPoint, hd.handlePoint, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathDAOService, hd.handleDAOService, true).
+	_ = hd.setHandler(HandlerPathDAOService, hd.handleDAOService, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathDAOProposal, hd.handleDAOProposal, true).
+	_ = hd.setHandler(HandlerPathDAOProposal, hd.handleDAOProposal, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathDAODelegator, hd.handleDAODelegator, true).
+	_ = hd.setHandler(HandlerPathDAODelegator, hd.handleDAODelegator, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathDAOVoters, hd.handleDAOVoters, true).
+	_ = hd.setHandler(HandlerPathDAOVoters, hd.handleDAOVoters, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathDAOVotingPowerBox, hd.handleDAOVotingPowerBox, true).
+	_ = hd.setHandler(HandlerPathDAOVotingPowerBox, hd.handleDAOVotingPowerBox, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathResource, hd.handleResource, true).
+	_ = hd.setHandler(HandlerPathResource, hd.handleResource, true, get, get).
 		Methods(http.MethodOptions, "GET")
 }
 
-func (hd *Handlers) setHandler(prefix string, h network.HTTPHandlerFunc, useCache bool) *mux.Route {
+func (hd *Handlers) setHandler(prefix string, h network.HTTPHandlerFunc, useCache bool, rps, burst int) *mux.Route {
 	var handler http.Handler
 	if !useCache {
 		handler = http.HandlerFunc(h)
@@ -204,6 +205,8 @@ func (hd *Handlers) setHandler(prefix string, h network.HTTPHandlerFunc, useCach
 	} else {
 		route = hd.router.Name(name)
 	}
+
+	handler = currencydigest.RateLimiter(rps, burst)(handler)
 
 	/*
 		if rules, found := hd.rateLimit[prefix]; found {
