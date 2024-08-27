@@ -61,6 +61,8 @@ type BlockSession struct {
 	daoDelegatorsModels     []mongo.WriteModel
 	daoVotersModels         []mongo.WriteModel
 	daoVotingPowerBoxModels []mongo.WriteModel
+	storageModels           []mongo.WriteModel
+	storageDataModels       []mongo.WriteModel
 	statesValue             *sync.Map
 	balanceAddressList      []string
 	nftMap                  map[string]struct{}
@@ -131,6 +133,9 @@ func (bs *BlockSession) Prepare() error {
 		return err
 	}
 	if err := bs.prepareDAO(); err != nil {
+		return err
+	}
+	if err := bs.prepareStorage(); err != nil {
 		return err
 	}
 
@@ -352,6 +357,18 @@ func (bs *BlockSession) Commit(ctx context.Context) error {
 
 		if len(bs.daoVotingPowerBoxModels) > 0 {
 			if err := bs.writeModels(txnCtx, defaultColNameDAOVotingPowerBox, bs.daoVotingPowerBoxModels); err != nil {
+				return err
+			}
+		}
+
+		if len(bs.storageModels) > 0 {
+			if err := bs.writeModels(txnCtx, defaultColNameStorage, bs.storageModels); err != nil {
+				return err
+			}
+		}
+
+		if len(bs.storageDataModels) > 0 {
+			if err := bs.writeModels(txnCtx, defaultColNameStorageData, bs.storageDataModels); err != nil {
 				return err
 			}
 		}
@@ -795,6 +812,9 @@ func (bs *BlockSession) close() error {
 	bs.tokenBalanceModels = nil
 	bs.pointModels = nil
 	bs.pointBalanceModels = nil
+	bs.storageModels = nil
+	bs.storageDataModels = nil
+	bs.contractAccountModels = nil
 	bs.nftMap = nil
 	bs.credentialMap = nil
 

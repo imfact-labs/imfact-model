@@ -5,6 +5,7 @@ import (
 	"fmt"
 	daocmds "github.com/ProtoconNet/mitum-dao/cmds"
 	pointcmds "github.com/ProtoconNet/mitum-point/cmds"
+	storagecmds "github.com/ProtoconNet/mitum-storage/cmds"
 	timestampcmds "github.com/ProtoconNet/mitum-timestamp/cmds"
 	tokencmds "github.com/ProtoconNet/mitum-token/cmds"
 	"os"
@@ -37,14 +38,15 @@ var CLI struct { //nolint:govet //...
 	Run       cmds.RunCommand          `cmd:"" help:"run node"`
 	Storage   cmds.Storage             `cmd:""`
 	Operation struct {
-		Currency   currencycmds.CurrencyCommand     `cmd:"" help:"currency operation"`
-		Suffrage   currencycmds.SuffrageCommand     `cmd:"" help:"suffrage operation"`
-		NFT        nftcmds.NFTCommand               `cmd:"" help:"nft operation"`
-		Credential credentialcmds.CredentialCommand `cmd:"" help:"credential operation"`
-		Dao        daocmds.DAOCommand               `cmd:"" help:"dao operation"`
-		Timestamp  timestampcmds.TimestampCommand   `cmd:"" help:"timestamp operation"`
-		Token      tokencmds.TokenCommand           `cmd:"" help:"token operation"`
-		Point      pointcmds.PointCommand           `cmd:"" help:"point operation"`
+		Currency    currencycmds.CurrencyCommand     `cmd:"" help:"currency operation"`
+		Suffrage    currencycmds.SuffrageCommand     `cmd:"" help:"suffrage operation"`
+		NFT         nftcmds.NFTCommand               `cmd:"" help:"nft operation"`
+		Credential  credentialcmds.CredentialCommand `cmd:"" help:"credential operation"`
+		Dao         daocmds.DAOCommand               `cmd:"" help:"dao operation"`
+		Timestamp   timestampcmds.TimestampCommand   `cmd:"" help:"timestamp operation"`
+		Token       tokencmds.TokenCommand           `cmd:"" help:"token operation"`
+		Point       pointcmds.PointCommand           `cmd:"" help:"point operation"`
+		StorageData storagecmds.StorageCommand       `cmd:"" help:"data storage operation"`
 	} `cmd:"" help:"create operation"`
 	Network struct {
 		Client cmds.NetworkClientCommand `cmd:"" help:"network client"`

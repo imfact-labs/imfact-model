@@ -26,4 +26,6 @@ var (
 	defaultColNameDAODelegators        = "digest_dao_dac"
 	defaultColNameDAOVoters            = "digest_dao_vac"
 	defaultColNameDAOVotingPowerBox    = "digest_dao_vpb"
+	defaultColNameStorage              = "digest_storage"
+	defaultColNameStorageData          = "digest_storage_data"
 )

@@ -44,6 +44,9 @@ var (
 	HandlerPathDAODelegator      = `/dao/{contract:(?i)` + types.REStringAddressString + `}/proposal/{proposal_id:` + types.ReSpecialCh + `}/registrant/{address:(?i)` + types.REStringAddressString + `}`
 	HandlerPathDAOVoters         = `/dao/{contract:(?i)` + types.REStringAddressString + `}/proposal/{proposal_id:` + types.ReSpecialCh + `}/voter`
 	HandlerPathDAOVotingPowerBox = `/dao/{contract:(?i)` + types.REStringAddressString + `}/proposal/{proposal_id:` + types.ReSpecialCh + `}/votingpower` // revive:disable-line:line-length-limit
+	HandlerPathStorageDesign     = `/storage/{contract:(?i)` + types.REStringAddressString + `}`
+	HandlerPathStorageData       = `/storage/{contract:(?i)` + types.REStringAddressString + `}/datakey/{data_key:` + types.ReSpecialCh + `}`
+	HandlerPathStorageHistory    = `/storage/{contract:(?i)` + types.REStringAddressString + `}/datakey/{data_key:` + types.ReSpecialCh + `}/history`
 	HandlerPathResource          = `/resource`
 )
 
@@ -177,6 +180,12 @@ func (hd *Handlers) setHandlers() {
 	_ = hd.setHandler(HandlerPathDAOVoters, hd.handleDAOVoters, true, get, get).
 		Methods(http.MethodOptions, "GET")
 	_ = hd.setHandler(HandlerPathDAOVotingPowerBox, hd.handleDAOVotingPowerBox, true, get, get).
+		Methods(http.MethodOptions, "GET")
+	_ = hd.setHandler(HandlerPathStorageData, hd.handleStorageData, true, get, get).
+		Methods(http.MethodOptions, "GET")
+	_ = hd.setHandler(HandlerPathStorageDesign, hd.handleStorageDesign, true, get, get).
+		Methods(http.MethodOptions, "GET")
+	_ = hd.setHandler(HandlerPathStorageHistory, hd.handleStorageDataHistory, true, get, get).
 		Methods(http.MethodOptions, "GET")
 	_ = hd.setHandler(HandlerPathResource, hd.handleResource, true, get, get).
 		Methods(http.MethodOptions, "GET")
