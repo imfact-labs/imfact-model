@@ -5,14 +5,15 @@ go 1.22
 toolchain go1.22.1
 
 require (
-	github.com/ProtoconNet/mitum-credential v0.0.0-20240617055457-c37df79e34b9
-	github.com/ProtoconNet/mitum-currency/v3 v3.0.0-alpha.0.20240617034922-b9513a6337b0
-	github.com/ProtoconNet/mitum-dao v0.0.0-20240617061001-72c274f66820
-	github.com/ProtoconNet/mitum-nft v0.0.0-20240617061216-22815e42c636
-	github.com/ProtoconNet/mitum-point v0.0.0-20240617060352-308533004eb4
-	github.com/ProtoconNet/mitum-timestamp v0.0.0-20240617055722-6d72361c927c
-	github.com/ProtoconNet/mitum-token v0.0.0-20240617060607-993e16ec008e
-	github.com/ProtoconNet/mitum2 v0.0.0-20240516232940-9c065b66904b
+	github.com/ProtoconNet/mitum-credential v0.0.0-20240827075432-0eb5dc4ba35b
+	github.com/ProtoconNet/mitum-currency/v3 v3.0.0-alpha.0.20240816085615-2022f4b7723b
+	github.com/ProtoconNet/mitum-dao v0.0.0-20240827081645-8feaf6a43745
+	github.com/ProtoconNet/mitum-nft v0.0.0-20240827080550-2e95644946eb
+	github.com/ProtoconNet/mitum-point v0.0.0-20240827071117-23e33dbbd127
+	github.com/ProtoconNet/mitum-storage v0.0.0-20240827062523-0a33679a3833
+	github.com/ProtoconNet/mitum-timestamp v0.0.0-20240827092236-078c7f65e304
+	github.com/ProtoconNet/mitum-token v0.0.0-20240827071500-c045e019c562
+	github.com/ProtoconNet/mitum2 v0.0.0-20240805062025-57b0a3c5b436
 	github.com/alecthomas/kong v0.9.0
 	github.com/arl/statsviz v0.6.0
 	github.com/gorilla/mux v1.8.1
@@ -20,7 +21,7 @@ require (
 	github.com/rs/zerolog v1.32.0
 	github.com/shirou/gopsutil v3.21.11+incompatible
 	go.mongodb.org/mongo-driver v1.15.0
-	golang.org/x/sync v0.6.0
+	golang.org/x/sync v0.7.0
 )
 
 require (
@@ -84,7 +85,8 @@ require (
 	github.com/oklog/ulid/v2 v2.1.0 // indirect
 	github.com/onsi/ginkgo/v2 v2.17.1 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
-	github.com/quic-go/quic-go v0.42.0 // indirect
+	github.com/quic-go/qtls-go1-20 v0.3.4 // indirect
+	github.com/quic-go/quic-go v0.39.1 // indirect
 	github.com/rainycape/memcache v0.0.0-20150622160815-1031fa0ce2f2 // indirect
 	github.com/redis/go-redis/v9 v9.5.1 // indirect
 	github.com/rs/xid v1.5.0 // indirect
@@ -101,13 +103,13 @@ require (
 	github.com/zeebo/blake3 v0.2.3 // indirect
 	go.uber.org/mock v0.4.0 // indirect
 	golang.org/x/arch v0.7.0 // indirect
-	golang.org/x/crypto v0.22.0 // indirect
-	golang.org/x/exp v0.0.0-20240325151524-a685a6edb6d8 // indirect
-	golang.org/x/mod v0.16.0 // indirect
-	golang.org/x/net v0.22.0 // indirect
-	golang.org/x/sys v0.19.0 // indirect
-	golang.org/x/text v0.14.0 // indirect
+	golang.org/x/crypto v0.23.0 // indirect
+	golang.org/x/exp v0.0.0-20240506185415-9bf2ced13842 // indirect
+	golang.org/x/mod v0.17.0 // indirect
+	golang.org/x/net v0.25.0 // indirect
+	golang.org/x/sys v0.20.0 // indirect
+	golang.org/x/text v0.15.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
-	golang.org/x/tools v0.19.0 // indirect
+	golang.org/x/tools v0.21.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
