@@ -17,7 +17,7 @@ func (hd *Handlers) handleCredentialService(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	contract, err, status := parseRequest(w, r, "contract")
+	contract, err, status := currencydigest.ParseRequest(w, r, "contract")
 	if err != nil {
 		currencydigest.HTTP2ProblemWithError(w, err, status)
 
@@ -68,19 +68,19 @@ func (hd *Handlers) handleCredential(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	contract, err, status := parseRequest(w, r, "contract")
+	contract, err, status := currencydigest.ParseRequest(w, r, "contract")
 	if err != nil {
 		currencydigest.HTTP2ProblemWithError(w, err, status)
 		return
 	}
 
-	templateID, err, status := parseRequest(w, r, "template_id")
+	templateID, err, status := currencydigest.ParseRequest(w, r, "template_id")
 	if err != nil {
 		currencydigest.HTTP2ProblemWithError(w, err, status)
 		return
 	}
 
-	credentialID, err, status := parseRequest(w, r, "credential_id")
+	credentialID, err, status := currencydigest.ParseRequest(w, r, "credential_id")
 	if err != nil {
 		currencydigest.HTTP2ProblemWithError(w, err, status)
 		return
@@ -149,14 +149,14 @@ func (hd *Handlers) handleCredentials(w http.ResponseWriter, r *http.Request) {
 		currencydigest.StringBoolQuery("reverse", reverse),
 	)
 
-	contract, err, status := parseRequest(w, r, "contract")
+	contract, err, status := currencydigest.ParseRequest(w, r, "contract")
 	if err != nil {
 		currencydigest.HTTP2ProblemWithError(w, err, status)
 
 		return
 	}
 
-	templateID, err, status := parseRequest(w, r, "template_id")
+	templateID, err, status := currencydigest.ParseRequest(w, r, "template_id")
 	if err != nil {
 		currencydigest.HTTP2ProblemWithError(w, err, status)
 		return
@@ -302,13 +302,13 @@ func (hd *Handlers) handleHolderCredential(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	contract, err, status := parseRequest(w, r, "contract")
+	contract, err, status := currencydigest.ParseRequest(w, r, "contract")
 	if err != nil {
 		currencydigest.HTTP2ProblemWithError(w, err, status)
 		return
 	}
 
-	holder, err, status := parseRequest(w, r, "holder")
+	holder, err, status := currencydigest.ParseRequest(w, r, "holder")
 	if err != nil {
 		currencydigest.HTTP2ProblemWithError(w, err, status)
 		return
@@ -388,13 +388,13 @@ func (hd *Handlers) handleTemplate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	contract, err, status := parseRequest(w, r, "contract")
+	contract, err, status := currencydigest.ParseRequest(w, r, "contract")
 	if err != nil {
 		currencydigest.HTTP2ProblemWithError(w, err, status)
 		return
 	}
 
-	templateID, err, status := parseRequest(w, r, "template_id")
+	templateID, err, status := currencydigest.ParseRequest(w, r, "template_id")
 	if err != nil {
 		currencydigest.HTTP2ProblemWithError(w, err, status)
 		return

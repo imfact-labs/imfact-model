@@ -15,7 +15,7 @@ func (hd *Handlers) handlePoint(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	contract, err, status := parseRequest(w, r, "contract")
+	contract, err, status := currencydigest.ParseRequest(w, r, "contract")
 	if err != nil {
 		currencydigest.HTTP2ProblemWithError(w, err, status)
 
@@ -64,14 +64,14 @@ func (hd *Handlers) handlePointBalance(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	contract, err, status := parseRequest(w, r, "contract")
+	contract, err, status := currencydigest.ParseRequest(w, r, "contract")
 	if err != nil {
 		currencydigest.HTTP2ProblemWithError(w, err, status)
 
 		return
 	}
 
-	account, err, status := parseRequest(w, r, "address")
+	account, err, status := currencydigest.ParseRequest(w, r, "address")
 	if err != nil {
 		currencydigest.HTTP2ProblemWithError(w, err, status)
 

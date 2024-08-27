@@ -15,7 +15,7 @@ func (hd *Handlers) handleDAOService(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	contract, err, status := parseRequest(w, r, "contract")
+	contract, err, status := currencydigest.ParseRequest(w, r, "contract")
 	if err != nil {
 		currencydigest.HTTP2ProblemWithError(w, err, status)
 
@@ -66,14 +66,14 @@ func (hd *Handlers) handleDAOProposal(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	contract, err, status := parseRequest(w, r, "contract")
+	contract, err, status := currencydigest.ParseRequest(w, r, "contract")
 	if err != nil {
 		currencydigest.HTTP2ProblemWithError(w, err, status)
 
 		return
 	}
 
-	proposalID, err, status := parseRequest(w, r, "proposal_id")
+	proposalID, err, status := currencydigest.ParseRequest(w, r, "proposal_id")
 	if err != nil {
 		currencydigest.HTTP2ProblemWithError(w, err, status)
 		return
@@ -123,19 +123,19 @@ func (hd *Handlers) handleDAODelegator(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	contract, err, status := parseRequest(w, r, "contract")
+	contract, err, status := currencydigest.ParseRequest(w, r, "contract")
 	if err != nil {
 		currencydigest.HTTP2ProblemWithError(w, err, status)
 		return
 	}
 
-	proposalID, err, status := parseRequest(w, r, "proposal_id")
+	proposalID, err, status := currencydigest.ParseRequest(w, r, "proposal_id")
 	if err != nil {
 		currencydigest.HTTP2ProblemWithError(w, err, status)
 		return
 	}
 
-	delegator, err, status := parseRequest(w, r, "address")
+	delegator, err, status := currencydigest.ParseRequest(w, r, "address")
 	if err != nil {
 		currencydigest.HTTP2ProblemWithError(w, err, status)
 		return
@@ -193,13 +193,13 @@ func (hd *Handlers) handleDAOVoters(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	contract, err, status := parseRequest(w, r, "contract")
+	contract, err, status := currencydigest.ParseRequest(w, r, "contract")
 	if err != nil {
 		currencydigest.HTTP2ProblemWithError(w, err, status)
 		return
 	}
 
-	proposalID, err, status := parseRequest(w, r, "proposal_id")
+	proposalID, err, status := currencydigest.ParseRequest(w, r, "proposal_id")
 	if err != nil {
 		currencydigest.HTTP2ProblemWithError(w, err, status)
 		return
@@ -251,13 +251,13 @@ func (hd *Handlers) handleDAOVotingPowerBox(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	contract, err, status := parseRequest(w, r, "contract")
+	contract, err, status := currencydigest.ParseRequest(w, r, "contract")
 	if err != nil {
 		currencydigest.HTTP2ProblemWithError(w, err, status)
 		return
 	}
 
-	proposalID, err, status := parseRequest(w, r, "proposal_id")
+	proposalID, err, status := currencydigest.ParseRequest(w, r, "proposal_id")
 	if err != nil {
 		currencydigest.HTTP2ProblemWithError(w, err, status)
 		return
