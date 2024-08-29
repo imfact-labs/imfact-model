@@ -104,7 +104,7 @@ func (hd *Handlers) handleStorageData(w http.ResponseWriter, r *http.Request) {
 		currencydigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
 
 		if !shared {
-			currencydigest.HTTP2WriteCache(w, cacheKey, time.Second*3)
+			currencydigest.HTTP2WriteCache(w, cacheKey, time.Second*1)
 		}
 	}
 }
