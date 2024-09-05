@@ -85,7 +85,7 @@ func DefaultRunPS() *ps.PS {
 		PreAddOK(launch.PNameOperationProcessorsMap, currencycmds.POperationProcessorsMap).
 		PreAddOK(launch.PNameNetworkHandlers, currencycmds.PNetworkHandlers).
 		PreAddOK(launch.PNameNodeInConsensusNodesFunc, launch.PNodeInConsensusNodesFunc).
-		PreAddOK(launch.PNameProposalProcessors, launch.PProposalProcessors).
+		PreAddOK(launch.PNameProposalProcessors, currencycmds.PProposalProcessors).
 		PreAddOK(launch.PNameBallotStuckResolver, launch.PBallotStuckResolver).
 		PostAddOK(launch.PNamePatchLastConsensusNodesWatcher, launch.PPatchLastConsensusNodesWatcher).
 		PostAddOK(launch.PNameStatesSetHandlers, launch.PStatesSetHandlers).

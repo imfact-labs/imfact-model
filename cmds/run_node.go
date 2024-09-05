@@ -4,6 +4,7 @@ import (
 	"context"
 	daocmds "github.com/ProtoconNet/mitum-dao/cmds"
 	pointcmds "github.com/ProtoconNet/mitum-point/cmds"
+	prescriptioncmds "github.com/ProtoconNet/mitum-prescription/cmds"
 	storagecmds "github.com/ProtoconNet/mitum-storage/cmds"
 	"net"
 	"net/http"
@@ -93,6 +94,7 @@ func (cmd *RunCommand) Run(pctx context.Context) error {
 		PreAddOK(pointcmds.PNameOperationProcessorsMap, pointcmds.POperationProcessorsMap).
 		PreAddOK(daocmds.PNameOperationProcessorsMap, daocmds.POperationProcessorsMap).
 		PreAddOK(storagecmds.PNameOperationProcessorsMap, storagecmds.POperationProcessorsMap).
+		PreAddOK(prescriptioncmds.PNameOperationProcessorsMap, prescriptioncmds.POperationProcessorsMap).
 		PreAddOK(PNameOperationProcessorsMap, POperationProcessorsMap).
 		PreAddOK(ps.Name("when-new-block-saved-in-consensus-state-func"), cmd.pWhenNewBlockSavedInConsensusStateFunc).
 		PreAddOK(ps.Name("when-new-block-saved-in-syncing-state-func"), cmd.pWhenNewBlockSavedInSyncingStateFunc).

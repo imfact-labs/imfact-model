@@ -281,6 +281,27 @@ var storageDataIndexModels = []mongo.IndexModel{
 	},
 }
 
+var prescriptionServiceIndexModels = []mongo.IndexModel{
+	{
+		Keys: bson.D{
+			bson.E{Key: "contract", Value: 1},
+			bson.E{Key: "height", Value: -1}},
+		Options: options.Index().
+			SetName(indexPrefix + "prescription_service_contract_height"),
+	},
+}
+
+var prescriptionInfoIndexModels = []mongo.IndexModel{
+	{
+		Keys: bson.D{
+			bson.E{Key: "contract", Value: 1},
+			bson.E{Key: "prescription_hash", Value: 1},
+			bson.E{Key: "height", Value: -1}},
+		Options: options.Index().
+			SetName(indexPrefix + "prescription_info_contract_hash_height"),
+	},
+}
+
 var DefaultIndexes = map[string] /* collection */ []mongo.IndexModel{
 	defaultColNameAccount:              accountIndexModels,
 	defaultColNameBalance:              balanceIndexModels,
@@ -304,4 +325,6 @@ var DefaultIndexes = map[string] /* collection */ []mongo.IndexModel{
 	defaultColNamePointBalance:         pointBalanceIndexModels,
 	defaultColNameStorage:              storageDataServiceIndexModels,
 	defaultColNameStorageData:          storageDataIndexModels,
+	defaultColNamePrescription:         prescriptionServiceIndexModels,
+	defaultColNamePrescriptionInfo:     prescriptionInfoIndexModels,
 }

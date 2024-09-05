@@ -30,44 +30,46 @@ var bulkWriteLimit = 500
 
 type BlockSession struct {
 	sync.RWMutex
-	block                   mitumbase.BlockMap
-	ops                     []mitumbase.Operation
-	opstree                 fixedtree.Tree
-	sts                     []mitumbase.State
-	st                      *currencydigest.Database
-	proposal                mitumbase.ProposalSignFact
-	opsTreeNodes            map[string]mitumbase.OperationFixedtreeNode
-	blockModels             []mongo.WriteModel
-	operationModels         []mongo.WriteModel
-	accountModels           []mongo.WriteModel
-	balanceModels           []mongo.WriteModel
-	currencyModels          []mongo.WriteModel
-	contractAccountModels   []mongo.WriteModel
-	nftCollectionModels     []mongo.WriteModel
-	nftModels               []mongo.WriteModel
-	nftBoxModels            []mongo.WriteModel
-	nftOperatorModels       []mongo.WriteModel
-	didIssuerModels         []mongo.WriteModel
-	didCredentialModels     []mongo.WriteModel
-	didHolderDIDModels      []mongo.WriteModel
-	didTemplateModels       []mongo.WriteModel
-	timestampModels         []mongo.WriteModel
-	tokenModels             []mongo.WriteModel
-	tokenBalanceModels      []mongo.WriteModel
-	pointModels             []mongo.WriteModel
-	pointBalanceModels      []mongo.WriteModel
-	daoDesignModels         []mongo.WriteModel
-	daoProposalModels       []mongo.WriteModel
-	daoDelegatorsModels     []mongo.WriteModel
-	daoVotersModels         []mongo.WriteModel
-	daoVotingPowerBoxModels []mongo.WriteModel
-	storageModels           []mongo.WriteModel
-	storageDataModels       []mongo.WriteModel
-	statesValue             *sync.Map
-	balanceAddressList      []string
-	nftMap                  map[string]struct{}
-	credentialMap           map[string]struct{}
-	buildinfo               string
+	block                      mitumbase.BlockMap
+	ops                        []mitumbase.Operation
+	opstree                    fixedtree.Tree
+	sts                        []mitumbase.State
+	st                         *currencydigest.Database
+	proposal                   mitumbase.ProposalSignFact
+	opsTreeNodes               map[string]mitumbase.OperationFixedtreeNode
+	blockModels                []mongo.WriteModel
+	operationModels            []mongo.WriteModel
+	accountModels              []mongo.WriteModel
+	balanceModels              []mongo.WriteModel
+	currencyModels             []mongo.WriteModel
+	contractAccountModels      []mongo.WriteModel
+	nftCollectionModels        []mongo.WriteModel
+	nftModels                  []mongo.WriteModel
+	nftBoxModels               []mongo.WriteModel
+	nftOperatorModels          []mongo.WriteModel
+	didIssuerModels            []mongo.WriteModel
+	didCredentialModels        []mongo.WriteModel
+	didHolderDIDModels         []mongo.WriteModel
+	didTemplateModels          []mongo.WriteModel
+	timestampModels            []mongo.WriteModel
+	tokenModels                []mongo.WriteModel
+	tokenBalanceModels         []mongo.WriteModel
+	pointModels                []mongo.WriteModel
+	pointBalanceModels         []mongo.WriteModel
+	daoDesignModels            []mongo.WriteModel
+	daoProposalModels          []mongo.WriteModel
+	daoDelegatorsModels        []mongo.WriteModel
+	daoVotersModels            []mongo.WriteModel
+	daoVotingPowerBoxModels    []mongo.WriteModel
+	storageModels              []mongo.WriteModel
+	storageDataModels          []mongo.WriteModel
+	prescriptionModels         []mongo.WriteModel
+	prescriptionInfoDataModels []mongo.WriteModel
+	statesValue                *sync.Map
+	balanceAddressList         []string
+	nftMap                     map[string]struct{}
+	credentialMap              map[string]struct{}
+	buildinfo                  string
 }
 
 func NewBlockSession(
@@ -136,6 +138,9 @@ func (bs *BlockSession) Prepare() error {
 		return err
 	}
 	if err := bs.prepareStorage(); err != nil {
+		return err
+	}
+	if err := bs.preparePrescription(); err != nil {
 		return err
 	}
 
@@ -369,6 +374,18 @@ func (bs *BlockSession) Commit(ctx context.Context) error {
 
 		if len(bs.storageDataModels) > 0 {
 			if err := bs.writeModels(txnCtx, defaultColNameStorageData, bs.storageDataModels); err != nil {
+				return err
+			}
+		}
+
+		if len(bs.prescriptionModels) > 0 {
+			if err := bs.writeModels(txnCtx, defaultColNamePrescription, bs.prescriptionModels); err != nil {
+				return err
+			}
+		}
+
+		if len(bs.prescriptionInfoDataModels) > 0 {
+			if err := bs.writeModels(txnCtx, defaultColNamePrescriptionInfo, bs.prescriptionInfoDataModels); err != nil {
 				return err
 			}
 		}
@@ -814,6 +831,8 @@ func (bs *BlockSession) close() error {
 	bs.pointBalanceModels = nil
 	bs.storageModels = nil
 	bs.storageDataModels = nil
+	bs.prescriptionModels = nil
+	bs.prescriptionInfoDataModels = nil
 	bs.contractAccountModels = nil
 	bs.nftMap = nil
 	bs.credentialMap = nil

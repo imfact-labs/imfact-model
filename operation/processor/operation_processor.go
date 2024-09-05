@@ -9,6 +9,7 @@ import (
 	currencytypes "github.com/ProtoconNet/mitum-currency/v3/types"
 	"github.com/ProtoconNet/mitum-nft/operation/nft"
 	"github.com/ProtoconNet/mitum-point/operation/point"
+	"github.com/ProtoconNet/mitum-prescription/operation/prescription"
 	"github.com/ProtoconNet/mitum-storage/operation/storage"
 	"github.com/ProtoconNet/mitum-timestamp/operation/timestamp"
 	"github.com/ProtoconNet/mitum-token/operation/token"
@@ -17,11 +18,12 @@ import (
 )
 
 const (
-	DuplicationTypeSender      currencytypes.DuplicationType = "sender"
-	DuplicationTypeCurrency    currencytypes.DuplicationType = "currency"
-	DuplicationTypeContract    currencytypes.DuplicationType = "contract"
-	DuplicationTypeCredential  currencytypes.DuplicationType = "credential"
-	DuplicationTypeStorageData currencytypes.DuplicationType = "storagedata"
+	DuplicationTypeSender           currencytypes.DuplicationType = "sender"
+	DuplicationTypeCurrency         currencytypes.DuplicationType = "currency"
+	DuplicationTypeContract         currencytypes.DuplicationType = "contract"
+	DuplicationTypeCredential       currencytypes.DuplicationType = "credential"
+	DuplicationTypeStorageData      currencytypes.DuplicationType = "storagedata"
+	DuplicationTypePrescriptionInfo currencytypes.DuplicationType = "prescriptioninfo"
 )
 
 func CheckDuplication(opr *currencyprocessor.OperationProcessor, op base.Operation) error {
@@ -33,6 +35,7 @@ func CheckDuplication(opr *currencyprocessor.OperationProcessor, op base.Operati
 	var duplicationTypeCredentialID []string
 	var duplicationTypeContractID string
 	var duplicationTypeStorageData string
+	var duplicationTypePrescriptionInfo string
 	var newAddresses []base.Address
 
 	switch t := op.(type) {
@@ -288,6 +291,29 @@ func CheckDuplication(opr *currencyprocessor.OperationProcessor, op base.Operati
 		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
 		duplicationTypeStorageData = currencyprocessor.DuplicationKey(
 			fmt.Sprintf("%s:%s", fact.Contract().String(), fact.DataKey()), DuplicationTypeStorageData)
+	case prescription.RegisterModel:
+		fact, ok := t.Fact().(prescription.RegisterModelFact)
+		if !ok {
+			return errors.Errorf("expected RegisterModelFact, not %T", t.Fact())
+		}
+		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
+		duplicationTypeContractID = currencyprocessor.DuplicationKey(fact.Contract().String(), DuplicationTypeContract)
+	case prescription.RegisterPrescription:
+		fact, ok := t.Fact().(prescription.RegisterPrescriptionFact)
+		if !ok {
+			return errors.Errorf("expected RegisterPrescriptionFact, not %T", t.Fact())
+		}
+		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
+		duplicationTypePrescriptionInfo = currencyprocessor.DuplicationKey(
+			fmt.Sprintf("%s:%s", fact.Contract().String(), fact.PrescriptionHash()), DuplicationTypePrescriptionInfo)
+	case prescription.UsePrescription:
+		fact, ok := t.Fact().(prescription.UsePrescriptionFact)
+		if !ok {
+			return errors.Errorf("expected UsePrescriptionFact, not %T", t.Fact())
+		}
+		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
+		duplicationTypePrescriptionInfo = currencyprocessor.DuplicationKey(
+			fmt.Sprintf("%s:%s", fact.Contract().String(), fact.PrescriptionHash()), DuplicationTypePrescriptionInfo)
 	default:
 		return nil
 	}
@@ -324,7 +350,7 @@ func CheckDuplication(opr *currencyprocessor.OperationProcessor, op base.Operati
 		for _, v := range duplicationTypeCredentialID {
 			if _, found := opr.Duplicated[v]; found {
 				return errors.Errorf(
-					"cannot use a duplicated contract-template-credential for credential model, %v within a proposal",
+					"cannot use a duplicated contract-template-credential for credential, %v within a proposal",
 					v,
 				)
 			}
@@ -335,7 +361,18 @@ func CheckDuplication(opr *currencyprocessor.OperationProcessor, op base.Operati
 	if len(duplicationTypeStorageData) > 0 {
 		if _, found := opr.Duplicated[duplicationTypeStorageData]; found {
 			return errors.Errorf(
-				"cannot use a duplicated contract-key for storage data model, %v within a proposal",
+				"cannot use a duplicated contract-key for storage data, %v within a proposal",
+				duplicationTypeStorageData,
+			)
+		}
+
+		opr.Duplicated[duplicationTypeStorageData] = struct{}{}
+	}
+
+	if len(duplicationTypePrescriptionInfo) > 0 {
+		if _, found := opr.Duplicated[duplicationTypePrescriptionInfo]; found {
+			return errors.Errorf(
+				"cannot use a duplicated contract-hash for prescription info, %v within a proposal",
 				duplicationTypeStorageData,
 			)
 		}
