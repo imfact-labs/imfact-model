@@ -10,9 +10,9 @@ require (
 	github.com/ProtoconNet/mitum-dao v0.0.0-20240920005139-f7a6040ad642
 	github.com/ProtoconNet/mitum-nft v0.0.0-20240905010916-1d1ae78e1a53
 	github.com/ProtoconNet/mitum-point v0.0.0-20240905024010-a885b079bb3e
-	github.com/ProtoconNet/mitum-prescription v0.0.0-20240905051036-c79b887eabb2
-	github.com/ProtoconNet/mitum-storage v0.0.0-20240902083617-cac04f464a39
-	github.com/ProtoconNet/mitum-timestamp v0.0.0-20240905051202-949887177dba
+	github.com/ProtoconNet/mitum-prescription v0.0.0-20240920064357-b5b3c4de6666
+	github.com/ProtoconNet/mitum-storage v0.0.0-20240920074038-0136f3dc0096
+	github.com/ProtoconNet/mitum-timestamp v0.0.0-20240920064231-7ab38c08bd4f
 	github.com/ProtoconNet/mitum-token v0.0.0-20240905023751-b43498bb4ba3
 	github.com/ProtoconNet/mitum2 v0.0.0-20240805062025-57b0a3c5b436
 	github.com/alecthomas/kong v0.9.0
