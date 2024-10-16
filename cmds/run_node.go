@@ -2,7 +2,9 @@ package cmds
 
 import (
 	"context"
+	dmilecmds "github.com/ProtoconNet/mitum-d-mile/cmds"
 	daocmds "github.com/ProtoconNet/mitum-dao/cmds"
+	didcmds "github.com/ProtoconNet/mitum-did-registry/cmds"
 	pointcmds "github.com/ProtoconNet/mitum-point/cmds"
 	prescriptioncmds "github.com/ProtoconNet/mitum-prescription/cmds"
 	storagecmds "github.com/ProtoconNet/mitum-storage/cmds"
@@ -95,6 +97,8 @@ func (cmd *RunCommand) Run(pctx context.Context) error {
 		PreAddOK(daocmds.PNameOperationProcessorsMap, daocmds.POperationProcessorsMap).
 		PreAddOK(storagecmds.PNameOperationProcessorsMap, storagecmds.POperationProcessorsMap).
 		PreAddOK(prescriptioncmds.PNameOperationProcessorsMap, prescriptioncmds.POperationProcessorsMap).
+		PreAddOK(didcmds.PNameOperationProcessorsMap, didcmds.POperationProcessorsMap).
+		PreAddOK(dmilecmds.PNameOperationProcessorsMap, dmilecmds.POperationProcessorsMap).
 		PreAddOK(PNameOperationProcessorsMap, POperationProcessorsMap).
 		PreAddOK(ps.Name("when-new-block-saved-in-consensus-state-func"), cmd.pWhenNewBlockSavedInConsensusStateFunc).
 		PreAddOK(ps.Name("when-new-block-saved-in-syncing-state-func"), cmd.pWhenNewBlockSavedInSyncingStateFunc).

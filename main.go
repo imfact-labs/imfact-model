@@ -3,26 +3,27 @@ package main
 import (
 	"context"
 	"fmt"
+	credentialcmds "github.com/ProtoconNet/mitum-credential/cmds"
+	currencycmds "github.com/ProtoconNet/mitum-currency/v3/cmds"
+	dmilecmds "github.com/ProtoconNet/mitum-d-mile/cmds"
 	daocmds "github.com/ProtoconNet/mitum-dao/cmds"
+	didcmds "github.com/ProtoconNet/mitum-did-registry/cmds"
+	"github.com/ProtoconNet/mitum-minic/cmds"
+	nftcmds "github.com/ProtoconNet/mitum-nft/cmds"
 	pointcmds "github.com/ProtoconNet/mitum-point/cmds"
 	prescriptioncmds "github.com/ProtoconNet/mitum-prescription/cmds"
 	storagecmds "github.com/ProtoconNet/mitum-storage/cmds"
 	timestampcmds "github.com/ProtoconNet/mitum-timestamp/cmds"
 	tokencmds "github.com/ProtoconNet/mitum-token/cmds"
-	"os"
-
-	"github.com/ProtoconNet/mitum-minic/cmds"
-	launchcmd "github.com/ProtoconNet/mitum2/launch/cmd"
-
-	credentialcmds "github.com/ProtoconNet/mitum-credential/cmds"
-	currencycmds "github.com/ProtoconNet/mitum-currency/v3/cmds"
-	nftcmds "github.com/ProtoconNet/mitum-nft/cmds"
 	"github.com/ProtoconNet/mitum2/base"
 	"github.com/ProtoconNet/mitum2/launch"
+	launchcmd "github.com/ProtoconNet/mitum2/launch/cmd"
 	"github.com/ProtoconNet/mitum2/util"
 	"github.com/ProtoconNet/mitum2/util/logging"
 	"github.com/alecthomas/kong"
 	"github.com/pkg/errors"
+	_ "net/http/pprof"
+	"os"
 )
 
 var (
@@ -49,6 +50,8 @@ var CLI struct { //nolint:govet //...
 		Point        pointcmds.PointCommand               `cmd:"" help:"point operation"`
 		StorageData  storagecmds.StorageCommand           `cmd:"" help:"data storage operation"`
 		Prescription prescriptioncmds.PrescriptionCommand `cmd:"" help:"prescription operation"`
+		DID          didcmds.DIDCommand                   `cmd:"" help:"did operation"`
+		DMile        dmilecmds.DmileCommand               `cmd:"" help:"d-mile operation"`
 	} `cmd:"" help:"create operation"`
 	Network struct {
 		Client cmds.NetworkClientCommand `cmd:"" help:"network client"`

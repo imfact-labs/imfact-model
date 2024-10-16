@@ -2,7 +2,6 @@ package digest
 
 import (
 	currencydigest "github.com/ProtoconNet/mitum-currency/v3/digest"
-	"github.com/shirou/gopsutil/disk"
 	"github.com/shirou/gopsutil/mem"
 	"net/http"
 	"time"
@@ -31,28 +30,28 @@ func (hd *Handlers) handleResourceInGroup() (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	partitions, err := disk.Partitions(true)
-	if err != nil {
-		return nil, err
-	}
+	//partitions, err := disk.Partitions(true)
+	//if err != nil {
+	//	return nil, err
+	//}
 
-	var diskUsage []disk.UsageStat
-
-	for _, partition := range partitions {
-		usage, err := disk.Usage(partition.Mountpoint)
-		if err != nil {
-			return nil, err
-		}
-		diskUsage = append(diskUsage, *usage)
-	}
+	//var diskUsage []disk.UsageStat
+	//
+	//for _, partition := range partitions {
+	//	usage, err := disk.Usage(partition.Mountpoint)
+	//	if err != nil {
+	//		return nil, err
+	//	}
+	//	diskUsage = append(diskUsage, *usage)
+	//}
 
 	var m struct {
-		MemInfo   mem.VirtualMemoryStat `json:"mem"`
-		DiskUsage []disk.UsageStat      `json:"disk"`
+		MemInfo mem.VirtualMemoryStat `json:"mem"`
+		//DiskUsage []disk.UsageStat      `json:"disk"`
 	}
 
 	m.MemInfo = *memInfo
-	m.DiskUsage = diskUsage
+	//m.DiskUsage = diskUsage
 
 	hal, err := hd.buildResourceHal(m)
 	if err != nil {

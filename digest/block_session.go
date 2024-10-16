@@ -65,6 +65,11 @@ type BlockSession struct {
 	storageDataModels          []mongo.WriteModel
 	prescriptionModels         []mongo.WriteModel
 	prescriptionInfoDataModels []mongo.WriteModel
+	didRegistryModels          []mongo.WriteModel
+	didDataModels              []mongo.WriteModel
+	didDocumentModels          []mongo.WriteModel
+	dMileModels                []mongo.WriteModel
+	dMileDataModels            []mongo.WriteModel
 	statesValue                *sync.Map
 	balanceAddressList         []string
 	nftMap                     map[string]struct{}
@@ -122,7 +127,7 @@ func (bs *BlockSession) Prepare() error {
 	if err := bs.prepareNFTs(); err != nil {
 		return err
 	}
-	if err := bs.prepareDID(); err != nil {
+	if err := bs.prepareDIDCredential(); err != nil {
 		return err
 	}
 	if err := bs.prepareTimeStamps(); err != nil {
@@ -141,6 +146,12 @@ func (bs *BlockSession) Prepare() error {
 		return err
 	}
 	if err := bs.preparePrescription(); err != nil {
+		return err
+	}
+	if err := bs.prepareDIDRegistry(); err != nil {
+		return err
+	}
+	if err := bs.prepareDmile(); err != nil {
 		return err
 	}
 
@@ -386,6 +397,36 @@ func (bs *BlockSession) Commit(ctx context.Context) error {
 
 		if len(bs.prescriptionInfoDataModels) > 0 {
 			if err := bs.writeModels(txnCtx, defaultColNamePrescriptionInfo, bs.prescriptionInfoDataModels); err != nil {
+				return err
+			}
+		}
+
+		if len(bs.didRegistryModels) > 0 {
+			if err := bs.writeModels(txnCtx, defaultColNameDIDRegistry, bs.didRegistryModels); err != nil {
+				return err
+			}
+		}
+
+		if len(bs.didDataModels) > 0 {
+			if err := bs.writeModels(txnCtx, defaultColNameDIDData, bs.didDataModels); err != nil {
+				return err
+			}
+		}
+
+		if len(bs.didDocumentModels) > 0 {
+			if err := bs.writeModels(txnCtx, defaultColNameDIDDocument, bs.didDocumentModels); err != nil {
+				return err
+			}
+		}
+
+		if len(bs.dMileModels) > 0 {
+			if err := bs.writeModels(txnCtx, defaultColNameDmile, bs.dMileModels); err != nil {
+				return err
+			}
+		}
+
+		if len(bs.dMileDataModels) > 0 {
+			if err := bs.writeModels(txnCtx, defaultColNameDmileData, bs.dMileDataModels); err != nil {
 				return err
 			}
 		}
@@ -812,6 +853,12 @@ func (bs *BlockSession) writeModelsChunk(ctx context.Context, col string, models
 
 func (bs *BlockSession) close() error {
 	bs.block = nil
+	bs.ops = nil
+	bs.opstree = fixedtree.EmptyTree()
+	bs.sts = nil
+	bs.proposal = nil
+	bs.opsTreeNodes = nil
+	bs.blockModels = nil
 	bs.operationModels = nil
 	bs.currencyModels = nil
 	bs.accountModels = nil
@@ -833,6 +880,11 @@ func (bs *BlockSession) close() error {
 	bs.storageDataModels = nil
 	bs.prescriptionModels = nil
 	bs.prescriptionInfoDataModels = nil
+	bs.didRegistryModels = nil
+	bs.didDataModels = nil
+	bs.didDocumentModels = nil
+	bs.dMileModels = nil
+	bs.dMileDataModels = nil
 	bs.contractAccountModels = nil
 	bs.nftMap = nil
 	bs.credentialMap = nil

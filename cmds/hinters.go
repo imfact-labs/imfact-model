@@ -3,7 +3,9 @@ package cmds
 import (
 	credentialcmds "github.com/ProtoconNet/mitum-credential/cmds"
 	currencycmds "github.com/ProtoconNet/mitum-currency/v3/cmds"
+	dmilecmds "github.com/ProtoconNet/mitum-d-mile/cmds"
 	daocmds "github.com/ProtoconNet/mitum-dao/cmds"
+	didcmds "github.com/ProtoconNet/mitum-did-registry/cmds"
 	nftcmds "github.com/ProtoconNet/mitum-nft/cmds"
 	pointcmds "github.com/ProtoconNet/mitum-point/cmds"
 	prescriptioncmds "github.com/ProtoconNet/mitum-prescription/cmds"
@@ -28,7 +30,9 @@ func init() {
 	pointExtendedLen := tokenExtendedLen + len(pointcmds.AddedHinters)
 	daoExtendedLen := pointExtendedLen + len(daocmds.AddedHinters)
 	storageExtendedLen := daoExtendedLen + len(storagecmds.AddedHinters)
-	allExtendedLen := storageExtendedLen + len(prescriptioncmds.AddedHinters)
+	prescriptionExtendedLen := storageExtendedLen + len(prescriptioncmds.AddedHinters)
+	didExtendedLen := prescriptionExtendedLen + len(didcmds.AddedHinters)
+	allExtendedLen := didExtendedLen + len(dmilecmds.AddedHinters)
 
 	Hinters = make([]encoder.DecodeDetail, allExtendedLen)
 	copy(Hinters, launch.Hinters)
@@ -40,7 +44,9 @@ func init() {
 	copy(Hinters[tokenExtendedLen:pointExtendedLen], pointcmds.AddedHinters)
 	copy(Hinters[pointExtendedLen:daoExtendedLen], daocmds.AddedHinters)
 	copy(Hinters[daoExtendedLen:storageExtendedLen], storagecmds.AddedHinters)
-	copy(Hinters[storageExtendedLen:], prescriptioncmds.AddedHinters)
+	copy(Hinters[storageExtendedLen:prescriptionExtendedLen], prescriptioncmds.AddedHinters)
+	copy(Hinters[prescriptionExtendedLen:didExtendedLen], didcmds.AddedHinters)
+	copy(Hinters[didExtendedLen:], dmilecmds.AddedHinters)
 
 	defaultSupportedLen := len(launch.SupportedProposalOperationFactHinters)
 	currencySupportedExtendedLen := defaultSupportedLen + len(currencycmds.AddedSupportedHinters)
@@ -51,7 +57,9 @@ func init() {
 	pointSupportedExtendedLen := tokenSupportedExtendedLen + len(pointcmds.AddedSupportedHinters)
 	daoSupportedExtendedLen := pointSupportedExtendedLen + len(daocmds.AddedSupportedHinters)
 	storageSupportedExtendedLen := daoSupportedExtendedLen + len(storagecmds.AddedSupportedHinters)
-	allSupportedExtendedLen := storageSupportedExtendedLen + len(prescriptioncmds.AddedSupportedHinters)
+	prescriptionSupportedExtendedLen := storageSupportedExtendedLen + len(prescriptioncmds.AddedSupportedHinters)
+	didSupportedExtendedLen := prescriptionSupportedExtendedLen + len(didcmds.AddedSupportedHinters)
+	allSupportedExtendedLen := didSupportedExtendedLen + len(dmilecmds.AddedSupportedHinters)
 
 	SupportedProposalOperationFactHinters = make(
 		[]encoder.DecodeDetail,
@@ -65,7 +73,9 @@ func init() {
 	copy(SupportedProposalOperationFactHinters[tokenSupportedExtendedLen:pointSupportedExtendedLen], pointcmds.AddedSupportedHinters)
 	copy(SupportedProposalOperationFactHinters[pointSupportedExtendedLen:daoSupportedExtendedLen], daocmds.AddedSupportedHinters)
 	copy(SupportedProposalOperationFactHinters[daoSupportedExtendedLen:storageSupportedExtendedLen], storagecmds.AddedSupportedHinters)
-	copy(SupportedProposalOperationFactHinters[storageSupportedExtendedLen:], prescriptioncmds.AddedSupportedHinters)
+	copy(SupportedProposalOperationFactHinters[storageSupportedExtendedLen:prescriptionSupportedExtendedLen], prescriptioncmds.AddedSupportedHinters)
+	copy(SupportedProposalOperationFactHinters[prescriptionSupportedExtendedLen:didSupportedExtendedLen], didcmds.AddedSupportedHinters)
+	copy(SupportedProposalOperationFactHinters[didSupportedExtendedLen:], dmilecmds.AddedSupportedHinters)
 }
 
 func LoadHinters(encs *encoder.Encoders) error {

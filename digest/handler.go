@@ -23,33 +23,39 @@ import (
 )
 
 var (
-	HandlerPathNFTAllApproved     = `/nft/{contract:(?i)` + types.REStringAddressString + `}/account/{address:(?i)` + types.REStringAddressString + `}/allapproved` // revive:disable-line:line-length-limit
-	HandlerPathNFTCollection      = `/nft/{contract:(?i)` + types.REStringAddressString + `}`
-	HandlerPathNFT                = `/nft/{contract:(?i)` + types.REStringAddressString + `}/nftidx/{nft_idx:[0-9]+}`
-	HandlerPathNFTs               = `/nft/{contract:(?i)` + types.REStringAddressString + `}/nfts`
-	HandlerPathNFTCount           = `/nft/{contract:(?i)` + types.REStringAddressString + `}/totalsupply`
-	HandlerPathDIDService         = `/did/{contract:(?i)` + types.REStringAddressString + `}`
-	HandlerPathDIDCredential      = `/did/{contract:(?i)` + types.REStringAddressString + `}/template/{template_id:` + types.ReSpecialCh + `}/credential/{credential_id:` + types.ReSpecialCh + `}`
-	HandlerPathDIDTemplate        = `/did/{contract:(?i)` + types.REStringAddressString + `}/template/{template_id:` + types.ReSpecialCh + `}`
-	HandlerPathDIDCredentials     = `/did/{contract:(?i)` + types.REStringAddressString + `}/template/{template_id:` + types.ReSpecialCh + `}/credentials`
-	HandlerPathDIDHolder          = `/did/{contract:(?i)` + types.REStringAddressString + `}/holder/{holder:(?i)` + types.REStringAddressString + `}` // revive:disable-line:line-length-limit
-	HandlerPathTimeStampDesign    = `/timestamp/{contract:(?i)` + types.REStringAddressString + `}`
-	HandlerPathTimeStampItem      = `/timestamp/{contract:(?i)` + types.REStringAddressString + `}/project/{project_id:` + types.ReSpecialCh + `}/idx/{timestamp_idx:[0-9]+}`
-	HandlerPathToken              = `/token/{contract:(?i)` + base.REStringAddressString + `}`
-	HandlerPathTokenBalance       = `/token/{contract:(?i)` + base.REStringAddressString + `}/account/{address:(?i)` + base.REStringAddressString + `}` // revive:disable-line:line-length-limit
-	HandlerPathPoint              = `/point/{contract:(?i)` + base.REStringAddressString + `}`
-	HandlerPathPointBalance       = `/point/{contract:(?i)` + base.REStringAddressString + `}/account/{address:(?i)` + base.REStringAddressString + `}` // revive:disable-line:line-length-limit
-	HandlerPathDAOService         = `/dao/{contract:(?i)` + types.REStringAddressString + `}`
-	HandlerPathDAOProposal        = `/dao/{contract:(?i)` + types.REStringAddressString + `}/proposal/{proposal_id:` + types.ReSpecialCh + `}`
-	HandlerPathDAODelegator       = `/dao/{contract:(?i)` + types.REStringAddressString + `}/proposal/{proposal_id:` + types.ReSpecialCh + `}/registrant/{address:(?i)` + types.REStringAddressString + `}`
-	HandlerPathDAOVoters          = `/dao/{contract:(?i)` + types.REStringAddressString + `}/proposal/{proposal_id:` + types.ReSpecialCh + `}/voter`
-	HandlerPathDAOVotingPowerBox  = `/dao/{contract:(?i)` + types.REStringAddressString + `}/proposal/{proposal_id:` + types.ReSpecialCh + `}/votingpower` // revive:disable-line:line-length-limit
-	HandlerPathStorageDesign      = `/storage/{contract:(?i)` + types.REStringAddressString + `}`
-	HandlerPathStorageData        = `/storage/{contract:(?i)` + types.REStringAddressString + `}/datakey/{data_key:` + types.ReSpecialCh + `}`
-	HandlerPathStorageHistory     = `/storage/{contract:(?i)` + types.REStringAddressString + `}/datakey/{data_key:` + types.ReSpecialCh + `}/history`
-	HandlerPathPrescriptionDesign = `/prescription/{contract:(?i)` + types.REStringAddressString + `}`
-	HandlerPathPrescriptionInfo   = `/prescription/{contract:(?i)` + types.REStringAddressString + `}/hash/{prescription_hash:` + types.ReSpecialCh + `}`
-	HandlerPathResource           = `/resource`
+	HandlerPathNFTAllApproved        = `/nft/{contract:(?i)` + types.REStringAddressString + `}/account/{address:(?i)` + types.REStringAddressString + `}/allapproved` // revive:disable-line:line-length-limit
+	HandlerPathNFTCollection         = `/nft/{contract:(?i)` + types.REStringAddressString + `}`
+	HandlerPathNFT                   = `/nft/{contract:(?i)` + types.REStringAddressString + `}/nftidx/{nft_idx:[0-9]+}`
+	HandlerPathNFTs                  = `/nft/{contract:(?i)` + types.REStringAddressString + `}/nfts`
+	HandlerPathNFTCount              = `/nft/{contract:(?i)` + types.REStringAddressString + `}/totalsupply`
+	HandlerPathDIDService            = `/did/{contract:(?i)` + types.REStringAddressString + `}`
+	HandlerPathDIDCredential         = `/did/{contract:(?i)` + types.REStringAddressString + `}/template/{template_id:` + types.ReSpecialCh + `}/credential/{credential_id:` + types.ReSpecialCh + `}`
+	HandlerPathDIDTemplate           = `/did/{contract:(?i)` + types.REStringAddressString + `}/template/{template_id:` + types.ReSpecialCh + `}`
+	HandlerPathDIDCredentials        = `/did/{contract:(?i)` + types.REStringAddressString + `}/template/{template_id:` + types.ReSpecialCh + `}/credentials`
+	HandlerPathDIDHolder             = `/did/{contract:(?i)` + types.REStringAddressString + `}/holder/{holder:(?i)` + types.REStringAddressString + `}` // revive:disable-line:line-length-limit
+	HandlerPathTimeStampDesign       = `/timestamp/{contract:(?i)` + types.REStringAddressString + `}`
+	HandlerPathTimeStampItem         = `/timestamp/{contract:(?i)` + types.REStringAddressString + `}/project/{project_id:` + types.ReSpecialCh + `}/idx/{timestamp_idx:[0-9]+}`
+	HandlerPathToken                 = `/token/{contract:(?i)` + base.REStringAddressString + `}`
+	HandlerPathTokenBalance          = `/token/{contract:(?i)` + base.REStringAddressString + `}/account/{address:(?i)` + base.REStringAddressString + `}` // revive:disable-line:line-length-limit
+	HandlerPathPoint                 = `/point/{contract:(?i)` + base.REStringAddressString + `}`
+	HandlerPathPointBalance          = `/point/{contract:(?i)` + base.REStringAddressString + `}/account/{address:(?i)` + base.REStringAddressString + `}` // revive:disable-line:line-length-limit
+	HandlerPathDAOService            = `/dao/{contract:(?i)` + types.REStringAddressString + `}`
+	HandlerPathDAOProposal           = `/dao/{contract:(?i)` + types.REStringAddressString + `}/proposal/{proposal_id:` + types.ReSpecialCh + `}`
+	HandlerPathDAODelegator          = `/dao/{contract:(?i)` + types.REStringAddressString + `}/proposal/{proposal_id:` + types.ReSpecialCh + `}/registrant/{address:(?i)` + types.REStringAddressString + `}`
+	HandlerPathDAOVoters             = `/dao/{contract:(?i)` + types.REStringAddressString + `}/proposal/{proposal_id:` + types.ReSpecialCh + `}/voter`
+	HandlerPathDAOVotingPowerBox     = `/dao/{contract:(?i)` + types.REStringAddressString + `}/proposal/{proposal_id:` + types.ReSpecialCh + `}/votingpower` // revive:disable-line:line-length-limit
+	HandlerPathStorageDesign         = `/storage/{contract:(?i)` + types.REStringAddressString + `}`
+	HandlerPathStorageData           = `/storage/{contract:(?i)` + types.REStringAddressString + `}/datakey/{data_key:` + types.ReSpecialCh + `}`
+	HandlerPathStorageHistory        = `/storage/{contract:(?i)` + types.REStringAddressString + `}/datakey/{data_key:` + types.ReSpecialCh + `}/history`
+	HandlerPathPrescriptionDesign    = `/prescription/{contract:(?i)` + types.REStringAddressString + `}`
+	HandlerPathPrescriptionInfo      = `/prescription/{contract:(?i)` + types.REStringAddressString + `}/hash/{prescription_hash:` + types.ReSpecialCh + `}`
+	HandlerPathDIDDesign             = `/did-registry/{contract:(?i)` + types.REStringAddressString + `}`
+	HandlerPathDIDData               = `/did-registry/{contract:(?i)` + types.REStringAddressString + `}/did/{pubKey:` + types.ReSpecialCh + `}`
+	HandlerPathDIDDocument           = `/did-registry/{contract:(?i)` + types.REStringAddressString + `}/document`
+	HandlerPathDmileDesign           = `/dmile/{contract:(?i)` + types.REStringAddressString + `}`
+	HandlerPathDmileDataByTxID       = `/dmile/{contract:(?i)` + types.REStringAddressString + `}/txhash/{tx_hash:` + types.ReSpecialCh + `}`
+	HandlerPathDmileDataByMerkleRoot = `/dmile/{contract:(?i)` + types.REStringAddressString + `}/merkleroot/{merkle_root:` + types.ReSpecialCh + `}`
+	HandlerPathResource              = `/resource`
 )
 
 func init() {
@@ -193,8 +199,20 @@ func (hd *Handlers) setHandlers() {
 		Methods(http.MethodOptions, "GET")
 	_ = hd.setHandler(HandlerPathPrescriptionDesign, hd.handlePrescriptionDesign, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathResource, hd.handleResource, true, get, get).
+	_ = hd.setHandler(HandlerPathDIDData, hd.handleDIDData, true, get, get).
 		Methods(http.MethodOptions, "GET")
+	_ = hd.setHandler(HandlerPathDIDDesign, hd.handleDIDDesign, true, get, get).
+		Methods(http.MethodOptions, "GET")
+	_ = hd.setHandler(HandlerPathDIDDocument, hd.handleDIDDocument, true, get, get).
+		Methods(http.MethodOptions, "GET")
+	_ = hd.setHandler(HandlerPathDmileDataByTxID, hd.handleDmileDataByTxID, true, get, get).
+		Methods(http.MethodOptions, "GET")
+	_ = hd.setHandler(HandlerPathDmileDesign, hd.handleDmileDesign, true, get, get).
+		Methods(http.MethodOptions, "GET")
+	_ = hd.setHandler(HandlerPathDmileDataByMerkleRoot, hd.handleDmileDataByMerkleRoot, true, get, get).
+		Methods(http.MethodOptions, "GET")
+	//_ = hd.setHandler(HandlerPathResource, hd.handleResource, true, get, get).
+	//	Methods(http.MethodOptions, "GET")
 }
 
 func (hd *Handlers) setHandler(prefix string, h network.HTTPHandlerFunc, useCache bool, rps, burst int) *mux.Route {

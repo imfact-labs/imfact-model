@@ -302,6 +302,60 @@ var prescriptionInfoIndexModels = []mongo.IndexModel{
 	},
 }
 
+var didRegistryIndexModels = []mongo.IndexModel{
+	{
+		Keys: bson.D{
+			bson.E{Key: "contract", Value: 1},
+			bson.E{Key: "height", Value: -1}},
+		Options: options.Index().
+			SetName(indexPrefix + "did_registry_contract_height"),
+	},
+}
+
+var didRegistryDataIndexModels = []mongo.IndexModel{
+	{
+		Keys: bson.D{
+			bson.E{Key: "contract", Value: 1},
+			bson.E{Key: "publicKey", Value: 1},
+			bson.E{Key: "height", Value: -1}},
+		Options: options.Index().
+			SetName(indexPrefix + "did_registry_data_contract_publicKey_height"),
+	},
+}
+
+var didRegistryDocumentIndexModels = []mongo.IndexModel{
+	{
+		Keys: bson.D{
+			bson.E{Key: "contract", Value: 1},
+			bson.E{Key: "did", Value: 1},
+			bson.E{Key: "height", Value: -1}},
+		Options: options.Index().
+			SetName(indexPrefix + "did_registry_document_contract_did_height"),
+	},
+}
+
+var dmileServiceIndexModels = []mongo.IndexModel{
+	{
+		Keys: bson.D{
+			bson.E{Key: "contract", Value: 1},
+			bson.E{Key: "height", Value: -1}},
+		Options: options.Index().
+			SetName(indexPrefix + "dmile_service_contract_height"),
+	},
+}
+
+var dmileServiceDataIndexModels = []mongo.IndexModel{
+	{
+		Keys: bson.D{
+			bson.E{Key: "contract", Value: 1},
+			bson.E{Key: "merkle_root", Value: 1},
+			bson.E{Key: "tx_hash", Value: 1},
+			bson.E{Key: "height", Value: -1}},
+		Options: options.Index().
+			SetName(indexPrefix + "dmile_service_data_contract_merkleRoot_txHash_height"),
+	},
+}
+
 var DefaultIndexes = map[string] /* collection */ []mongo.IndexModel{
 	defaultColNameAccount:              accountIndexModels,
 	defaultColNameBalance:              balanceIndexModels,
@@ -327,4 +381,9 @@ var DefaultIndexes = map[string] /* collection */ []mongo.IndexModel{
 	defaultColNameStorageData:          storageDataIndexModels,
 	defaultColNamePrescription:         prescriptionServiceIndexModels,
 	defaultColNamePrescriptionInfo:     prescriptionInfoIndexModels,
+	defaultColNameDIDRegistry:          didRegistryIndexModels,
+	defaultColNameDIDData:              didRegistryDataIndexModels,
+	defaultColNameDIDDocument:          didRegistryDocumentIndexModels,
+	defaultColNameDmile:                dmileServiceIndexModels,
+	defaultColNameDmileData:            dmileServiceDataIndexModels,
 }
