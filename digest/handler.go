@@ -4,7 +4,6 @@ import (
 	"context"
 	currencydigest "github.com/ProtoconNet/mitum-currency/v3/digest"
 	"github.com/ProtoconNet/mitum-currency/v3/types"
-	isaacnetwork "github.com/ProtoconNet/mitum2/isaac/network"
 	"github.com/ProtoconNet/mitum2/network/quicmemberlist"
 	"github.com/ProtoconNet/mitum2/network/quicstream"
 	"net/http"
@@ -46,7 +45,8 @@ var (
 	HandlerPathDAOVotingPowerBox     = `/dao/{contract:(?i)` + types.REStringAddressString + `}/proposal/{proposal_id:` + types.ReSpecialCh + `}/votingpower` // revive:disable-line:line-length-limit
 	HandlerPathStorageDesign         = `/storage/{contract:(?i)` + types.REStringAddressString + `}`
 	HandlerPathStorageData           = `/storage/{contract:(?i)` + types.REStringAddressString + `}/datakey/{data_key:` + types.ReSpecialCh + `}`
-	HandlerPathStorageHistory        = `/storage/{contract:(?i)` + types.REStringAddressString + `}/datakey/{data_key:` + types.ReSpecialCh + `}/history`
+	HandlerPathStorageDataHistory    = `/storage/{contract:(?i)` + types.REStringAddressString + `}/datakey/{data_key:` + types.ReSpecialCh + `}/history`
+	HandlerPathStorageDataCount      = `/storage/{contract:(?i)` + types.REStringAddressString + `}/datacount`
 	HandlerPathPrescriptionDesign    = `/prescription/{contract:(?i)` + types.REStringAddressString + `}`
 	HandlerPathPrescriptionInfo      = `/prescription/{contract:(?i)` + types.REStringAddressString + `}/hash/{prescription_hash:` + types.ReSpecialCh + `}`
 	HandlerPathDIDDesign             = `/did-registry/{contract:(?i)` + types.REStringAddressString + `}`
@@ -75,7 +75,7 @@ type Handlers struct {
 	cache           currencydigest.Cache
 	nodeInfoHandler currencydigest.NodeInfoHandler
 	send            func(interface{}) (base.Operation, error)
-	client          func() (*isaacnetwork.BaseClient, *quicmemberlist.Memberlist, []quicstream.ConnInfo, error)
+	client          func() (*quicstream.ConnectionPool, *quicmemberlist.Memberlist, []quicstream.ConnInfo, error)
 	router          *mux.Router
 	routes          map[ /* path */ string]*mux.Route
 	itemsLimiter    func(string /* request type */) int64
@@ -193,7 +193,9 @@ func (hd *Handlers) setHandlers() {
 		Methods(http.MethodOptions, "GET")
 	_ = hd.setHandler(HandlerPathStorageDesign, hd.handleStorageDesign, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathStorageHistory, hd.handleStorageDataHistory, true, get, get).
+	_ = hd.setHandler(HandlerPathStorageDataHistory, hd.handleStorageDataHistory, true, get, get).
+		Methods(http.MethodOptions, "GET")
+	_ = hd.setHandler(HandlerPathStorageDataCount, hd.handleStorageDataCount, true, get, get).
 		Methods(http.MethodOptions, "GET")
 	_ = hd.setHandler(HandlerPathPrescriptionInfo, hd.handlePrescriptionInfo, true, get, get).
 		Methods(http.MethodOptions, "GET")

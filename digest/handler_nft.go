@@ -12,6 +12,7 @@ import (
 )
 
 func (hd *Handlers) handleNFT(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	cachekey := currencydigest.CacheKeyPath(r)
 	if err := currencydigest.LoadFromCache(hd.cache, cachekey, w); err == nil {
 		return
@@ -66,6 +67,7 @@ func (hd *Handlers) buildNFTHal(contract string, nft types.NFT) (currencydigest.
 }
 
 func (hd *Handlers) handleNFTCollection(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	cachekey := currencydigest.CacheKeyPath(r)
 	if err := currencydigest.LoadFromCache(hd.cache, cachekey, w); err == nil {
 		return
@@ -115,6 +117,7 @@ func (hd *Handlers) buildNFTCollectionHal(contract string, design types.Design) 
 }
 
 func (hd *Handlers) handleNFTs(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	limit := currencydigest.ParseLimitQuery(r.URL.Query().Get("limit"))
 	offset := currencydigest.ParseStringQuery(r.URL.Query().Get("offset"))
 	reverse := currencydigest.ParseBoolQuery(r.URL.Query().Get("reverse"))
@@ -205,6 +208,7 @@ func (hd *Handlers) handleNFTsInGroup(
 }
 
 func (hd *Handlers) handleNFTCount(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	cachekey := currencydigest.CacheKey(
 		r.URL.Path,
 	)
@@ -357,6 +361,7 @@ func (hd *Handlers) buildNFTsHal(
 }
 
 func (hd *Handlers) handleNFTOperators(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	cachekey := currencydigest.CacheKeyPath(r)
 	if err := currencydigest.LoadFromCache(hd.cache, cachekey, w); err == nil {
 		return

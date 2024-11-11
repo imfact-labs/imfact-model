@@ -39,7 +39,7 @@ func CheckDuplication(opr *currencyprocessor.OperationProcessor, op base.Operati
 	var duplicationTypeCurrencyID string
 	var duplicationTypeCredentialID []string
 	var duplicationTypeContractID string
-	var duplicationTypeStorageData string
+	var duplicationTypeStorageData []string
 	var duplicationTypePrescription string
 	var duplicationTypeDID string
 	var duplicationTypeDMileData []string
@@ -281,24 +281,48 @@ func CheckDuplication(opr *currencyprocessor.OperationProcessor, op base.Operati
 			return errors.Errorf("expected CreateDataFact, not %T", t.Fact())
 		}
 		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
-		duplicationTypeStorageData = currencyprocessor.DuplicationKey(
-			fmt.Sprintf("%s:%s", fact.Contract().String(), fact.DataKey()), DuplicationTypeStorageData)
+		duplicationTypeStorageData = []string{currencyprocessor.DuplicationKey(
+			fmt.Sprintf("%s:%s", fact.Contract().String(), fact.DataKey()), DuplicationTypeStorageData)}
 	case storage.UpdateData:
 		fact, ok := t.Fact().(storage.UpdateDataFact)
 		if !ok {
 			return errors.Errorf("expected UpdateDataFact, not %T", t.Fact())
 		}
 		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
-		duplicationTypeStorageData = currencyprocessor.DuplicationKey(
-			fmt.Sprintf("%s:%s", fact.Contract().String(), fact.DataKey()), DuplicationTypeStorageData)
+		duplicationTypeStorageData = []string{currencyprocessor.DuplicationKey(
+			fmt.Sprintf("%s:%s", fact.Contract().String(), fact.DataKey()), DuplicationTypeStorageData)}
 	case storage.DeleteData:
 		fact, ok := t.Fact().(storage.DeleteDataFact)
 		if !ok {
 			return errors.Errorf("expected DeleteDataFact, not %T", t.Fact())
 		}
 		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
-		duplicationTypeStorageData = currencyprocessor.DuplicationKey(
-			fmt.Sprintf("%s:%s", fact.Contract().String(), fact.DataKey()), DuplicationTypeStorageData)
+		duplicationTypeStorageData = []string{currencyprocessor.DuplicationKey(
+			fmt.Sprintf("%s:%s", fact.Contract().String(), fact.DataKey()), DuplicationTypeStorageData)}
+	case storage.CreateDatas:
+		fact, ok := t.Fact().(storage.CreateDatasFact)
+		if !ok {
+			return errors.Errorf("expected CreateDatasFact, not %T", t.Fact())
+		}
+		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
+		var datas []string
+		for _, v := range fact.Items() {
+			key := currencyprocessor.DuplicationKey(fmt.Sprintf("%s:%s", v.Contract().String(), v.DataKey()), DuplicationTypeStorageData)
+			datas = append(datas, key)
+		}
+		duplicationTypeStorageData = datas
+	case storage.UpdateDatas:
+		fact, ok := t.Fact().(storage.UpdateDatasFact)
+		if !ok {
+			return errors.Errorf("expected UpdateDatasFact, not %T", t.Fact())
+		}
+		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
+		var datas []string
+		for _, v := range fact.Items() {
+			key := currencyprocessor.DuplicationKey(fmt.Sprintf("%s:%s", v.Contract().String(), v.DataKey()), DuplicationTypeStorageData)
+			datas = append(datas, key)
+		}
+		duplicationTypeStorageData = datas
 	case prescription.RegisterModel:
 		fact, ok := t.Fact().(prescription.RegisterModelFact)
 		if !ok {
@@ -430,14 +454,15 @@ func CheckDuplication(opr *currencyprocessor.OperationProcessor, op base.Operati
 	}
 
 	if len(duplicationTypeStorageData) > 0 {
-		if _, found := opr.Duplicated[duplicationTypeStorageData]; found {
-			return errors.Errorf(
-				"cannot use a duplicated contract-key for storage data, %v within a proposal",
-				duplicationTypeStorageData,
-			)
+		for _, v := range duplicationTypeStorageData {
+			if _, found := opr.Duplicated[v]; found {
+				return errors.Errorf(
+					"cannot use a duplicated contract-datakey for storage data, %v within a proposal",
+					v,
+				)
+			}
+			opr.Duplicated[v] = struct{}{}
 		}
-
-		opr.Duplicated[duplicationTypeStorageData] = struct{}{}
 	}
 
 	if len(duplicationTypePrescription) > 0 {

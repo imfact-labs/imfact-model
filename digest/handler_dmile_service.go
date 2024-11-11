@@ -10,6 +10,7 @@ import (
 )
 
 func (hd *Handlers) handleDmileDesign(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	cacheKey := currencydigest.CacheKeyPath(r)
 	if err := currencydigest.LoadFromCache(hd.cache, cacheKey, w); err == nil {
 		return
@@ -77,6 +78,7 @@ func (hd *Handlers) buildDmileDesign(contract string, de types.Design, st base.S
 }
 
 func (hd *Handlers) handleDmileDataByTxID(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	cacheKey := currencydigest.CacheKeyPath(r)
 	if err := currencydigest.LoadFromCache(hd.cache, cacheKey, w); err == nil {
 		return
@@ -152,6 +154,7 @@ func (hd *Handlers) buildDmileDataByTxIDHal(
 }
 
 func (hd *Handlers) handleDmileDataByMerkleRoot(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	cacheKey := currencydigest.CacheKeyPath(r)
 	if err := currencydigest.LoadFromCache(hd.cache, cacheKey, w); err == nil {
 		return

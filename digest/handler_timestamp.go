@@ -12,6 +12,7 @@ import (
 )
 
 func (hd *Handlers) handleTimeStampDesign(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	cacheKey := currencydigest.CacheKeyPath(r)
 	if err := currencydigest.LoadFromCache(hd.cache, cacheKey, w); err == nil {
 		return
@@ -80,6 +81,7 @@ func (hd *Handlers) buildTimeStampDesign(contract string, de types.Design, st ba
 }
 
 func (hd *Handlers) handleTimeStampItem(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	cachekey := currencydigest.CacheKeyPath(r)
 	if err := currencydigest.LoadFromCache(hd.cache, cachekey, w); err == nil {
 		return

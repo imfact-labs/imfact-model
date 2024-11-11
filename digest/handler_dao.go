@@ -10,6 +10,7 @@ import (
 )
 
 func (hd *Handlers) handleDAOService(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	cacheKey := currencydigest.CacheKeyPath(r)
 	if err := currencydigest.LoadFromCache(hd.cache, cacheKey, w); err == nil {
 		return
@@ -61,6 +62,7 @@ func (hd *Handlers) buildDAODesignHal(contract string, design types.Design) (cur
 }
 
 func (hd *Handlers) handleDAOProposal(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	cacheKey := currencydigest.CacheKeyPath(r)
 	if err := currencydigest.LoadFromCache(hd.cache, cacheKey, w); err == nil {
 		return
@@ -118,6 +120,7 @@ func (hd *Handlers) buildDAOProposalHal(contract, proposalID string, proposal st
 }
 
 func (hd *Handlers) handleDAODelegator(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	cacheKey := currencydigest.CacheKeyPath(r)
 	if err := currencydigest.LoadFromCache(hd.cache, cacheKey, w); err == nil {
 		return
@@ -188,6 +191,7 @@ func (hd *Handlers) buildDAODelegatorHal(
 }
 
 func (hd *Handlers) handleDAOVoters(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	cacheKey := currencydigest.CacheKeyPath(r)
 	if err := currencydigest.LoadFromCache(hd.cache, cacheKey, w); err == nil {
 		return
@@ -246,6 +250,7 @@ func (hd *Handlers) buildDAOVotersHal(
 }
 
 func (hd *Handlers) handleDAOVotingPowerBox(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	cacheKey := currencydigest.CacheKeyPath(r)
 	if err := currencydigest.LoadFromCache(hd.cache, cacheKey, w); err == nil {
 		return

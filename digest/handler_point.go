@@ -10,6 +10,7 @@ import (
 )
 
 func (hd *Handlers) handlePoint(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	cachekey := currencydigest.CacheKeyPath(r)
 	if err := currencydigest.LoadFromCache(hd.cache, cachekey, w); err == nil {
 		return
@@ -59,6 +60,7 @@ func (hd *Handlers) buildPointHal(contract string, design types.Design) (currenc
 }
 
 func (hd *Handlers) handlePointBalance(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	cachekey := currencydigest.CacheKeyPath(r)
 	if err := currencydigest.LoadFromCache(hd.cache, cachekey, w); err == nil {
 		return

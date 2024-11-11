@@ -11,6 +11,7 @@ import (
 )
 
 func (hd *Handlers) handleDIDDesign(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	cacheKey := currencydigest.CacheKeyPath(r)
 	if err := currencydigest.LoadFromCache(hd.cache, cacheKey, w); err == nil {
 		return
@@ -78,6 +79,7 @@ func (hd *Handlers) buildDIDDesign(contract string, de types.Design, st base.Sta
 }
 
 func (hd *Handlers) handleDIDData(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	cacheKey := currencydigest.CacheKeyPath(r)
 	if err := currencydigest.LoadFromCache(hd.cache, cacheKey, w); err == nil {
 		return
@@ -153,6 +155,7 @@ func (hd *Handlers) buildDIDDataHal(
 }
 
 func (hd *Handlers) handleDIDDocument(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	cacheKey := currencydigest.CacheKeyPath(r)
 	if err := currencydigest.LoadFromCache(hd.cache, cacheKey, w); err == nil {
 		return

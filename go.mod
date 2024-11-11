@@ -5,18 +5,18 @@ go 1.22
 toolchain go1.22.1
 
 require (
-	github.com/ProtoconNet/mitum-credential v0.0.0-20241016043021-224087fa7deb
-	github.com/ProtoconNet/mitum-currency/v3 v3.0.0-alpha.0.20240902003652-0d5fd2acf44e
-	github.com/ProtoconNet/mitum-d-mile v0.0.0-20241016043233-a731ab8aa728
-	github.com/ProtoconNet/mitum-dao v0.0.0-20240920005139-f7a6040ad642
-	github.com/ProtoconNet/mitum-did-registry v0.0.0-20241016043344-5f73839cd320
-	github.com/ProtoconNet/mitum-nft v0.0.0-20240905010916-1d1ae78e1a53
-	github.com/ProtoconNet/mitum-point v0.0.0-20240905024010-a885b079bb3e
-	github.com/ProtoconNet/mitum-prescription v0.0.0-20241016072713-25d7aaa8e45e
-	github.com/ProtoconNet/mitum-storage v0.0.0-20240920074038-0136f3dc0096
-	github.com/ProtoconNet/mitum-timestamp v0.0.0-20240920064231-7ab38c08bd4f
-	github.com/ProtoconNet/mitum-token v0.0.0-20240905023751-b43498bb4ba3
-	github.com/ProtoconNet/mitum2 v0.0.0-20240805062025-57b0a3c5b436
+	github.com/ProtoconNet/mitum-credential v0.0.0-20241111043534-938bd2e97075
+	github.com/ProtoconNet/mitum-currency/v3 v3.0.0-alpha.0.20241101032517-b63f777108fd
+	github.com/ProtoconNet/mitum-d-mile v0.0.0-20241111042214-74212f931313
+	github.com/ProtoconNet/mitum-dao v0.0.0-20241111043115-ffa4c11e55a5
+	github.com/ProtoconNet/mitum-did-registry v0.0.0-20241111042932-123a7e201be2
+	github.com/ProtoconNet/mitum-nft v0.0.0-20241111044002-b5f01574c9a9
+	github.com/ProtoconNet/mitum-point v0.0.0-20241111043419-a0dd49f38d8b
+	github.com/ProtoconNet/mitum-prescription v0.0.0-20241111042028-0194dde773b0
+	github.com/ProtoconNet/mitum-storage v0.0.0-20241111041545-ce22a9661d92
+	github.com/ProtoconNet/mitum-timestamp v0.0.0-20241111043847-8e858f52d732
+	github.com/ProtoconNet/mitum-token v0.0.0-20241111043251-05894cca9c31
+	github.com/ProtoconNet/mitum2 v0.0.0-20241101032300-fbbe79d8122c
 	github.com/alecthomas/kong v0.9.0
 	github.com/arl/statsviz v0.6.0
 	github.com/gorilla/mux v1.8.1

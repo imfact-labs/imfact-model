@@ -12,6 +12,7 @@ import (
 )
 
 func (hd *Handlers) handleCredentialService(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	cacheKey := currencydigest.CacheKeyPath(r)
 	if err := currencydigest.LoadFromCache(hd.cache, cacheKey, w); err == nil {
 		return
@@ -63,6 +64,7 @@ func (hd *Handlers) buildCredentialServiceHal(contract string, design types.Desi
 }
 
 func (hd *Handlers) handleCredential(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	cacheKey := currencydigest.CacheKeyPath(r)
 	if err := currencydigest.LoadFromCache(hd.cache, cacheKey, w); err == nil {
 		return
@@ -140,6 +142,7 @@ func (hd *Handlers) buildCredentialHal(
 }
 
 func (hd *Handlers) handleCredentials(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	limit := currencydigest.ParseLimitQuery(r.URL.Query().Get("limit"))
 	offset := currencydigest.ParseStringQuery(r.URL.Query().Get("offset"))
 	reverse := currencydigest.ParseBoolQuery(r.URL.Query().Get("reverse"))
@@ -297,6 +300,7 @@ func (hd *Handlers) buildCredentialsHal(
 }
 
 func (hd *Handlers) handleHolderCredential(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	cacheKey := currencydigest.CacheKeyPath(r)
 	if err := currencydigest.LoadFromCache(hd.cache, cacheKey, w); err == nil {
 		return
@@ -383,6 +387,7 @@ func (hd *Handlers) buildHolderDIDCredentialsHal(
 }
 
 func (hd *Handlers) handleTemplate(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	cacheKey := currencydigest.CacheKeyPath(r)
 	if err := currencydigest.LoadFromCache(hd.cache, cacheKey, w); err == nil {
 		return

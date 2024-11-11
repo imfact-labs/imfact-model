@@ -9,6 +9,7 @@ import (
 )
 
 func (hd *Handlers) handlePrescriptionDesign(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	cacheKey := cdigest.CacheKeyPath(r)
 	if err := cdigest.LoadFromCache(hd.cache, cacheKey, w); err == nil {
 		return
@@ -76,6 +77,7 @@ func (hd *Handlers) buildPrescriptionDesign(contract string, de types.Design, st
 }
 
 func (hd *Handlers) handlePrescriptionInfo(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
 	cacheKey := cdigest.CacheKeyPath(r)
 	if err := cdigest.LoadFromCache(hd.cache, cacheKey, w); err == nil {
 		return
