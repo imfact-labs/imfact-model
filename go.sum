@@ -3,8 +3,8 @@ github.com/Masterminds/semver/v3 v3.2.1 h1:RN9w6+7QoMeJVGyfmbcgs28Br8cvmnucEXnY0
 github.com/Masterminds/semver/v3 v3.2.1/go.mod h1:qvl/7zhW3nngYb5+80sSMF+FG2BjYrf8m9wsX0PNOMQ=
 github.com/ProtoconNet/mitum-credential v0.0.0-20241111043534-938bd2e97075 h1:+PtYqfXTeeQRkX4VGr89ITiEARFFPBnCYPbWBVaL2nM=
 github.com/ProtoconNet/mitum-credential v0.0.0-20241111043534-938bd2e97075/go.mod h1:IYJHJeRXjgjUX2OBAu7cJ1UzGarALXcWmUxFsaZWpC4=
-github.com/ProtoconNet/mitum-currency/v3 v3.0.0-alpha.0.20241101032517-b63f777108fd h1:ppobyF19Nqupu7DIbvc2qxzfNTGF0HM1crfPk0/fzF4=
-github.com/ProtoconNet/mitum-currency/v3 v3.0.0-alpha.0.20241101032517-b63f777108fd/go.mod h1:PJIwiI0RuvZJdCcHi5k49/0BSelsUpjdHy2uTCVKqp8=
+github.com/ProtoconNet/mitum-currency/v3 v3.0.0-alpha.0.20241120023621-817d7566c18c h1:7henDdCZZM+hXgDvG1Mtjq/20my7BqRqj6w4cSJNwmw=
+github.com/ProtoconNet/mitum-currency/v3 v3.0.0-alpha.0.20241120023621-817d7566c18c/go.mod h1:PJIwiI0RuvZJdCcHi5k49/0BSelsUpjdHy2uTCVKqp8=
 github.com/ProtoconNet/mitum-d-mile v0.0.0-20241111042214-74212f931313 h1:mJQLjrVhSGysIJ9U902dxhibBK5jDY2XUWZ1YE58RBQ=
 github.com/ProtoconNet/mitum-d-mile v0.0.0-20241111042214-74212f931313/go.mod h1:Ku8I1YBPtpQ0TUVZYOMYWlEOVaGNKDjQxxCRO9uDsSo=
 github.com/ProtoconNet/mitum-dao v0.0.0-20241111043115-ffa4c11e55a5 h1:gA12/gHwRoou8zCIf2f/XLGZngVI0b9JGKXuMQPPf/4=
@@ -17,8 +17,8 @@ github.com/ProtoconNet/mitum-point v0.0.0-20241111043419-a0dd49f38d8b h1:4z0AcCb
 github.com/ProtoconNet/mitum-point v0.0.0-20241111043419-a0dd49f38d8b/go.mod h1:IRntJiH55yagaWWsCyvDIF8Fc2DIMoqfN/2xlD8XGiE=
 github.com/ProtoconNet/mitum-prescription v0.0.0-20241111042028-0194dde773b0 h1:P4r2stNO6tIqeCa35i4l8IR8zzaOYeJqO1rLj+e2J3w=
 github.com/ProtoconNet/mitum-prescription v0.0.0-20241111042028-0194dde773b0/go.mod h1:uvbgSMToHoBOKmK7xENWJCjFxCofna1mvkTxk3Dr51g=
-github.com/ProtoconNet/mitum-storage v0.0.0-20241111041545-ce22a9661d92 h1:MHvyMstcYAsbZAK4w3Q7co5MxNzZys8042RTCOXyO+c=
-github.com/ProtoconNet/mitum-storage v0.0.0-20241111041545-ce22a9661d92/go.mod h1:mWKI5OcOkiFzSWypkpoIrQGZVyBv3YNaxFFz56rnGbM=
+github.com/ProtoconNet/mitum-storage v0.0.0-20241118055150-9bc5e2b85d55 h1:NmpPO9XJfpBjSJNGynjI9MPJz0XP1BMKV5tRLlt6YHY=
+github.com/ProtoconNet/mitum-storage v0.0.0-20241118055150-9bc5e2b85d55/go.mod h1:mWKI5OcOkiFzSWypkpoIrQGZVyBv3YNaxFFz56rnGbM=
 github.com/ProtoconNet/mitum-timestamp v0.0.0-20241111043847-8e858f52d732 h1:dy29kcWX8a79X4x3JnzGhOqyc9frdM8DBxiqP45Bkik=
 github.com/ProtoconNet/mitum-timestamp v0.0.0-20241111043847-8e858f52d732/go.mod h1:itPnjzZYAbANfshZdyFuw+M828xyLjMsc162bBO1BnQ=
 github.com/ProtoconNet/mitum-token v0.0.0-20241111043251-05894cca9c31 h1:ifpkL+3/vm/nNkbUiNji6adZXUr7n50n7lTkxZabCVY=
