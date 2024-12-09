@@ -156,10 +156,6 @@ func (hd *Handlers) buildDIDDataHal(
 
 func (hd *Handlers) handleDIDDocument(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	cacheKey := currencydigest.CacheKeyPath(r)
-	if err := currencydigest.LoadFromCache(hd.cache, cacheKey, w); err == nil {
-		return
-	}
 
 	contract, err, status := currencydigest.ParseRequest(w, r, "contract")
 	if err != nil {
@@ -170,6 +166,11 @@ func (hd *Handlers) handleDIDDocument(w http.ResponseWriter, r *http.Request) {
 	did := currencydigest.ParseStringQuery(r.URL.Query().Get("did"))
 	if len(did) < 1 {
 		currencydigest.HTTP2ProblemWithError(w, errors.Errorf("invalid DID"), http.StatusBadRequest)
+		return
+	}
+
+	cacheKey := currencydigest.CacheKey(r.URL.Path, did)
+	if err := currencydigest.LoadFromCache(hd.cache, cacheKey, w); err == nil {
 		return
 	}
 
