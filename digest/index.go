@@ -43,11 +43,11 @@ var balanceIndexModels = []mongo.IndexModel{
 		Options: options.Index().
 			SetName(indexPrefix + "balance_currency"),
 	},
-	{
-		Keys: bson.D{bson.E{Key: "height", Value: -1}},
-		Options: options.Index().
-			SetName(indexPrefix + "balance_height"),
-	},
+	//{
+	//	Keys: bson.D{bson.E{Key: "height", Value: -1}},
+	//	Options: options.Index().
+	//		SetName(indexPrefix + "balance_height"),
+	//},
 }
 
 var operationIndexModels = []mongo.IndexModel{

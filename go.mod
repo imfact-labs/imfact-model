@@ -6,7 +6,7 @@ toolchain go1.22.1
 
 require (
 	github.com/ProtoconNet/mitum-credential v0.0.0-20241111043534-938bd2e97075
-	github.com/ProtoconNet/mitum-currency/v3 v3.0.0-alpha.0.20241205082511-b69bf04de196
+	github.com/ProtoconNet/mitum-currency/v3 v3.0.0-alpha.0.20241219021352-9971d5ba5505
 	github.com/ProtoconNet/mitum-d-mile v0.0.0-20241111042214-74212f931313
 	github.com/ProtoconNet/mitum-dao v0.0.0-20241111043115-ffa4c11e55a5
 	github.com/ProtoconNet/mitum-did-registry v0.0.0-20241209092044-7e510f90ed41
