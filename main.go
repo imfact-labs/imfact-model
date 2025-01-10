@@ -5,13 +5,10 @@ import (
 	"fmt"
 	credentialcmds "github.com/ProtoconNet/mitum-credential/cmds"
 	currencycmds "github.com/ProtoconNet/mitum-currency/v3/cmds"
-	dmilecmds "github.com/ProtoconNet/mitum-d-mile/cmds"
 	daocmds "github.com/ProtoconNet/mitum-dao/cmds"
-	didcmds "github.com/ProtoconNet/mitum-did-registry/cmds"
 	"github.com/ProtoconNet/mitum-minic/cmds"
 	nftcmds "github.com/ProtoconNet/mitum-nft/cmds"
 	pointcmds "github.com/ProtoconNet/mitum-point/cmds"
-	prescriptioncmds "github.com/ProtoconNet/mitum-prescription/cmds"
 	storagecmds "github.com/ProtoconNet/mitum-storage/cmds"
 	timestampcmds "github.com/ProtoconNet/mitum-timestamp/cmds"
 	tokencmds "github.com/ProtoconNet/mitum-token/cmds"
@@ -40,18 +37,16 @@ var CLI struct { //nolint:govet //...
 	Run       cmds.RunCommand          `cmd:"" help:"run node"`
 	Storage   cmds.Storage             `cmd:""`
 	Operation struct {
-		Currency     currencycmds.CurrencyCommand         `cmd:"" help:"currency operation"`
-		Suffrage     currencycmds.SuffrageCommand         `cmd:"" help:"suffrage operation"`
-		NFT          nftcmds.NFTCommand                   `cmd:"" help:"nft operation"`
-		Credential   credentialcmds.CredentialCommand     `cmd:"" help:"credential operation"`
-		Dao          daocmds.DAOCommand                   `cmd:"" help:"dao operation"`
-		Timestamp    timestampcmds.TimestampCommand       `cmd:"" help:"timestamp operation"`
-		Token        tokencmds.TokenCommand               `cmd:"" help:"token operation"`
-		Point        pointcmds.PointCommand               `cmd:"" help:"point operation"`
-		StorageData  storagecmds.StorageCommand           `cmd:"" help:"data storage operation"`
-		Prescription prescriptioncmds.PrescriptionCommand `cmd:"" help:"prescription operation"`
-		DID          didcmds.DIDCommand                   `cmd:"" help:"did operation"`
-		DMile        dmilecmds.DmileCommand               `cmd:"" help:"d-mile operation"`
+		Currency    currencycmds.CurrencyCommand     `cmd:"" help:"currency operation"`
+		Suffrage    currencycmds.SuffrageCommand     `cmd:"" help:"suffrage operation"`
+		NFT         nftcmds.NFTCommand               `cmd:"" help:"nft operation"`
+		Credential  credentialcmds.CredentialCommand `cmd:"" help:"credential operation"`
+		Dao         daocmds.DAOCommand               `cmd:"" help:"dao operation"`
+		Timestamp   timestampcmds.TimestampCommand   `cmd:"" help:"timestamp operation"`
+		Token       tokencmds.TokenCommand           `cmd:"" help:"token operation"`
+		Point       pointcmds.PointCommand           `cmd:"" help:"point operation"`
+		StorageData storagecmds.StorageCommand       `cmd:"" help:"data storage operation"`
+		DID         currencycmds.DIDCommand          `cmd:"" help:"did operation"`
 	} `cmd:"" help:"create operation"`
 	Network struct {
 		Client cmds.NetworkClientCommand `cmd:"" help:"network client"`

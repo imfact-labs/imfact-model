@@ -4,14 +4,12 @@ import (
 	"fmt"
 	"github.com/ProtoconNet/mitum-credential/operation/credential"
 	"github.com/ProtoconNet/mitum-currency/v3/operation/currency"
+	did "github.com/ProtoconNet/mitum-currency/v3/operation/did-registry"
 	extensioncurrency "github.com/ProtoconNet/mitum-currency/v3/operation/extension"
 	currencyprocessor "github.com/ProtoconNet/mitum-currency/v3/operation/processor"
 	currencytypes "github.com/ProtoconNet/mitum-currency/v3/types"
-	"github.com/ProtoconNet/mitum-d-mile/operation/dmile"
-	"github.com/ProtoconNet/mitum-did-registry/operation/did"
 	"github.com/ProtoconNet/mitum-nft/operation/nft"
 	"github.com/ProtoconNet/mitum-point/operation/point"
-	"github.com/ProtoconNet/mitum-prescription/operation/prescription"
 	"github.com/ProtoconNet/mitum-storage/operation/storage"
 	"github.com/ProtoconNet/mitum-timestamp/operation/timestamp"
 	"github.com/ProtoconNet/mitum-token/operation/token"
@@ -20,15 +18,13 @@ import (
 )
 
 const (
-	DuplicationTypeSender       currencytypes.DuplicationType = "sender"
-	DuplicationTypeCurrency     currencytypes.DuplicationType = "currency"
-	DuplicationTypeContract     currencytypes.DuplicationType = "contract"
-	DuplicationTypeCredential   currencytypes.DuplicationType = "credential"
-	DuplicationTypeStorageData  currencytypes.DuplicationType = "storagedata"
-	DuplicationTypePrescription currencytypes.DuplicationType = "prescription"
-	DuplicationTypeDID          currencytypes.DuplicationType = "did"
-	DuplicationTypeDIDPubKey    currencytypes.DuplicationType = "didpubkey"
-	DuplicationTypeDMile        currencytypes.DuplicationType = "dmile"
+	DuplicationTypeSender      currencytypes.DuplicationType = "sender"
+	DuplicationTypeCurrency    currencytypes.DuplicationType = "currency"
+	DuplicationTypeContract    currencytypes.DuplicationType = "contract"
+	DuplicationTypeCredential  currencytypes.DuplicationType = "credential"
+	DuplicationTypeStorageData currencytypes.DuplicationType = "storagedata"
+	DuplicationTypeDID         currencytypes.DuplicationType = "did"
+	DuplicationTypeDIDPubKey   currencytypes.DuplicationType = "didpubkey"
 )
 
 func CheckDuplication(opr *currencyprocessor.OperationProcessor, op base.Operation) error {
@@ -323,92 +319,14 @@ func CheckDuplication(opr *currencyprocessor.OperationProcessor, op base.Operati
 			datas = append(datas, key)
 		}
 		duplicationTypeStorageData = datas
-	case prescription.RegisterModel:
-		fact, ok := t.Fact().(prescription.RegisterModelFact)
-		if !ok {
-			return errors.Errorf("expected RegisterModelFact, not %T", t.Fact())
-		}
-		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
-		duplicationTypeContractID = currencyprocessor.DuplicationKey(fact.Contract().String(), DuplicationTypeContract)
-	case prescription.RegisterPrescription:
-		fact, ok := t.Fact().(prescription.RegisterPrescriptionFact)
-		if !ok {
-			return errors.Errorf("expected RegisterPrescriptionFact, not %T", t.Fact())
-		}
-		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
-		duplicationTypePrescription = currencyprocessor.DuplicationKey(
-			fmt.Sprintf("%s:%s", fact.Contract().String(), fact.PrescriptionHash()), DuplicationTypePrescription)
-	case prescription.UsePrescription:
-		fact, ok := t.Fact().(prescription.UsePrescriptionFact)
-		if !ok {
-			return errors.Errorf("expected UsePrescriptionFact, not %T", t.Fact())
-		}
-		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
-		duplicationTypePrescription = currencyprocessor.DuplicationKey(
-			fmt.Sprintf("%s:%s", fact.Contract().String(), fact.PrescriptionHash()), DuplicationTypePrescription)
 	case did.CreateDID:
 		fact, ok := t.Fact().(did.CreateDIDFact)
 		if !ok {
 			return errors.Errorf("expected %T, not %T", did.CreateDIDFact{}, t.Fact())
 		}
 		duplicationTypeDIDPubKey = []string{currencyprocessor.DuplicationKey(
-			fmt.Sprintf("%s:%s", fact.Contract().String(), fact.PubKey()), DuplicationTypeDIDPubKey)}
+			fmt.Sprintf("%s:%s", fact.Contract().String(), fact.Sender()), DuplicationTypeDIDPubKey)}
 		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
-	case did.DeactivateDID:
-		fact, ok := t.Fact().(did.DeactivateDIDFact)
-		if !ok {
-			return errors.Errorf("expected %T, not %T", did.DeactivateDIDFact{}, t.Fact())
-		}
-		duplicationTypeDID = currencyprocessor.DuplicationKey(
-			fmt.Sprintf("%s:%s", fact.Contract().String(), fact.DID()), DuplicationTypeDID)
-		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
-	case did.ReactivateDID:
-		fact, ok := t.Fact().(did.ReactivateDIDFact)
-		if !ok {
-			return errors.Errorf("expected %T, not %T", did.ReactivateDIDFact{}, t.Fact())
-		}
-		duplicationTypeDID = currencyprocessor.DuplicationKey(
-			fmt.Sprintf("%s:%s", fact.Contract().String(), fact.DID()), DuplicationTypeDID)
-		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
-	case did.MigrateDID:
-		fact, ok := t.Fact().(did.MigrateDIDFact)
-		if !ok {
-			return errors.Errorf("expected %T, not %T", did.MigrateDIDFact{}, t.Fact())
-		}
-		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
-		var dids []string
-		for _, v := range fact.Items() {
-			key := currencyprocessor.DuplicationKey(fmt.Sprintf("%s:%s", v.Contract().String(), v.PubKey()), DuplicationTypeDIDPubKey)
-			dids = append(dids, key)
-		}
-		duplicationTypeDIDPubKey = dids
-	case dmile.RegisterModel:
-		fact, ok := t.Fact().(dmile.RegisterModelFact)
-		if !ok {
-			return errors.Errorf("expected %T, not %T", dmile.RegisterModelFact{}, t.Fact())
-		}
-		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
-		duplicationTypeContractID = currencyprocessor.DuplicationKey(fact.Contract().String(), DuplicationTypeContract)
-	case dmile.CreateData:
-		fact, ok := t.Fact().(dmile.CreateDataFact)
-		if !ok {
-			return errors.Errorf("expected %T, not %T", dmile.CreateDataFact{}, t.Fact())
-		}
-		duplicationTypeDMileData = []string{currencyprocessor.DuplicationKey(
-			fmt.Sprintf("%s:%s", fact.Contract().String(), fact.MerkleRoot()), DuplicationTypeDMile)}
-		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
-	case dmile.MigrateData:
-		fact, ok := t.Fact().(dmile.MigrateDataFact)
-		if !ok {
-			return errors.Errorf("expected MigrateDataFact, not %T", t.Fact())
-		}
-		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
-		var datas []string
-		for _, v := range fact.Items() {
-			key := currencyprocessor.DuplicationKey(fmt.Sprintf("%s:%s", v.Contract().String(), v.MerkleRoot()), DuplicationTypeDMile)
-			datas = append(datas, key)
-		}
-		duplicationTypeDMileData = datas
 	default:
 		return nil
 	}

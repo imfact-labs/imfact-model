@@ -1,6 +1,7 @@
 package digest
 
 import (
+	cdigest "github.com/ProtoconNet/mitum-currency/v3/digest"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -281,27 +282,6 @@ var storageDataIndexModels = []mongo.IndexModel{
 	},
 }
 
-var prescriptionServiceIndexModels = []mongo.IndexModel{
-	{
-		Keys: bson.D{
-			bson.E{Key: "contract", Value: 1},
-			bson.E{Key: "height", Value: -1}},
-		Options: options.Index().
-			SetName(indexPrefix + "prescription_service_contract_height"),
-	},
-}
-
-var prescriptionInfoIndexModels = []mongo.IndexModel{
-	{
-		Keys: bson.D{
-			bson.E{Key: "contract", Value: 1},
-			bson.E{Key: "prescription_hash", Value: 1},
-			bson.E{Key: "height", Value: -1}},
-		Options: options.Index().
-			SetName(indexPrefix + "prescription_info_contract_hash_height"),
-	},
-}
-
 var didRegistryIndexModels = []mongo.IndexModel{
 	{
 		Keys: bson.D{
@@ -331,28 +311,6 @@ var didRegistryDocumentIndexModels = []mongo.IndexModel{
 			bson.E{Key: "height", Value: -1}},
 		Options: options.Index().
 			SetName(indexPrefix + "did_registry_document_contract_did_height"),
-	},
-}
-
-var dmileServiceIndexModels = []mongo.IndexModel{
-	{
-		Keys: bson.D{
-			bson.E{Key: "contract", Value: 1},
-			bson.E{Key: "height", Value: -1}},
-		Options: options.Index().
-			SetName(indexPrefix + "dmile_service_contract_height"),
-	},
-}
-
-var dmileServiceDataIndexModels = []mongo.IndexModel{
-	{
-		Keys: bson.D{
-			bson.E{Key: "contract", Value: 1},
-			bson.E{Key: "merkle_root", Value: 1},
-			bson.E{Key: "tx_hash", Value: 1},
-			bson.E{Key: "height", Value: -1}},
-		Options: options.Index().
-			SetName(indexPrefix + "dmile_service_data_contract_merkleRoot_txHash_height"),
 	},
 }
 

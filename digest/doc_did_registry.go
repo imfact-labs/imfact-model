@@ -4,8 +4,8 @@ import (
 	mongodb "github.com/ProtoconNet/mitum-currency/v3/digest/mongodb"
 	bsonutil "github.com/ProtoconNet/mitum-currency/v3/digest/util/bson"
 	cstate "github.com/ProtoconNet/mitum-currency/v3/state"
-	"github.com/ProtoconNet/mitum-did-registry/state"
-	"github.com/ProtoconNet/mitum-did-registry/types"
+	state "github.com/ProtoconNet/mitum-currency/v3/state/did-registry"
+	"github.com/ProtoconNet/mitum-currency/v3/types"
 	"github.com/ProtoconNet/mitum2/base"
 	"github.com/ProtoconNet/mitum2/util/encoder"
 )
@@ -86,7 +86,7 @@ func (doc DIDDataDoc) MarshalBSON() ([]byte, error) {
 	}
 
 	m["contract"] = parsedKey[1]
-	m["publicKey"] = doc.data.PubKey()
+	m["method_specific_id"] = doc.data.Address()
 	m["height"] = doc.st.Height()
 
 	return bsonutil.Marshal(m)
@@ -95,7 +95,7 @@ func (doc DIDDataDoc) MarshalBSON() ([]byte, error) {
 type DIDDocumentDoc struct {
 	mongodb.BaseDoc
 	st       base.State
-	document types.Document
+	document types.DIDDocument
 }
 
 func NewDIDDocumentDoc(st base.State, enc encoder.Encoder) (DIDDocumentDoc, error) {
@@ -128,7 +128,7 @@ func (doc DIDDocumentDoc) MarshalBSON() ([]byte, error) {
 	}
 
 	m["contract"] = parsedKey[1]
-	m["did"] = doc.document.DIDDoc().DID()
+	m["did"] = doc.document.DID()
 	m["height"] = doc.st.Height()
 
 	return bsonutil.Marshal(m)

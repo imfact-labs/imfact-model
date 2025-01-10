@@ -14,7 +14,7 @@ import (
 	"sync"
 	"time"
 
-	currencydigest "github.com/ProtoconNet/mitum-currency/v3/digest"
+	cdigest "github.com/ProtoconNet/mitum-currency/v3/digest"
 	"github.com/ProtoconNet/mitum-currency/v3/digest/isaac"
 	statecurrency "github.com/ProtoconNet/mitum-currency/v3/state/currency"
 	stateextension "github.com/ProtoconNet/mitum-currency/v3/state/extension"
@@ -34,7 +34,7 @@ type BlockSession struct {
 	ops                        []mitumbase.Operation
 	opsTree                    fixedtree.Tree
 	sts                        []mitumbase.State
-	st                         *currencydigest.Database
+	st                         *cdigest.Database
 	proposal                   mitumbase.ProposalSignFact
 	opsTreeNodes               map[string]mitumbase.OperationFixedtreeNode
 	blockModels                []mongo.WriteModel
@@ -78,7 +78,7 @@ type BlockSession struct {
 }
 
 func NewBlockSession(
-	st *currencydigest.Database,
+	st *cdigest.Database,
 	blk mitumbase.BlockMap,
 	ops []mitumbase.Operation,
 	opstree fixedtree.Tree,
@@ -145,13 +145,7 @@ func (bs *BlockSession) Prepare() error {
 	if err := bs.prepareStorage(); err != nil {
 		return err
 	}
-	if err := bs.preparePrescription(); err != nil {
-		return err
-	}
 	if err := bs.prepareDIDRegistry(); err != nil {
-		return err
-	}
-	if err := bs.prepareDmile(); err != nil {
 		return err
 	}
 
@@ -389,44 +383,20 @@ func (bs *BlockSession) Commit(ctx context.Context) error {
 			}
 		}
 
-		if len(bs.prescriptionModels) > 0 {
-			if err := bs.writeModels(txnCtx, defaultColNamePrescription, bs.prescriptionModels); err != nil {
-				return err
-			}
-		}
-
-		if len(bs.prescriptionInfoDataModels) > 0 {
-			if err := bs.writeModels(txnCtx, defaultColNamePrescriptionInfo, bs.prescriptionInfoDataModels); err != nil {
-				return err
-			}
-		}
-
 		if len(bs.didRegistryModels) > 0 {
-			if err := bs.writeModels(txnCtx, defaultColNameDIDRegistry, bs.didRegistryModels); err != nil {
+			if err := bs.writeModels(txnCtx, cdigest.DefaultColNameDIDRegistry, bs.didRegistryModels); err != nil {
 				return err
 			}
 		}
 
 		if len(bs.didDataModels) > 0 {
-			if err := bs.writeModels(txnCtx, defaultColNameDIDData, bs.didDataModels); err != nil {
+			if err := bs.writeModels(txnCtx, cdigest.DefaultColNameDIDData, bs.didDataModels); err != nil {
 				return err
 			}
 		}
 
 		if len(bs.didDocumentModels) > 0 {
-			if err := bs.writeModels(txnCtx, defaultColNameDIDDocument, bs.didDocumentModels); err != nil {
-				return err
-			}
-		}
-
-		if len(bs.dMileModels) > 0 {
-			if err := bs.writeModels(txnCtx, defaultColNameDmile, bs.dMileModels); err != nil {
-				return err
-			}
-		}
-
-		if len(bs.dMileDataModels) > 0 {
-			if err := bs.writeModels(txnCtx, defaultColNameDmileData, bs.dMileDataModels); err != nil {
+			if err := bs.writeModels(txnCtx, cdigest.DefaultColNameDIDDocument, bs.didDocumentModels); err != nil {
 				return err
 			}
 		}
@@ -678,7 +648,7 @@ func (bs *BlockSession) prepareBlock() error {
 		bs.block.Manifest().ProposedAt(),
 	)
 
-	doc, err := currencydigest.NewManifestDoc(manifest, bs.st.Encoder(), bs.block.Manifest().Height(), bs.ops, bs.block.SignedAt(), bs.proposal.ProposalFact().Proposer(), bs.proposal.ProposalFact().Point().Round(), bs.buildinfo)
+	doc, err := cdigest.NewManifestDoc(manifest, bs.st.Encoder(), bs.block.Manifest().Height(), bs.ops, bs.block.SignedAt(), bs.proposal.ProposalFact().Proposer(), bs.proposal.ProposalFact().Point().Round(), bs.buildinfo)
 	if err != nil {
 		return err
 	}
@@ -706,7 +676,7 @@ func (bs *BlockSession) prepareOperations() error {
 	for i := range bs.ops {
 		op := bs.ops[i]
 
-		var doc currencydigest.OperationDoc
+		var doc cdigest.OperationDoc
 		switch found, inState, reason := node(op.Fact().Hash()); {
 		case !found:
 			return mitumutil.ErrNotFound.Errorf("operation, %v in operations tree", op.Fact().Hash().String())
@@ -718,7 +688,7 @@ func (bs *BlockSession) prepareOperations() error {
 			default:
 				reasonMsg = reason.Msg()
 			}
-			d, err := currencydigest.NewOperationDoc(
+			d, err := cdigest.NewOperationDoc(
 				op,
 				bs.st.Encoder(),
 				bs.block.Manifest().Height(),

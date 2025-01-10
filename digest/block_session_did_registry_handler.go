@@ -1,8 +1,8 @@
 package digest
 
 import (
-	"github.com/ProtoconNet/mitum-did-registry/state"
-	mitumbase "github.com/ProtoconNet/mitum2/base"
+	dstate "github.com/ProtoconNet/mitum-currency/v3/state/did-registry"
+	"github.com/ProtoconNet/mitum2/base"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -17,19 +17,19 @@ func (bs *BlockSession) prepareDIDRegistry() error {
 	for i := range bs.sts {
 		st := bs.sts[i]
 		switch {
-		case state.IsDesignStateKey(st.Key()):
+		case dstate.IsDesignStateKey(st.Key()):
 			j, err := bs.handleDIDRegistryDesignState(st)
 			if err != nil {
 				return err
 			}
 			didRegistryModels = append(didRegistryModels, j...)
-		case state.IsDataStateKey(st.Key()):
+		case dstate.IsDataStateKey(st.Key()):
 			j, err := bs.handleDIDDataState(st)
 			if err != nil {
 				return err
 			}
 			didDataModels = append(didDataModels, j...)
-		case state.IsDocumentStateKey(st.Key()):
+		case dstate.IsDocumentStateKey(st.Key()):
 			j, err := bs.handleDIDDocumentState(st)
 			if err != nil {
 				return err
@@ -47,7 +47,7 @@ func (bs *BlockSession) prepareDIDRegistry() error {
 	return nil
 }
 
-func (bs *BlockSession) handleDIDRegistryDesignState(st mitumbase.State) ([]mongo.WriteModel, error) {
+func (bs *BlockSession) handleDIDRegistryDesignState(st base.State) ([]mongo.WriteModel, error) {
 	if DIDDesignDoc, err := NewDIDRegistryDesignDoc(st, bs.st.Encoder()); err != nil {
 		return nil, err
 	} else {
@@ -57,7 +57,7 @@ func (bs *BlockSession) handleDIDRegistryDesignState(st mitumbase.State) ([]mong
 	}
 }
 
-func (bs *BlockSession) handleDIDDataState(st mitumbase.State) ([]mongo.WriteModel, error) {
+func (bs *BlockSession) handleDIDDataState(st base.State) ([]mongo.WriteModel, error) {
 	if DIDDataDoc, err := NewDIDDataDoc(st, bs.st.Encoder()); err != nil {
 		return nil, err
 	} else {
@@ -67,7 +67,7 @@ func (bs *BlockSession) handleDIDDataState(st mitumbase.State) ([]mongo.WriteMod
 	}
 }
 
-func (bs *BlockSession) handleDIDDocumentState(st mitumbase.State) ([]mongo.WriteModel, error) {
+func (bs *BlockSession) handleDIDDocumentState(st base.State) ([]mongo.WriteModel, error) {
 	if DIDDocumentDoc, err := NewDIDDocumentDoc(st, bs.st.Encoder()); err != nil {
 		return nil, err
 	} else {

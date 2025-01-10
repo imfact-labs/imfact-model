@@ -4,17 +4,32 @@ go 1.22
 
 toolchain go1.22.1
 
+replace github.com/ProtoconNet/mitum-currency/v3 => ../mitum-abstract-account-refactoring
+
+replace github.com/ProtoconNet/mitum-credential => ../mitum-credential
+
+replace github.com/ProtoconNet/mitum-timestamp => ../mitum-timestamp
+
+replace github.com/ProtoconNet/mitum-dao => ../mitum-dao
+
+replace github.com/ProtoconNet/mitum-nft => ../mitum-nft
+
+replace github.com/ProtoconNet/mitum-point => ../mitum-point
+
+replace github.com/ProtoconNet/mitum-token => ../mitum-token
+
+replace github.com/ProtoconNet/mitum-storage => ../mitum-storage
+
+replace github.com/ProtoconNet/mitum2 => ../mitum2-ref
+
 require (
-	github.com/ProtoconNet/mitum-credential v0.0.0-20241111043534-938bd2e97075
-	github.com/ProtoconNet/mitum-currency/v3 v3.0.0-alpha.0.20241219021352-9971d5ba5505
-	github.com/ProtoconNet/mitum-d-mile v0.0.0-20241111042214-74212f931313
+	github.com/ProtoconNet/mitum-credential v0.0.0-20250109012946-99baf0939016
+	github.com/ProtoconNet/mitum-currency/v3 v3.0.0-alpha.0.20250109233532-853e3787f2dc
 	github.com/ProtoconNet/mitum-dao v0.0.0-20241111043115-ffa4c11e55a5
-	github.com/ProtoconNet/mitum-did-registry v0.0.0-20241209092044-7e510f90ed41
 	github.com/ProtoconNet/mitum-nft v0.0.0-20241111044002-b5f01574c9a9
 	github.com/ProtoconNet/mitum-point v0.0.0-20241111043419-a0dd49f38d8b
-	github.com/ProtoconNet/mitum-prescription v0.0.0-20241111042028-0194dde773b0
 	github.com/ProtoconNet/mitum-storage v0.0.0-20241118055150-9bc5e2b85d55
-	github.com/ProtoconNet/mitum-timestamp v0.0.0-20241111043847-8e858f52d732
+	github.com/ProtoconNet/mitum-timestamp v0.0.0-20250109061435-4f574fed9f2f
 	github.com/ProtoconNet/mitum-token v0.0.0-20241111043251-05894cca9c31
 	github.com/ProtoconNet/mitum2 v0.0.0-20241101032300-fbbe79d8122c
 	github.com/alecthomas/kong v0.9.0
