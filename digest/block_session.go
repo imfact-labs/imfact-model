@@ -3,9 +3,12 @@ package digest
 import (
 	"context"
 	"fmt"
+	crdigest "github.com/ProtoconNet/mitum-credential/digest"
 	didstate "github.com/ProtoconNet/mitum-credential/state"
 	crcystate "github.com/ProtoconNet/mitum-currency/v3/state"
+	ndigest "github.com/ProtoconNet/mitum-nft/digest"
 	nftstate "github.com/ProtoconNet/mitum-nft/state"
+	tdigest "github.com/ProtoconNet/mitum-timestamp/digest"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/readconcern"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -182,47 +185,47 @@ func (bs *BlockSession) Commit(ctx context.Context) error {
 			return err
 		}
 
-		if err := bs.writeModels(txnCtx, defaultColNameBlock, bs.blockModels); err != nil {
+		if err := bs.writeModels(txnCtx, cdigest.DefaultColNameBlock, bs.blockModels); err != nil {
 			session.AbortTransaction(txnCtx)
 			return err
 		}
 
 		if len(bs.operationModels) > 0 {
-			if err := bs.writeModels(txnCtx, defaultColNameOperation, bs.operationModels); err != nil {
+			if err := bs.writeModels(txnCtx, cdigest.DefaultColNameOperation, bs.operationModels); err != nil {
 				session.AbortTransaction(txnCtx)
 				return err
 			}
 		}
 
 		if len(bs.currencyModels) > 0 {
-			if err := bs.writeModels(txnCtx, defaultColNameCurrency, bs.currencyModels); err != nil {
+			if err := bs.writeModels(txnCtx, cdigest.DefaultColNameCurrency, bs.currencyModels); err != nil {
 				session.AbortTransaction(txnCtx)
 				return err
 			}
 		}
 
 		if len(bs.accountModels) > 0 {
-			if err := bs.writeModels(txnCtx, defaultColNameAccount, bs.accountModels); err != nil {
+			if err := bs.writeModels(txnCtx, cdigest.DefaultColNameAccount, bs.accountModels); err != nil {
 				session.AbortTransaction(txnCtx)
 				return err
 			}
 		}
 
 		if len(bs.contractAccountModels) > 0 {
-			if err := bs.writeModels(txnCtx, defaultColNameContractAccount, bs.contractAccountModels); err != nil {
+			if err := bs.writeModels(txnCtx, cdigest.DefaultColNameContractAccount, bs.contractAccountModels); err != nil {
 				session.AbortTransaction(txnCtx)
 				return err
 			}
 		}
 
 		if len(bs.balanceModels) > 0 {
-			if err := bs.writeModels(txnCtx, defaultColNameBalance, bs.balanceModels); err != nil {
+			if err := bs.writeModels(txnCtx, cdigest.DefaultColNameBalance, bs.balanceModels); err != nil {
 				return err
 			}
 		}
 
 		if len(bs.nftCollectionModels) > 0 {
-			if err := bs.writeModels(txnCtx, defaultColNameNFTCollection, bs.nftCollectionModels); err != nil {
+			if err := bs.writeModels(txnCtx, ndigest.DefaultColNameNFTCollection, bs.nftCollectionModels); err != nil {
 				return err
 			}
 		}
@@ -237,7 +240,7 @@ func (bs *BlockSession) Commit(ctx context.Context) error {
 				err = bs.st.CleanByHeightColName(
 					txnCtx,
 					bs.block.Manifest().Height(),
-					defaultColNameNFT,
+					ndigest.DefaultColNameNFT,
 					bson.D{{"contract", parsedKey[1]}},
 					bson.D{{"nft_idx", i}},
 				)
@@ -246,31 +249,31 @@ func (bs *BlockSession) Commit(ctx context.Context) error {
 				}
 			}
 
-			if err := bs.writeModels(txnCtx, defaultColNameNFT, bs.nftModels); err != nil {
+			if err := bs.writeModels(txnCtx, ndigest.DefaultColNameNFT, bs.nftModels); err != nil {
 				return err
 			}
 		}
 
 		if len(bs.nftOperatorModels) > 0 {
-			if err := bs.writeModels(txnCtx, defaultColNameNFTOperator, bs.nftOperatorModels); err != nil {
+			if err := bs.writeModels(txnCtx, ndigest.DefaultColNameNFTOperator, bs.nftOperatorModels); err != nil {
 				return err
 			}
 		}
 
 		if len(bs.nftBoxModels) > 0 {
-			if err := bs.writeModels(txnCtx, defaultColNameNFT, bs.nftBoxModels); err != nil {
+			if err := bs.writeModels(txnCtx, ndigest.DefaultColNameNFT, bs.nftBoxModels); err != nil {
 				return err
 			}
 		}
 
 		if len(bs.balanceModels) > 0 {
-			if err := bs.writeModels(txnCtx, defaultColNameBalance, bs.balanceModels); err != nil {
+			if err := bs.writeModels(txnCtx, cdigest.DefaultColNameBalance, bs.balanceModels); err != nil {
 				return err
 			}
 		}
 
 		if len(bs.didIssuerModels) > 0 {
-			if err := bs.writeModels(txnCtx, defaultColNameDIDCredentialService, bs.didIssuerModels); err != nil {
+			if err := bs.writeModels(txnCtx, crdigest.DefaultColNameDIDCredentialService, bs.didIssuerModels); err != nil {
 				return err
 			}
 		}
@@ -284,7 +287,7 @@ func (bs *BlockSession) Commit(ctx context.Context) error {
 				err = bs.st.CleanByHeightColName(
 					txnCtx,
 					bs.block.Manifest().Height(),
-					defaultColNameDIDCredential,
+					crdigest.DefaultColNameDIDCredential,
 					bson.D{{"contract", parsedKey[1]}},
 					bson.D{{"template", parsedKey[2]}},
 					bson.D{{"credential_id", parsedKey[3]}},
@@ -294,25 +297,25 @@ func (bs *BlockSession) Commit(ctx context.Context) error {
 				}
 			}
 
-			if err := bs.writeModels(txnCtx, defaultColNameDIDCredential, bs.didCredentialModels); err != nil {
+			if err := bs.writeModels(txnCtx, crdigest.DefaultColNameDIDCredential, bs.didCredentialModels); err != nil {
 				return err
 			}
 		}
 
 		if len(bs.didHolderDIDModels) > 0 {
-			if err := bs.writeModels(txnCtx, defaultColNameHolder, bs.didHolderDIDModels); err != nil {
+			if err := bs.writeModels(txnCtx, crdigest.DefaultColNameHolder, bs.didHolderDIDModels); err != nil {
 				return err
 			}
 		}
 
 		if len(bs.didTemplateModels) > 0 {
-			if err := bs.writeModels(txnCtx, defaultColNameTemplate, bs.didTemplateModels); err != nil {
+			if err := bs.writeModels(txnCtx, crdigest.DefaultColNameTemplate, bs.didTemplateModels); err != nil {
 				return err
 			}
 		}
 
 		if len(bs.timestampModels) > 0 {
-			if err := bs.writeModels(txnCtx, defaultColNameTimeStamp, bs.timestampModels); err != nil {
+			if err := bs.writeModels(txnCtx, tdigest.DefaultColNameTimeStamp, bs.timestampModels); err != nil {
 				return err
 			}
 		}

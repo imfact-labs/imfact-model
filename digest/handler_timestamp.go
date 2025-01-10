@@ -2,6 +2,7 @@ package digest
 
 import (
 	currencydigest "github.com/ProtoconNet/mitum-currency/v3/digest"
+	tdigest "github.com/ProtoconNet/mitum-timestamp/digest"
 	"github.com/ProtoconNet/mitum-timestamp/types"
 	"net/http"
 	"strconv"
@@ -42,7 +43,7 @@ func (hd *Handlers) handleTimeStampDesignInGroup(contract string) ([]byte, error
 	var de types.Design
 	var st base.State
 
-	de, st, err := TimestampDesign(hd.database, contract)
+	de, st, err := tdigest.TimestampDesign(hd.database, contract)
 	if err != nil {
 		return nil, err
 	}
@@ -131,7 +132,7 @@ func (hd *Handlers) handleTimeStampItemInGroup(contract, project string, idx uin
 	var it types.Item
 	var st base.State
 
-	it, st, err := TimestampItem(hd.database, contract, project, idx)
+	it, st, err := tdigest.TimestampItem(hd.database, contract, project, idx)
 	if err != nil {
 		return nil, err
 	}

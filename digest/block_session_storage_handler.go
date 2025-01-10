@@ -1,6 +1,7 @@
 package digest
 
 import (
+	sdigest "github.com/ProtoconNet/mitum-storage/digest"
 	"github.com/ProtoconNet/mitum-storage/state"
 	mitumbase "github.com/ProtoconNet/mitum2/base"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -39,7 +40,7 @@ func (bs *BlockSession) prepareStorage() error {
 }
 
 func (bs *BlockSession) handleStorageDesignState(st mitumbase.State) ([]mongo.WriteModel, error) {
-	if storageDesignDoc, err := NewStorageDesignDoc(st, bs.st.Encoder()); err != nil {
+	if storageDesignDoc, err := sdigest.NewStorageDesignDoc(st, bs.st.Encoder()); err != nil {
 		return nil, err
 	} else {
 		return []mongo.WriteModel{
@@ -49,7 +50,7 @@ func (bs *BlockSession) handleStorageDesignState(st mitumbase.State) ([]mongo.Wr
 }
 
 func (bs *BlockSession) handleStorageDataState(st mitumbase.State) ([]mongo.WriteModel, error) {
-	if StorageDataDoc, err := NewStorageDataDoc(st, bs.block.Manifest().ProposedAt(), bs.st.Encoder()); err != nil {
+	if StorageDataDoc, err := sdigest.NewStorageDataDoc(st, bs.block.Manifest().ProposedAt(), bs.st.Encoder()); err != nil {
 		return nil, err
 	} else {
 		return []mongo.WriteModel{

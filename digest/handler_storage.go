@@ -2,6 +2,7 @@ package digest
 
 import (
 	currencydigest "github.com/ProtoconNet/mitum-currency/v3/digest"
+	sdigest "github.com/ProtoconNet/mitum-storage/digest"
 	"github.com/ProtoconNet/mitum-storage/types"
 	"github.com/ProtoconNet/mitum2/base"
 	mitumutil "github.com/ProtoconNet/mitum2/util"
@@ -41,7 +42,7 @@ func (hd *Handlers) handleStorageDesignInGroup(contract string) ([]byte, error) 
 	var de types.Design
 	var st base.State
 
-	de, st, err := StorageDesign(hd.database, contract)
+	de, st, err := sdigest.StorageDesign(hd.database, contract)
 	if err != nil {
 		return nil, err
 	}
@@ -112,7 +113,7 @@ func (hd *Handlers) handleStorageData(w http.ResponseWriter, r *http.Request) {
 }
 
 func (hd *Handlers) handleStorageDataInGroup(contract, key string) ([]byte, error) {
-	data, height, operation, timestamp, deleted, err := StorageData(hd.database, contract, key)
+	data, height, operation, timestamp, deleted, err := sdigest.StorageData(hd.database, contract, key)
 	if err != nil {
 		return nil, err
 	}
@@ -229,7 +230,7 @@ func (hd *Handlers) handleStorageDataHistoryInGroup(
 	}
 
 	var vas []currencydigest.Hal
-	if err := SotrageDataHistoryByDataKey(
+	if err := sdigest.SotrageDataHistoryByDataKey(
 		hd.database, contract, key, reverse, offset, limit,
 		func(data *types.Data, height int64, operation, timestamp string, deleted bool) (bool, error) {
 			hal, err := hd.buildStorageDataHal(contract, *data, height, operation, timestamp, deleted)
@@ -357,7 +358,7 @@ func (hd *Handlers) handleStorageDataCount(w http.ResponseWriter, r *http.Reques
 func (hd *Handlers) handleStorageDataCountInGroup(
 	contract string, deleted bool,
 ) ([]byte, error) {
-	count, err := DataCountByContract(
+	count, err := sdigest.DataCountByContract(
 		hd.database, contract, deleted,
 	)
 	if err != nil {

@@ -2,6 +2,7 @@ package digest
 
 import (
 	currencydigest "github.com/ProtoconNet/mitum-currency/v3/digest"
+	ndigest "github.com/ProtoconNet/mitum-nft/digest"
 	"github.com/ProtoconNet/mitum-nft/types"
 	mitumutil "github.com/ProtoconNet/mitum2/util"
 	"net/http"
@@ -43,7 +44,7 @@ func (hd *Handlers) handleNFT(w http.ResponseWriter, r *http.Request) {
 }
 
 func (hd *Handlers) handleNFTInGroup(contract, id string) (interface{}, error) {
-	switch nft, err := NFT(hd.database, contract, id); {
+	switch nft, err := ndigest.NFT(hd.database, contract, id); {
 	case err != nil:
 		return nil, err
 	default:
@@ -93,7 +94,7 @@ func (hd *Handlers) handleNFTCollection(w http.ResponseWriter, r *http.Request) 
 }
 
 func (hd *Handlers) handleNFTCollectionInGroup(contract string) (interface{}, error) {
-	switch design, err := NFTCollection(hd.database, contract); {
+	switch design, err := ndigest.NFTCollection(hd.database, contract); {
 	case err != nil:
 		return nil, err
 	default:
@@ -181,7 +182,7 @@ func (hd *Handlers) handleNFTsInGroup(
 	}
 
 	var vas []currencydigest.Hal
-	if err := NFTsByCollection(
+	if err := ndigest.NFTsByCollection(
 		hd.database, contract, facthash, offset, reverse, limit,
 		func(nft types.NFT, st base.State) (bool, error) {
 			hal, err := hd.buildNFTHal(contract, nft)
@@ -256,7 +257,7 @@ func (hd *Handlers) handleNFTCount(w http.ResponseWriter, r *http.Request) {
 func (hd *Handlers) handleNFTCountInGroup(
 	contract string,
 ) ([]byte, error) {
-	count, err := NFTCountByCollection(
+	count, err := ndigest.NFTCountByCollection(
 		hd.database, contract,
 	)
 	if err != nil {
@@ -394,7 +395,7 @@ func (hd *Handlers) handleNFTOperators(w http.ResponseWriter, r *http.Request) {
 }
 
 func (hd *Handlers) handleNFTOperatorsInGroup(contract, account string) (interface{}, error) {
-	switch operators, err := NFTOperators(hd.database, contract, account); {
+	switch operators, err := ndigest.NFTOperators(hd.database, contract, account); {
 	case err != nil:
 		return nil, err
 	default:

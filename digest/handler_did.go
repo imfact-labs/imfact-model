@@ -1,6 +1,7 @@
 package digest
 
 import (
+	crdigest "github.com/ProtoconNet/mitum-credential/digest"
 	"github.com/ProtoconNet/mitum-credential/types"
 	currencydigest "github.com/ProtoconNet/mitum-currency/v3/digest"
 	mitumutil "github.com/ProtoconNet/mitum2/util"
@@ -38,7 +39,7 @@ func (hd *Handlers) handleCredentialService(w http.ResponseWriter, r *http.Reque
 }
 
 func (hd *Handlers) handleCredentialServiceInGroup(contract string) (interface{}, error) {
-	switch design, err := CredentialService(hd.database, contract); {
+	switch design, err := crdigest.CredentialService(hd.database, contract); {
 	case err != nil:
 		return nil, mitumutil.ErrNotFound.WithMessage(err, "credential design, contract %s", contract)
 	case design == nil:
@@ -101,7 +102,7 @@ func (hd *Handlers) handleCredential(w http.ResponseWriter, r *http.Request) {
 }
 
 func (hd *Handlers) handleCredentialInGroup(contract, templateID, credentialID string) (interface{}, error) {
-	switch credential, isActive, err := Credential(hd.database, contract, templateID, credentialID); {
+	switch credential, isActive, err := crdigest.Credential(hd.database, contract, templateID, credentialID); {
 	case err != nil:
 		return nil, mitumutil.ErrNotFound.WithMessage(err, "credential by contract %s, template %s, id %s", contract, templateID, credentialID)
 	case credential == nil:
@@ -212,7 +213,7 @@ func (hd *Handlers) handleCredentialsInGroup(
 	}
 
 	var vas []currencydigest.Hal
-	if err := CredentialsByServiceTemplate(
+	if err := crdigest.CredentialsByServiceTemplate(
 		hd.database, contract, templateID, reverse, offset, limit,
 		func(credential types.Credential, isActive bool, st base.State) (bool, error) {
 			hal, err := hd.buildCredentialHal(contract, credential, isActive)
@@ -332,7 +333,7 @@ func (hd *Handlers) handleHolderCredential(w http.ResponseWriter, r *http.Reques
 
 func (hd *Handlers) handleHolderCredentialsInGroup(contract, holder string) (interface{}, error) {
 	var did string
-	switch d, err := HolderDID(hd.database, contract, holder); {
+	switch d, err := crdigest.HolderDID(hd.database, contract, holder); {
 	case err != nil:
 		return nil, mitumutil.ErrNotFound.WithMessage(err, "DID by contract %s, holder %s", contract, holder)
 	case d == "":
@@ -342,7 +343,7 @@ func (hd *Handlers) handleHolderCredentialsInGroup(contract, holder string) (int
 	}
 
 	var vas []currencydigest.Hal
-	if err := CredentialsByServiceHolder(
+	if err := crdigest.CredentialsByServiceHolder(
 		hd.database, contract, holder,
 		func(credential types.Credential, isActive bool, st base.State) (bool, error) {
 			hal, err := hd.buildCredentialHal(contract, credential, isActive)
@@ -418,7 +419,7 @@ func (hd *Handlers) handleTemplate(w http.ResponseWriter, r *http.Request) {
 }
 
 func (hd *Handlers) handleTemplateInGroup(contract, templateID string) (interface{}, error) {
-	switch template, err := Template(hd.database, contract, templateID); {
+	switch template, err := crdigest.Template(hd.database, contract, templateID); {
 	case err != nil:
 		return nil, mitumutil.ErrNotFound.WithMessage(err, "template by contract %s, template %s", contract, templateID)
 	case template == nil:

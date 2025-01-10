@@ -29,6 +29,7 @@ tests/*/*/coverage/
 /.vscode
 *.sh
 .golangci.excludes.txt
+/build
 /blockdata
 /env
 /openapi

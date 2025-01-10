@@ -1,6 +1,7 @@
 package digest
 
 import (
+	tdigest "github.com/ProtoconNet/mitum-timestamp/digest"
 	"github.com/ProtoconNet/mitum-timestamp/state"
 	mitumbase "github.com/ProtoconNet/mitum2/base"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -38,7 +39,7 @@ func (bs *BlockSession) prepareTimeStamps() error {
 }
 
 func (bs *BlockSession) handleTimeStampDesignState(st mitumbase.State) ([]mongo.WriteModel, error) {
-	if serviceDesignDoc, err := NewDesignDoc(st, bs.st.Encoder()); err != nil {
+	if serviceDesignDoc, err := tdigest.NewDesignDoc(st, bs.st.Encoder()); err != nil {
 		return nil, err
 	} else {
 		return []mongo.WriteModel{
@@ -48,7 +49,7 @@ func (bs *BlockSession) handleTimeStampDesignState(st mitumbase.State) ([]mongo.
 }
 
 func (bs *BlockSession) handleTimeStampItemState(st mitumbase.State) ([]mongo.WriteModel, error) {
-	if TimeStampItemDoc, err := NewItemDoc(st, bs.st.Encoder()); err != nil {
+	if TimeStampItemDoc, err := tdigest.NewItemDoc(st, bs.st.Encoder()); err != nil {
 		return nil, err
 	} else {
 		return []mongo.WriteModel{

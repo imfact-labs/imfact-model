@@ -3,8 +3,8 @@ package digest
 import (
 	cdigest "github.com/ProtoconNet/mitum-currency/v3/digest"
 	utilc "github.com/ProtoconNet/mitum-currency/v3/digest/util"
-	"github.com/ProtoconNet/mitum-did-registry/state"
-	"github.com/ProtoconNet/mitum-did-registry/types"
+	state "github.com/ProtoconNet/mitum-currency/v3/state/did-registry"
+	"github.com/ProtoconNet/mitum-currency/v3/types"
 	"github.com/ProtoconNet/mitum2/base"
 	utilm "github.com/ProtoconNet/mitum2/util"
 	"github.com/pkg/errors"
@@ -21,7 +21,7 @@ func DIDDesign(st *cdigest.Database, contract string) (types.Design, base.State,
 	)
 	var sta base.State
 	if err := st.MongoClient().GetByFilter(
-		defaultColNameDIDRegistry,
+		cdigest.DefaultColNameDIDRegistry,
 		q,
 		func(res *mongo.SingleResult) error {
 			i, err := cdigest.LoadState(res.Decode, st.Encoders())
@@ -49,7 +49,7 @@ func DIDDesign(st *cdigest.Database, contract string) (types.Design, base.State,
 
 func DIDData(db *cdigest.Database, contract, key string) (*types.Data, base.State, error) {
 	filter := utilc.NewBSONFilter("contract", contract)
-	filter = filter.Add("publicKey", key)
+	filter = filter.Add("method_specific_id", key)
 	q := filter.D()
 
 	opt := options.FindOne().SetSort(
@@ -59,7 +59,7 @@ func DIDData(db *cdigest.Database, contract, key string) (*types.Data, base.Stat
 	var sta base.State
 	var err error
 	if err := db.MongoClient().GetByFilter(
-		defaultColNameDIDData,
+		cdigest.DefaultColNameDIDData,
 		q,
 		func(res *mongo.SingleResult) error {
 			sta, err = cdigest.LoadState(res.Decode, db.Encoders())
@@ -86,7 +86,7 @@ func DIDData(db *cdigest.Database, contract, key string) (*types.Data, base.Stat
 	}
 }
 
-func DIDDocument(db *cdigest.Database, contract, key string) (*types.Document, base.State, error) {
+func DIDDocument(db *cdigest.Database, contract, key string) (*types.DIDDocument, base.State, error) {
 	filter := utilc.NewBSONFilter("contract", contract)
 	filter = filter.Add("did", key)
 	q := filter.D()
@@ -94,11 +94,11 @@ func DIDDocument(db *cdigest.Database, contract, key string) (*types.Document, b
 	opt := options.FindOne().SetSort(
 		utilc.NewBSONFilter("height", -1).D(),
 	)
-	var document *types.Document
+	var document *types.DIDDocument
 	var sta base.State
 	var err error
 	if err := db.MongoClient().GetByFilter(
-		defaultColNameDIDDocument,
+		cdigest.DefaultColNameDIDDocument,
 		q,
 		func(res *mongo.SingleResult) error {
 			sta, err = cdigest.LoadState(res.Decode, db.Encoders())
