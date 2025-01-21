@@ -2,22 +2,22 @@ package cmds
 
 import (
 	"context"
-	daocmds "github.com/ProtoconNet/mitum-dao/cmds"
-	pointcmds "github.com/ProtoconNet/mitum-point/cmds"
-	storagecmds "github.com/ProtoconNet/mitum-storage/cmds"
 	"net"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 
-	credentialcmds "github.com/ProtoconNet/mitum-credential/cmds"
-	currencycmds "github.com/ProtoconNet/mitum-currency/v3/cmds"
-	currencydigest "github.com/ProtoconNet/mitum-currency/v3/digest"
+	crcmds "github.com/ProtoconNet/mitum-credential/cmds"
+	ccmds "github.com/ProtoconNet/mitum-currency/v3/cmds"
+	cdigest "github.com/ProtoconNet/mitum-currency/v3/digest"
+	daocmds "github.com/ProtoconNet/mitum-dao/cmds"
 	"github.com/ProtoconNet/mitum-minic/digest"
-	nftcmds "github.com/ProtoconNet/mitum-nft/cmds"
-	timestampcmds "github.com/ProtoconNet/mitum-timestamp/cmds"
-	tokencmds "github.com/ProtoconNet/mitum-token/cmds"
+	ncmds "github.com/ProtoconNet/mitum-nft/cmds"
+	pcmds "github.com/ProtoconNet/mitum-point/cmds"
+	scmds "github.com/ProtoconNet/mitum-storage/cmds"
+	tscmds "github.com/ProtoconNet/mitum-timestamp/cmds"
+	tkcmds "github.com/ProtoconNet/mitum-token/cmds"
 	"github.com/ProtoconNet/mitum2/base"
 	"github.com/ProtoconNet/mitum2/isaac"
 	isaacstates "github.com/ProtoconNet/mitum2/isaac/states"
@@ -82,27 +82,27 @@ func (cmd *RunCommand) Run(pctx context.Context) error {
 
 	pps := DefaultRunPS()
 
-	_ = pps.AddOK(currencycmds.PNameDigester, ProcessDigester, nil, currencycmds.PNameMongoDBsDataBase).
-		AddOK(currencycmds.PNameStartDigester, ProcessStartDigester, nil, currencycmds.PNameDigestStart)
+	_ = pps.AddOK(ccmds.PNameDigester, ProcessDigester, nil, ccmds.PNameMongoDBsDataBase).
+		AddOK(ccmds.PNameStartDigester, ProcessStartDigester, nil, ccmds.PNameDigestStart)
 	_ = pps.POK(launch.PNameStorage).PostAddOK(ps.Name("check-hold"), cmd.pCheckHold)
 	_ = pps.POK(launch.PNameStates).
-		PreAddOK(nftcmds.PNameOperationProcessorsMap, nftcmds.POperationProcessorsMap).
-		PreAddOK(timestampcmds.PNameOperationProcessorsMap, timestampcmds.POperationProcessorsMap).
-		PreAddOK(credentialcmds.PNameOperationProcessorsMap, credentialcmds.POperationProcessorsMap).
-		PreAddOK(tokencmds.PNameOperationProcessorsMap, tokencmds.POperationProcessorsMap).
-		PreAddOK(pointcmds.PNameOperationProcessorsMap, pointcmds.POperationProcessorsMap).
+		PreAddOK(ncmds.PNameOperationProcessorsMap, ncmds.POperationProcessorsMap).
+		PreAddOK(tscmds.PNameOperationProcessorsMap, tscmds.POperationProcessorsMap).
+		PreAddOK(crcmds.PNameOperationProcessorsMap, crcmds.POperationProcessorsMap).
+		PreAddOK(tkcmds.PNameOperationProcessorsMap, tkcmds.POperationProcessorsMap).
+		PreAddOK(pcmds.PNameOperationProcessorsMap, pcmds.POperationProcessorsMap).
 		PreAddOK(daocmds.PNameOperationProcessorsMap, daocmds.POperationProcessorsMap).
-		PreAddOK(storagecmds.PNameOperationProcessorsMap, storagecmds.POperationProcessorsMap).
+		PreAddOK(scmds.PNameOperationProcessorsMap, scmds.POperationProcessorsMap).
 		PreAddOK(PNameOperationProcessorsMap, POperationProcessorsMap).
 		PreAddOK(ps.Name("when-new-block-saved-in-consensus-state-func"), cmd.pWhenNewBlockSavedInConsensusStateFunc).
 		PreAddOK(ps.Name("when-new-block-saved-in-syncing-state-func"), cmd.pWhenNewBlockSavedInSyncingStateFunc).
 		PreAddOK(ps.Name("when-new-block-confirmed-func"), cmd.pWhenNewBlockConfirmed)
 	_ = pps.POK(launch.PNameEncoder).
 		PostAddOK(launch.PNameAddHinters, PAddHinters)
-	_ = pps.POK(currencycmds.PNameDigest).
-		PostAddOK(currencycmds.PNameDigestAPIHandlers, cmd.pDigestAPIHandlers)
-	_ = pps.POK(currencycmds.PNameDigester).
-		PostAddOK(currencycmds.PNameDigesterFollowUp, PDigesterFollowUp)
+	_ = pps.POK(ccmds.PNameDigest).
+		PostAddOK(ccmds.PNameDigestAPIHandlers, cmd.pDigestAPIHandlers)
+	_ = pps.POK(ccmds.PNameDigester).
+		PostAddOK(ccmds.PNameDigesterFollowUp, PDigesterFollowUp)
 
 	_ = pps.SetLogging(log)
 
@@ -210,7 +210,7 @@ func (cmd *RunCommand) pWhenNewBlockSavedInSyncingStateFunc(pctx context.Context
 		return pctx, err
 	}
 
-	if err := util.LoadFromContext(pctx, currencydigest.ContextValueDigester, &di); err != nil {
+	if err := util.LoadFromContext(pctx, cdigest.ContextValueDigester, &di); err != nil {
 		return pctx, err
 	}
 
@@ -286,7 +286,7 @@ func (cmd *RunCommand) pWhenNewBlockConfirmed(pctx context.Context) (context.Con
 		return pctx, err
 	}
 
-	if err := util.LoadFromContext(pctx, currencydigest.ContextValueDigester, &di); err != nil {
+	if err := util.LoadFromContext(pctx, cdigest.ContextValueDigester, &di); err != nil {
 		return pctx, err
 	}
 
@@ -402,8 +402,8 @@ func (cmd *RunCommand) pDigestAPIHandlers(ctx context.Context) (context.Context,
 		return nil, err
 	}
 
-	var design currencydigest.YamlDigestDesign
-	if err := util.LoadFromContext(ctx, currencydigest.ContextValueDigestDesign, &design); err != nil {
+	var design cdigest.YamlDigestDesign
+	if err := util.LoadFromContext(ctx, cdigest.ContextValueDigestDesign, &design); err != nil {
 		if errors.Is(err, util.ErrNotFound) {
 			return ctx, nil
 		}
@@ -411,7 +411,7 @@ func (cmd *RunCommand) pDigestAPIHandlers(ctx context.Context) (context.Context,
 		return nil, err
 	}
 
-	if design.Equal(currencydigest.YamlDigestDesign{}) {
+	if design.Equal(cdigest.YamlDigestDesign{}) {
 		return ctx, nil
 	}
 
@@ -420,8 +420,8 @@ func (cmd *RunCommand) pDigestAPIHandlers(ctx context.Context) (context.Context,
 		return ctx, err
 	}
 
-	var dnt *currencydigest.HTTP2Server
-	if err := util.LoadFromContext(ctx, currencydigest.ContextValueDigestNetwork, &dnt); err != nil {
+	var dnt *cdigest.HTTP2Server
+	if err := util.LoadFromContext(ctx, cdigest.ContextValueDigestNetwork, &dnt); err != nil {
 		return ctx, err
 	}
 	router := dnt.Router()
@@ -449,8 +449,8 @@ func (cmd *RunCommand) pDigestAPIHandlers(ctx context.Context) (context.Context,
 	return ctx, nil
 }
 
-func (cmd *RunCommand) loadCache(_ context.Context, design currencydigest.YamlDigestDesign) (currencydigest.Cache, error) {
-	c, err := currencydigest.NewCacheFromURI(design.Cache().String())
+func (cmd *RunCommand) loadCache(_ context.Context, design cdigest.YamlDigestDesign) (cdigest.Cache, error) {
+	c, err := cdigest.NewCacheFromURI(design.Cache().String())
 	if err != nil {
 		cmd.log.Err(err).Str("cache", design.Cache().String()).Msg("failed to connect cache server")
 		cmd.log.Warn().Msg("instead of remote cache server, internal mem cache can be available, `memory://`")
@@ -463,16 +463,16 @@ func (cmd *RunCommand) loadCache(_ context.Context, design currencydigest.YamlDi
 func (cmd *RunCommand) setDigestDefaultHandlers(
 	ctx context.Context,
 	params *launch.LocalParams,
-	cache currencydigest.Cache,
+	cache cdigest.Cache,
 	router *mux.Router,
-	queue chan currencydigest.RequestWrapper,
-) (*currencydigest.Handlers, error) {
-	var st *currencydigest.Database
-	if err := util.LoadFromContext(ctx, currencydigest.ContextValueDigestDatabase, &st); err != nil {
+	queue chan cdigest.RequestWrapper,
+) (*cdigest.Handlers, error) {
+	var st *cdigest.Database
+	if err := util.LoadFromContext(ctx, cdigest.ContextValueDigestDatabase, &st); err != nil {
 		return nil, err
 	}
 
-	handlers := currencydigest.NewHandlers(ctx, params.ISAAC.NetworkID(), encs, enc, st, cache, router, queue)
+	handlers := cdigest.NewHandlers(ctx, params.ISAAC.NetworkID(), encs, enc, st, cache, router, queue)
 
 	h, err := cmd.setDigestNetworkClient(ctx, params, handlers)
 	if err != nil {
@@ -486,12 +486,12 @@ func (cmd *RunCommand) setDigestDefaultHandlers(
 func (cmd *RunCommand) setDigestHandlers(
 	ctx context.Context,
 	params *launch.LocalParams,
-	cache currencydigest.Cache,
+	cache cdigest.Cache,
 	router *mux.Router,
 	routes map[string]*mux.Route,
 ) (*digest.Handlers, error) {
-	var st *currencydigest.Database
-	if err := util.LoadFromContext(ctx, currencydigest.ContextValueDigestDatabase, &st); err != nil {
+	var st *cdigest.Database
+	if err := util.LoadFromContext(ctx, cdigest.ContextValueDigestDatabase, &st); err != nil {
 		return nil, err
 	}
 
@@ -503,10 +503,10 @@ func (cmd *RunCommand) setDigestHandlers(
 func (cmd *RunCommand) setDigestNetworkClient(
 	ctx context.Context,
 	params *launch.LocalParams,
-	handlers *currencydigest.Handlers,
-) (*currencydigest.Handlers, error) {
-	var design currencydigest.YamlDigestDesign
-	if err := util.LoadFromContext(ctx, currencydigest.ContextValueDigestDesign, &design); err != nil {
+	handlers *cdigest.Handlers,
+) (*cdigest.Handlers, error) {
+	var design cdigest.YamlDigestDesign
+	if err := util.LoadFromContext(ctx, cdigest.ContextValueDigestDesign, &design); err != nil {
 		if errors.Is(err, util.ErrNotFound) {
 			return handlers, nil
 		}
@@ -514,7 +514,7 @@ func (cmd *RunCommand) setDigestNetworkClient(
 		return nil, err
 	}
 
-	if design.Equal(currencydigest.YamlDigestDesign{}) {
+	if design.Equal(cdigest.YamlDigestDesign{}) {
 		return handlers, nil
 	}
 

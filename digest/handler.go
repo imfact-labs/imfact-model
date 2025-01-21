@@ -2,16 +2,22 @@ package digest
 
 import (
 	"context"
-	currencydigest "github.com/ProtoconNet/mitum-currency/v3/digest"
-	"github.com/ProtoconNet/mitum-currency/v3/types"
-	"github.com/ProtoconNet/mitum2/network/quicmemberlist"
-	"github.com/ProtoconNet/mitum2/network/quicstream"
+	crdigest "github.com/ProtoconNet/mitum-credential/digest"
+	daodigest "github.com/ProtoconNet/mitum-dao/digest"
+	ndigest "github.com/ProtoconNet/mitum-nft/digest"
+	pdigest "github.com/ProtoconNet/mitum-point/digest"
+	sdigest "github.com/ProtoconNet/mitum-storage/digest"
+	tsdigest "github.com/ProtoconNet/mitum-timestamp/digest"
+	tkdigest "github.com/ProtoconNet/mitum-token/digest"
 	"net/http"
 	"time"
 
+	cdigest "github.com/ProtoconNet/mitum-currency/v3/digest"
 	"github.com/ProtoconNet/mitum-currency/v3/digest/network"
 	"github.com/ProtoconNet/mitum2/base"
 	"github.com/ProtoconNet/mitum2/launch"
+	"github.com/ProtoconNet/mitum2/network/quicmemberlist"
+	"github.com/ProtoconNet/mitum2/network/quicstream"
 	"github.com/ProtoconNet/mitum2/util"
 	"github.com/ProtoconNet/mitum2/util/encoder"
 	"github.com/ProtoconNet/mitum2/util/logging"
@@ -22,39 +28,14 @@ import (
 )
 
 var (
-	HandlerPathNFTAllApproved     = `/nft/{contract:(?i)` + types.REStringAddressString + `}/account/{address:(?i)` + types.REStringAddressString + `}/allapproved` // revive:disable-line:line-length-limit
-	HandlerPathNFTCollection      = `/nft/{contract:(?i)` + types.REStringAddressString + `}`
-	HandlerPathNFT                = `/nft/{contract:(?i)` + types.REStringAddressString + `}/nftidx/{nft_idx:[0-9]+}`
-	HandlerPathNFTs               = `/nft/{contract:(?i)` + types.REStringAddressString + `}/nfts`
-	HandlerPathNFTCount           = `/nft/{contract:(?i)` + types.REStringAddressString + `}/totalsupply`
-	HandlerPathDIDService         = `/did/{contract:(?i)` + types.REStringAddressString + `}`
-	HandlerPathDIDCredential      = `/did/{contract:(?i)` + types.REStringAddressString + `}/template/{template_id:` + types.ReSpecialCh + `}/credential/{credential_id:` + types.ReSpecialCh + `}`
-	HandlerPathDIDTemplate        = `/did/{contract:(?i)` + types.REStringAddressString + `}/template/{template_id:` + types.ReSpecialCh + `}`
-	HandlerPathDIDCredentials     = `/did/{contract:(?i)` + types.REStringAddressString + `}/template/{template_id:` + types.ReSpecialCh + `}/credentials`
-	HandlerPathDIDHolder          = `/did/{contract:(?i)` + types.REStringAddressString + `}/holder/{holder:(?i)` + types.REStringAddressString + `}` // revive:disable-line:line-length-limit
-	HandlerPathTimeStampDesign    = `/timestamp/{contract:(?i)` + types.REStringAddressString + `}`
-	HandlerPathTimeStampItem      = `/timestamp/{contract:(?i)` + types.REStringAddressString + `}/project/{project_id:` + types.ReSpecialCh + `}/idx/{timestamp_idx:[0-9]+}`
-	HandlerPathToken              = `/token/{contract:(?i)` + base.REStringAddressString + `}`
-	HandlerPathTokenBalance       = `/token/{contract:(?i)` + base.REStringAddressString + `}/account/{address:(?i)` + base.REStringAddressString + `}` // revive:disable-line:line-length-limit
-	HandlerPathPoint              = `/point/{contract:(?i)` + base.REStringAddressString + `}`
-	HandlerPathPointBalance       = `/point/{contract:(?i)` + base.REStringAddressString + `}/account/{address:(?i)` + base.REStringAddressString + `}` // revive:disable-line:line-length-limit
-	HandlerPathDAOService         = `/dao/{contract:(?i)` + types.REStringAddressString + `}`
-	HandlerPathDAOProposal        = `/dao/{contract:(?i)` + types.REStringAddressString + `}/proposal/{proposal_id:` + types.ReSpecialCh + `}`
-	HandlerPathDAODelegator       = `/dao/{contract:(?i)` + types.REStringAddressString + `}/proposal/{proposal_id:` + types.ReSpecialCh + `}/registrant/{address:(?i)` + types.REStringAddressString + `}`
-	HandlerPathDAOVoters          = `/dao/{contract:(?i)` + types.REStringAddressString + `}/proposal/{proposal_id:` + types.ReSpecialCh + `}/voter`
-	HandlerPathDAOVotingPowerBox  = `/dao/{contract:(?i)` + types.REStringAddressString + `}/proposal/{proposal_id:` + types.ReSpecialCh + `}/votingpower` // revive:disable-line:line-length-limit
-	HandlerPathStorageDesign      = `/storage/{contract:(?i)` + types.REStringAddressString + `}`
-	HandlerPathStorageData        = `/storage/{contract:(?i)` + types.REStringAddressString + `}/datakey/{data_key:` + types.ReSpecialCh + `}`
-	HandlerPathStorageDataHistory = `/storage/{contract:(?i)` + types.REStringAddressString + `}/datakey/{data_key:` + types.ReSpecialCh + `}/history`
-	HandlerPathStorageDataCount   = `/storage/{contract:(?i)` + types.REStringAddressString + `}/datacount`
-	HandlerPathResource           = `/resource`
+	HandlerPathResource = `/resource`
 )
 
 func init() {
-	if b, err := currencydigest.JSON.Marshal(currencydigest.UnknownProblem); err != nil {
+	if b, err := cdigest.JSON.Marshal(cdigest.UnknownProblem); err != nil {
 		panic(err)
 	} else {
-		currencydigest.UnknownProblemJSON = b
+		cdigest.UnknownProblemJSON = b
 	}
 }
 
@@ -63,9 +44,9 @@ type Handlers struct {
 	networkID       base.NetworkID
 	encoders        *encoder.Encoders
 	encoder         encoder.Encoder
-	database        *currencydigest.Database
-	cache           currencydigest.Cache
-	nodeInfoHandler currencydigest.NodeInfoHandler
+	database        *cdigest.Database
+	cache           cdigest.Cache
+	nodeInfoHandler cdigest.NodeInfoHandler
 	send            func(interface{}) (base.Operation, error)
 	client          func() (*quicstream.ConnectionPool, *quicmemberlist.Memberlist, []quicstream.ConnInfo, error)
 	router          *mux.Router
@@ -80,8 +61,8 @@ func NewHandlers(
 	networkID base.NetworkID,
 	encs *encoder.Encoders,
 	enc encoder.Encoder,
-	st *currencydigest.Database,
-	cache currencydigest.Cache,
+	st *cdigest.Database,
+	cache cdigest.Cache,
 	router *mux.Router,
 	routes map[string]*mux.Route,
 ) *Handlers {
@@ -99,7 +80,7 @@ func NewHandlers(
 		cache:           cache,
 		router:          router,
 		routes:          routes,
-		itemsLimiter:    currencydigest.DefaultItemsLimiter,
+		itemsLimiter:    cdigest.DefaultItemsLimiter,
 		rg:              &singleflight.Group{},
 		expireNotFilled: time.Second * 1,
 	}
@@ -125,7 +106,7 @@ func (hd *Handlers) SetLimiter(f func(string) int64) *Handlers {
 	return hd
 }
 
-func (hd *Handlers) Cache() currencydigest.Cache {
+func (hd *Handlers) Cache() cdigest.Cache {
 	return hd.cache
 }
 
@@ -139,55 +120,55 @@ func (hd *Handlers) Handler() http.Handler {
 
 func (hd *Handlers) setHandlers() {
 	get := 1000
-	_ = hd.setHandler(HandlerPathNFTCollection, hd.handleNFTCollection, true, get, get).
+	_ = hd.setHandler(ndigest.HandlerPathNFTCollection, hd.handleNFTCollection, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathNFTs, hd.handleNFTs, true, get, get).
+	_ = hd.setHandler(ndigest.HandlerPathNFTs, hd.handleNFTs, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathNFTCount, hd.handleNFTCount, true, get, get).
+	_ = hd.setHandler(ndigest.HandlerPathNFTCount, hd.handleNFTCount, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathNFTAllApproved, hd.handleNFTOperators, true, get, get).
+	_ = hd.setHandler(ndigest.HandlerPathNFTAllApproved, hd.handleNFTOperators, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathNFT, hd.handleNFT, true, get, get).
+	_ = hd.setHandler(ndigest.HandlerPathNFT, hd.handleNFT, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathDIDService, hd.handleCredentialService, true, get, get).
+	_ = hd.setHandler(crdigest.HandlerPathDIDService, hd.handleCredentialService, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathDIDCredentials, hd.handleCredentials, true, get, get).
+	_ = hd.setHandler(crdigest.HandlerPathDIDCredentials, hd.handleCredentials, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathDIDCredential, hd.handleCredential, true, get, get).
+	_ = hd.setHandler(crdigest.HandlerPathDIDCredential, hd.handleCredential, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathDIDHolder, hd.handleHolderCredential, true, get, get).
+	_ = hd.setHandler(crdigest.HandlerPathDIDHolder, hd.handleHolderCredential, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathDIDTemplate, hd.handleTemplate, true, get, get).
+	_ = hd.setHandler(crdigest.HandlerPathDIDTemplate, hd.handleTemplate, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathTimeStampItem, hd.handleTimeStampItem, true, get, get).
+	_ = hd.setHandler(tsdigest.HandlerPathTimeStampItem, hd.handleTimeStampItem, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathTimeStampDesign, hd.handleTimeStampDesign, true, get, get).
+	_ = hd.setHandler(tsdigest.HandlerPathTimeStampDesign, hd.handleTimeStampDesign, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathTokenBalance, hd.handleTokenBalance, true, get, get).
+	_ = hd.setHandler(tkdigest.HandlerPathTokenBalance, hd.handleTokenBalance, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathToken, hd.handleToken, true, get, get).
+	_ = hd.setHandler(tkdigest.HandlerPathToken, hd.handleToken, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathPointBalance, hd.handlePointBalance, true, get, get).
+	_ = hd.setHandler(pdigest.HandlerPathPointBalance, hd.handlePointBalance, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathPoint, hd.handlePoint, true, get, get).
+	_ = hd.setHandler(pdigest.HandlerPathPoint, hd.handlePoint, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathDAOService, hd.handleDAOService, true, get, get).
+	_ = hd.setHandler(daodigest.HandlerPathDAOService, hd.handleDAOService, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathDAOProposal, hd.handleDAOProposal, true, get, get).
+	_ = hd.setHandler(daodigest.HandlerPathDAOProposal, hd.handleDAOProposal, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathDAODelegator, hd.handleDAODelegator, true, get, get).
+	_ = hd.setHandler(daodigest.HandlerPathDAODelegator, hd.handleDAODelegator, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathDAOVoters, hd.handleDAOVoters, true, get, get).
+	_ = hd.setHandler(daodigest.HandlerPathDAOVoters, hd.handleDAOVoters, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathDAOVotingPowerBox, hd.handleDAOVotingPowerBox, true, get, get).
+	_ = hd.setHandler(daodigest.HandlerPathDAOVotingPowerBox, hd.handleDAOVotingPowerBox, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathStorageData, hd.handleStorageData, true, get, get).
+	_ = hd.setHandler(sdigest.HandlerPathStorageData, hd.handleStorageData, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathStorageDesign, hd.handleStorageDesign, true, get, get).
+	_ = hd.setHandler(sdigest.HandlerPathStorageDesign, hd.handleStorageDesign, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathStorageDataHistory, hd.handleStorageDataHistory, true, get, get).
+	_ = hd.setHandler(sdigest.HandlerPathStorageDataHistory, hd.handleStorageDataHistory, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(HandlerPathStorageDataCount, hd.handleStorageDataCount, true, get, get).
+	_ = hd.setHandler(sdigest.HandlerPathStorageDataCount, hd.handleStorageDataCount, true, get, get).
 		Methods(http.MethodOptions, "GET")
 	//_ = hd.setHandler(HandlerPathResource, hd.handleResource, true, get, get).
 	//	Methods(http.MethodOptions, "GET")
@@ -198,7 +179,7 @@ func (hd *Handlers) setHandler(prefix string, h network.HTTPHandlerFunc, useCach
 	if !useCache {
 		handler = http.HandlerFunc(h)
 	} else {
-		ch := currencydigest.NewCachedHTTPHandler(hd.cache, h)
+		ch := cdigest.NewCachedHTTPHandler(hd.cache, h)
 
 		handler = ch
 	}
@@ -217,7 +198,7 @@ func (hd *Handlers) setHandler(prefix string, h network.HTTPHandlerFunc, useCach
 		route = hd.router.Name(name)
 	}
 
-	handler = currencydigest.RateLimiter(rps, burst)(handler)
+	handler = cdigest.RateLimiter(rps, burst)(handler)
 
 	/*
 		if rules, found := hd.rateLimit[prefix]; found {

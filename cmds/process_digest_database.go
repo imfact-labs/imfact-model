@@ -2,9 +2,10 @@ package cmds
 
 import (
 	"context"
-	"github.com/ProtoconNet/mitum-currency/v3/digest"
-	mongodbstorage "github.com/ProtoconNet/mitum-currency/v3/digest/mongodb"
-	minicdigest "github.com/ProtoconNet/mitum-minic/digest"
+
+	cdigest "github.com/ProtoconNet/mitum-currency/v3/digest"
+	mongodbst "github.com/ProtoconNet/mitum-currency/v3/digest/mongodb"
+	"github.com/ProtoconNet/mitum-minic/digest"
 	"github.com/ProtoconNet/mitum2/isaac"
 	isaacdatabase "github.com/ProtoconNet/mitum2/isaac/database"
 	"github.com/ProtoconNet/mitum2/launch"
@@ -15,12 +16,12 @@ import (
 )
 
 func ProcessDatabase(ctx context.Context) (context.Context, error) {
-	var l digest.YamlDigestDesign
-	if err := util.LoadFromContext(ctx, digest.ContextValueDigestDesign, &l); err != nil {
+	var l cdigest.YamlDigestDesign
+	if err := util.LoadFromContext(ctx, cdigest.ContextValueDigestDesign, &l); err != nil {
 		return ctx, err
 	}
 
-	if l.Equal(digest.YamlDigestDesign{}) {
+	if l.Equal(cdigest.YamlDigestDesign{}) {
 		return ctx, nil
 	}
 	conf := l.Database()
@@ -33,7 +34,7 @@ func ProcessDatabase(ctx context.Context) (context.Context, error) {
 	}
 }
 
-func processMongodbDatabase(ctx context.Context, l digest.YamlDigestDesign) (context.Context, error) {
+func processMongodbDatabase(ctx context.Context, l cdigest.YamlDigestDesign) (context.Context, error) {
 	conf := l.Database()
 
 	/*
@@ -48,7 +49,7 @@ func processMongodbDatabase(ctx context.Context, l digest.YamlDigestDesign) (con
 		return ctx, err
 	}
 
-	st, err := mongodbstorage.NewDatabaseFromURI(conf.URI().String(), encs)
+	st, err := mongodbst.NewDatabaseFromURI(conf.URI().String(), encs)
 	if err != nil {
 		return ctx, err
 	}
@@ -78,26 +79,26 @@ func processMongodbDatabase(ctx context.Context, l digest.YamlDigestDesign) (con
 
 	_ = dst.SetLogging(log)
 
-	return context.WithValue(ctx, digest.ContextValueDigestDatabase, dst), nil
+	return context.WithValue(ctx, cdigest.ContextValueDigestDatabase, dst), nil
 }
 
-func loadDigestDatabase(mst *isaacdatabase.Center, st *mongodbstorage.Database, readonly bool) (*digest.Database, error) {
-	var dst *digest.Database
+func loadDigestDatabase(mst *isaacdatabase.Center, st *mongodbst.Database, readonly bool) (*cdigest.Database, error) {
+	var dst *cdigest.Database
 	if readonly {
-		s, err := digest.NewReadonlyDatabase(mst, st)
+		s, err := cdigest.NewReadonlyDatabase(mst, st)
 		if err != nil {
 			return nil, err
 		}
 		dst = s
 	} else {
-		s, err := digest.NewDatabase(mst, st)
+		s, err := cdigest.NewDatabase(mst, st)
 		if err != nil {
 			return nil, err
 		}
 		dst = s
 	}
 
-	if err := dst.Initialize(minicdigest.DefaultIndexes); err != nil {
+	if err := dst.Initialize(digest.DefaultIndexes); err != nil {
 		return nil, err
 	}
 

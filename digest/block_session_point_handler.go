@@ -1,8 +1,9 @@
 package digest
 
 import (
+	pdigest "github.com/ProtoconNet/mitum-point/digest"
 	"github.com/ProtoconNet/mitum-point/state"
-	mitumbase "github.com/ProtoconNet/mitum2/base"
+	"github.com/ProtoconNet/mitum2/base"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -41,8 +42,8 @@ func (bs *BlockSession) preparePoint() error {
 	return nil
 }
 
-func (bs *BlockSession) handlePointState(st mitumbase.State) ([]mongo.WriteModel, error) {
-	if pointDoc, err := NewPointDoc(st, bs.st.Encoder()); err != nil {
+func (bs *BlockSession) handlePointState(st base.State) ([]mongo.WriteModel, error) {
+	if pointDoc, err := pdigest.NewPointDoc(st, bs.st.Encoder()); err != nil {
 		return nil, err
 	} else {
 		return []mongo.WriteModel{
@@ -51,8 +52,8 @@ func (bs *BlockSession) handlePointState(st mitumbase.State) ([]mongo.WriteModel
 	}
 }
 
-func (bs *BlockSession) handlePointBalanceState(st mitumbase.State) ([]mongo.WriteModel, error) {
-	if pointBalanceDoc, err := NewPointBalanceDoc(st, bs.st.Encoder()); err != nil {
+func (bs *BlockSession) handlePointBalanceState(st base.State) ([]mongo.WriteModel, error) {
+	if pointBalanceDoc, err := pdigest.NewPointBalanceDoc(st, bs.st.Encoder()); err != nil {
 		return nil, err
 	} else {
 		return []mongo.WriteModel{

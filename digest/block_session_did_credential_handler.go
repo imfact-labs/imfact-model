@@ -3,7 +3,7 @@ package digest
 import (
 	crdigest "github.com/ProtoconNet/mitum-credential/digest"
 	"github.com/ProtoconNet/mitum-credential/state"
-	mitumbase "github.com/ProtoconNet/mitum2/base"
+	"github.com/ProtoconNet/mitum2/base"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -59,7 +59,7 @@ func (bs *BlockSession) prepareDIDCredential() error {
 	return nil
 }
 
-func (bs *BlockSession) handleDIDCredentialDesignState(st mitumbase.State) ([]mongo.WriteModel, error) {
+func (bs *BlockSession) handleDIDCredentialDesignState(st base.State) ([]mongo.WriteModel, error) {
 	if issuerDoc, err := crdigest.NewDIDCredentialDesignDoc(st, bs.st.Encoder()); err != nil {
 		return nil, err
 	} else {
@@ -69,7 +69,7 @@ func (bs *BlockSession) handleDIDCredentialDesignState(st mitumbase.State) ([]mo
 	}
 }
 
-func (bs *BlockSession) handleCredentialState(st mitumbase.State) ([]mongo.WriteModel, error) {
+func (bs *BlockSession) handleCredentialState(st base.State) ([]mongo.WriteModel, error) {
 	if credentialDoc, err := crdigest.NewCredentialDoc(st, bs.st.Encoder()); err != nil {
 		return nil, err
 	} else {
@@ -79,7 +79,7 @@ func (bs *BlockSession) handleCredentialState(st mitumbase.State) ([]mongo.Write
 	}
 }
 
-func (bs *BlockSession) handleHolderDIDState(st mitumbase.State) ([]mongo.WriteModel, error) {
+func (bs *BlockSession) handleHolderDIDState(st base.State) ([]mongo.WriteModel, error) {
 	if holderDidDoc, err := crdigest.NewHolderDIDDoc(st, bs.st.Encoder()); err != nil {
 		return nil, err
 	} else {
@@ -89,7 +89,7 @@ func (bs *BlockSession) handleHolderDIDState(st mitumbase.State) ([]mongo.WriteM
 	}
 }
 
-func (bs *BlockSession) handleTemplateState(st mitumbase.State) ([]mongo.WriteModel, error) {
+func (bs *BlockSession) handleTemplateState(st base.State) ([]mongo.WriteModel, error) {
 	if templateDoc, err := crdigest.NewTemplateDoc(st, bs.st.Encoder()); err != nil {
 		return nil, err
 	} else {

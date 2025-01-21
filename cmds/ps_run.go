@@ -1,7 +1,7 @@
 package cmds
 
 import (
-	currencycmds "github.com/ProtoconNet/mitum-currency/v3/cmds"
+	ccmds "github.com/ProtoconNet/mitum-currency/v3/cmds"
 	"github.com/ProtoconNet/mitum2/launch"
 	"github.com/ProtoconNet/mitum2/util/ps"
 )
@@ -16,13 +16,13 @@ func DefaultRunPS() *ps.PS {
 	pps := ps.NewPS("cmd-run")
 
 	_ = pps.
-		AddOK(launch.PNameEncoder, currencycmds.PEncoder, nil).
+		AddOK(launch.PNameEncoder, ccmds.PEncoder, nil).
 		AddOK(launch.PNameDesign, launch.PLoadDesign, nil, launch.PNameEncoder).
-		AddOK(currencycmds.PNameDigestDesign, currencycmds.PLoadDigestDesign, nil, launch.PNameEncoder).
+		AddOK(ccmds.PNameDigestDesign, ccmds.PLoadDigestDesign, nil, launch.PNameEncoder).
 		AddOK(launch.PNameTimeSyncer, launch.PStartTimeSyncer, launch.PCloseTimeSyncer, launch.PNameDesign).
 		AddOK(launch.PNameLocal, launch.PLocal, nil, launch.PNameDesign).
 		AddOK(launch.PNameStorage, launch.PStorage, nil, launch.PNameLocal).
-		AddOK(launch.PNameProposalMaker, currencycmds.PProposalMaker, nil, launch.PNameStorage).
+		AddOK(launch.PNameProposalMaker, ccmds.PProposalMaker, nil, launch.PNameStorage).
 		AddOK(launch.PNameNetwork, launch.PNetwork, nil, launch.PNameStorage).
 		AddOK(launch.PNameMemberlist, launch.PMemberlist, nil, launch.PNameNetwork).
 		AddOK(launch.PNameBlockItemReaders, launch.PBlockItemReaders, nil, launch.PNameDesign).
@@ -40,10 +40,10 @@ func DefaultRunPS() *ps.PS {
 			launch.PNameStartMemberlist,
 			launch.PNameStartNetwork,
 			launch.PNameStates).
-		AddOK(PNameMongoDBsDataBase, ProcessDatabase, nil, currencycmds.PNameDigestDesign, launch.PNameStorage).
+		AddOK(PNameMongoDBsDataBase, ProcessDatabase, nil, ccmds.PNameDigestDesign, launch.PNameStorage).
 		//AddOK(PNameDigester, ProcessDigester, nil, PNameMongoDBsDataBase).
-		AddOK(PNameDigest, currencycmds.ProcessDigestAPI, nil, currencycmds.PNameDigestDesign, PNameMongoDBsDataBase, launch.PNameMemberlist).
-		AddOK(PNameDigestStart, currencycmds.ProcessStartDigestAPI, nil, PNameDigest)
+		AddOK(PNameDigest, ccmds.ProcessDigestAPI, nil, ccmds.PNameDigestDesign, PNameMongoDBsDataBase, launch.PNameMemberlist).
+		AddOK(PNameDigestStart, ccmds.ProcessStartDigestAPI, nil, PNameDigest)
 	//AddOK(PNameStartDigester, ProcessStartDigester, nil, PNameDigestStart)
 
 	_ = pps.POK(launch.PNameDesign).
@@ -70,7 +70,7 @@ func DefaultRunPS() *ps.PS {
 	_ = pps.POK(launch.PNameNetwork).
 		PreAddOK(launch.PNameQuicstreamClient, launch.PQuicstreamClient).
 		PostAddOK(launch.PNameSyncSourceChecker, launch.PSyncSourceChecker).
-		PostAddOK(launch.PNameSuffrageCandidateLimiterSet, currencycmds.PSuffrageCandidateLimiterSet)
+		PostAddOK(launch.PNameSuffrageCandidateLimiterSet, ccmds.PSuffrageCandidateLimiterSet)
 
 	_ = pps.POK(launch.PNameMemberlist).
 		PreAddOK(launch.PNameLastConsensusNodesWatcher, launch.PLastConsensusNodesWatcher).
@@ -82,16 +82,16 @@ func DefaultRunPS() *ps.PS {
 
 	_ = pps.POK(launch.PNameStates).
 		PreAddOK(launch.PNameProposerSelector, launch.PProposerSelector).
-		PreAddOK(launch.PNameOperationProcessorsMap, currencycmds.POperationProcessorsMap).
-		PreAddOK(launch.PNameNetworkHandlers, currencycmds.PNetworkHandlers).
+		PreAddOK(launch.PNameOperationProcessorsMap, ccmds.POperationProcessorsMap).
+		PreAddOK(launch.PNameNetworkHandlers, ccmds.PNetworkHandlers).
 		PreAddOK(launch.PNameNodeInConsensusNodesFunc, launch.PNodeInConsensusNodesFunc).
-		PreAddOK(launch.PNameProposalProcessors, currencycmds.PProposalProcessors).
+		PreAddOK(launch.PNameProposalProcessors, ccmds.PProposalProcessors).
 		PreAddOK(launch.PNameBallotStuckResolver, launch.PBallotStuckResolver).
 		PostAddOK(launch.PNamePatchLastConsensusNodesWatcher, launch.PPatchLastConsensusNodesWatcher).
 		PostAddOK(launch.PNameStatesSetHandlers, launch.PStatesSetHandlers).
 		PostAddOK(launch.PNameNetworkHandlersReadWriteNode, launch.PNetworkHandlersReadWriteNode).
 		PostAddOK(launch.PNamePatchMemberlist, launch.PPatchMemberlist).
-		PostAddOK(launch.PNameStatesNetworkHandlers, currencycmds.PStatesNetworkHandlers).
+		PostAddOK(launch.PNameStatesNetworkHandlers, ccmds.PStatesNetworkHandlers).
 		PostAddOK(launch.PNameHandoverNetworkHandlers, launch.PHandoverNetworkHandlers)
 
 	return pps

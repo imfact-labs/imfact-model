@@ -1,27 +1,27 @@
 package digest
 
 import (
-	currencydigest "github.com/ProtoconNet/mitum-currency/v3/digest"
-	tdigest "github.com/ProtoconNet/mitum-timestamp/digest"
-	"github.com/ProtoconNet/mitum-timestamp/types"
 	"net/http"
 	"strconv"
 	"time"
 
+	cdigest "github.com/ProtoconNet/mitum-currency/v3/digest"
+	tsdigest "github.com/ProtoconNet/mitum-timestamp/digest"
+	"github.com/ProtoconNet/mitum-timestamp/types"
 	"github.com/ProtoconNet/mitum2/base"
 	"github.com/gorilla/mux"
 )
 
 func (hd *Handlers) handleTimeStampDesign(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	cacheKey := currencydigest.CacheKeyPath(r)
-	if err := currencydigest.LoadFromCache(hd.cache, cacheKey, w); err == nil {
+	cacheKey := cdigest.CacheKeyPath(r)
+	if err := cdigest.LoadFromCache(hd.cache, cacheKey, w); err == nil {
 		return
 	}
 
-	contract, err, status := currencydigest.ParseRequest(w, r, "contract")
+	contract, err, status := cdigest.ParseRequest(w, r, "contract")
 	if err != nil {
-		currencydigest.HTTP2ProblemWithError(w, err, status)
+		cdigest.HTTP2ProblemWithError(w, err, status)
 
 		return
 	}
@@ -29,12 +29,12 @@ func (hd *Handlers) handleTimeStampDesign(w http.ResponseWriter, r *http.Request
 	if v, err, shared := hd.rg.Do(cacheKey, func() (interface{}, error) {
 		return hd.handleTimeStampDesignInGroup(contract)
 	}); err != nil {
-		currencydigest.HTTP2HandleError(w, err)
+		cdigest.HTTP2HandleError(w, err)
 	} else {
-		currencydigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
+		cdigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
 
 		if !shared {
-			currencydigest.HTTP2WriteCache(w, cacheKey, time.Second*1)
+			cdigest.HTTP2WriteCache(w, cacheKey, time.Second*1)
 		}
 	}
 }
@@ -43,7 +43,7 @@ func (hd *Handlers) handleTimeStampDesignInGroup(contract string) ([]byte, error
 	var de types.Design
 	var st base.State
 
-	de, st, err := tdigest.TimestampDesign(hd.database, contract)
+	de, st, err := tsdigest.TimestampDesign(hd.database, contract)
 	if err != nil {
 		return nil, err
 	}
@@ -55,27 +55,27 @@ func (hd *Handlers) handleTimeStampDesignInGroup(contract string) ([]byte, error
 	return hd.encoder.Marshal(i)
 }
 
-func (hd *Handlers) buildTimeStampDesign(contract string, de types.Design, st base.State) (currencydigest.Hal, error) {
-	h, err := hd.combineURL(HandlerPathTimeStampDesign, "contract", contract)
+func (hd *Handlers) buildTimeStampDesign(contract string, de types.Design, st base.State) (cdigest.Hal, error) {
+	h, err := hd.combineURL(tsdigest.HandlerPathTimeStampDesign, "contract", contract)
 	if err != nil {
 		return nil, err
 	}
 
-	var hal currencydigest.Hal
-	hal = currencydigest.NewBaseHal(de, currencydigest.NewHalLink(h, nil))
+	var hal cdigest.Hal
+	hal = cdigest.NewBaseHal(de, cdigest.NewHalLink(h, nil))
 
-	h, err = hd.combineURL(currencydigest.HandlerPathBlockByHeight, "height", st.Height().String())
+	h, err = hd.combineURL(cdigest.HandlerPathBlockByHeight, "height", st.Height().String())
 	if err != nil {
 		return nil, err
 	}
-	hal = hal.AddLink("block", currencydigest.NewHalLink(h, nil))
+	hal = hal.AddLink("block", cdigest.NewHalLink(h, nil))
 
 	for i := range st.Operations() {
-		h, err := hd.combineURL(currencydigest.HandlerPathOperation, "hash", st.Operations()[i].String())
+		h, err := hd.combineURL(cdigest.HandlerPathOperation, "hash", st.Operations()[i].String())
 		if err != nil {
 			return nil, err
 		}
-		hal = hal.AddLink("operations", currencydigest.NewHalLink(h, nil))
+		hal = hal.AddLink("operations", cdigest.NewHalLink(h, nil))
 	}
 
 	return hal, nil
@@ -83,34 +83,34 @@ func (hd *Handlers) buildTimeStampDesign(contract string, de types.Design, st ba
 
 func (hd *Handlers) handleTimeStampItem(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	cachekey := currencydigest.CacheKeyPath(r)
-	if err := currencydigest.LoadFromCache(hd.cache, cachekey, w); err == nil {
+	cachekey := cdigest.CacheKeyPath(r)
+	if err := cdigest.LoadFromCache(hd.cache, cachekey, w); err == nil {
 		return
 	}
 
-	contract, err, status := currencydigest.ParseRequest(w, r, "contract")
+	contract, err, status := cdigest.ParseRequest(w, r, "contract")
 	if err != nil {
-		currencydigest.HTTP2ProblemWithError(w, err, status)
+		cdigest.HTTP2ProblemWithError(w, err, status)
 
 		return
 	}
 
-	project, err, status := currencydigest.ParseRequest(w, r, "project_id")
+	project, err, status := cdigest.ParseRequest(w, r, "project_id")
 	if err != nil {
-		currencydigest.HTTP2ProblemWithError(w, err, status)
+		cdigest.HTTP2ProblemWithError(w, err, status)
 
 		return
 	}
 
 	s, found := mux.Vars(r)["timestamp_idx"]
 	if !found {
-		currencydigest.HTTP2ProblemWithError(w, err, http.StatusBadRequest)
+		cdigest.HTTP2ProblemWithError(w, err, http.StatusBadRequest)
 
 		return
 	}
 	idx, err := parseIdxFromPath(s)
 	if err != nil {
-		currencydigest.HTTP2ProblemWithError(w, err, http.StatusBadRequest)
+		cdigest.HTTP2ProblemWithError(w, err, http.StatusBadRequest)
 
 		return
 	}
@@ -118,12 +118,12 @@ func (hd *Handlers) handleTimeStampItem(w http.ResponseWriter, r *http.Request) 
 	if v, err, shared := hd.rg.Do(cachekey, func() (interface{}, error) {
 		return hd.handleTimeStampItemInGroup(contract, project, idx)
 	}); err != nil {
-		currencydigest.HTTP2HandleError(w, err)
+		cdigest.HTTP2HandleError(w, err)
 	} else {
-		currencydigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
+		cdigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
 
 		if !shared {
-			currencydigest.HTTP2WriteCache(w, cachekey, time.Second*1)
+			cdigest.HTTP2WriteCache(w, cachekey, time.Second*1)
 		}
 	}
 }
@@ -132,7 +132,7 @@ func (hd *Handlers) handleTimeStampItemInGroup(contract, project string, idx uin
 	var it types.Item
 	var st base.State
 
-	it, st, err := tdigest.TimestampItem(hd.database, contract, project, idx)
+	it, st, err := tsdigest.TimestampItem(hd.database, contract, project, idx)
 	if err != nil {
 		return nil, err
 	}
@@ -144,30 +144,30 @@ func (hd *Handlers) handleTimeStampItemInGroup(contract, project string, idx uin
 	return hd.encoder.Marshal(i)
 }
 
-func (hd *Handlers) buildTimeStampItem(contract string, it types.Item, st base.State) (currencydigest.Hal, error) {
+func (hd *Handlers) buildTimeStampItem(contract string, it types.Item, st base.State) (cdigest.Hal, error) {
 	h, err := hd.combineURL(
-		HandlerPathTimeStampItem,
+		tsdigest.HandlerPathTimeStampItem,
 		"contract", contract, "project_id", it.ProjectID(), "timestamp_idx",
 		strconv.FormatUint(it.TimestampID(), 10))
 	if err != nil {
 		return nil, err
 	}
 
-	var hal currencydigest.Hal
-	hal = currencydigest.NewBaseHal(it, currencydigest.NewHalLink(h, nil))
+	var hal cdigest.Hal
+	hal = cdigest.NewBaseHal(it, cdigest.NewHalLink(h, nil))
 
-	h, err = hd.combineURL(currencydigest.HandlerPathBlockByHeight, "height", st.Height().String())
+	h, err = hd.combineURL(cdigest.HandlerPathBlockByHeight, "height", st.Height().String())
 	if err != nil {
 		return nil, err
 	}
-	hal = hal.AddLink("block", currencydigest.NewHalLink(h, nil))
+	hal = hal.AddLink("block", cdigest.NewHalLink(h, nil))
 
 	for i := range st.Operations() {
-		h, err := hd.combineURL(currencydigest.HandlerPathOperation, "hash", st.Operations()[i].String())
+		h, err := hd.combineURL(cdigest.HandlerPathOperation, "hash", st.Operations()[i].String())
 		if err != nil {
 			return nil, err
 		}
-		hal = hal.AddLink("operations", currencydigest.NewHalLink(h, nil))
+		hal = hal.AddLink("operations", cdigest.NewHalLink(h, nil))
 	}
 
 	return hal, nil

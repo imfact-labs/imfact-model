@@ -3,43 +3,47 @@ package digest
 import (
 	"context"
 	"fmt"
-	crdigest "github.com/ProtoconNet/mitum-credential/digest"
-	didstate "github.com/ProtoconNet/mitum-credential/state"
-	crcystate "github.com/ProtoconNet/mitum-currency/v3/state"
-	ndigest "github.com/ProtoconNet/mitum-nft/digest"
-	nftstate "github.com/ProtoconNet/mitum-nft/state"
-	tdigest "github.com/ProtoconNet/mitum-timestamp/digest"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo/readconcern"
-	"go.mongodb.org/mongo-driver/mongo/readpref"
-	"go.mongodb.org/mongo-driver/mongo/writeconcern"
 	"strconv"
 	"sync"
 	"time"
 
+	crdigest "github.com/ProtoconNet/mitum-credential/digest"
+	crstate "github.com/ProtoconNet/mitum-credential/state"
 	cdigest "github.com/ProtoconNet/mitum-currency/v3/digest"
 	"github.com/ProtoconNet/mitum-currency/v3/digest/isaac"
-	statecurrency "github.com/ProtoconNet/mitum-currency/v3/state/currency"
-	stateextension "github.com/ProtoconNet/mitum-currency/v3/state/extension"
-	mitumbase "github.com/ProtoconNet/mitum2/base"
-	mitumutil "github.com/ProtoconNet/mitum2/util"
+	cstate "github.com/ProtoconNet/mitum-currency/v3/state"
+	ccstate "github.com/ProtoconNet/mitum-currency/v3/state/currency"
+	cestate "github.com/ProtoconNet/mitum-currency/v3/state/extension"
+	daodigest "github.com/ProtoconNet/mitum-dao/digest"
+	ndigest "github.com/ProtoconNet/mitum-nft/digest"
+	nstate "github.com/ProtoconNet/mitum-nft/state"
+	pdigest "github.com/ProtoconNet/mitum-point/digest"
+	sdigest "github.com/ProtoconNet/mitum-storage/digest"
+	tsdigest "github.com/ProtoconNet/mitum-timestamp/digest"
+	tkdigest "github.com/ProtoconNet/mitum-token/digest"
+	"github.com/ProtoconNet/mitum2/base"
+	"github.com/ProtoconNet/mitum2/util"
 	"github.com/ProtoconNet/mitum2/util/fixedtree"
 	"github.com/pkg/errors"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readconcern"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
+	"go.mongodb.org/mongo-driver/mongo/writeconcern"
 )
 
 var bulkWriteLimit = 500
 
 type BlockSession struct {
 	sync.RWMutex
-	block                      mitumbase.BlockMap
-	ops                        []mitumbase.Operation
+	block                      base.BlockMap
+	ops                        []base.Operation
 	opsTree                    fixedtree.Tree
-	sts                        []mitumbase.State
+	sts                        []base.State
 	st                         *cdigest.Database
-	proposal                   mitumbase.ProposalSignFact
-	opsTreeNodes               map[string]mitumbase.OperationFixedtreeNode
+	proposal                   base.ProposalSignFact
+	opsTreeNodes               map[string]base.OperationFixedtreeNode
 	blockModels                []mongo.WriteModel
 	operationModels            []mongo.WriteModel
 	accountModels              []mongo.WriteModel
@@ -82,11 +86,11 @@ type BlockSession struct {
 
 func NewBlockSession(
 	st *cdigest.Database,
-	blk mitumbase.BlockMap,
-	ops []mitumbase.Operation,
+	blk base.BlockMap,
+	ops []base.Operation,
 	opstree fixedtree.Tree,
-	sts []mitumbase.State,
-	proposal mitumbase.ProposalSignFact,
+	sts []base.State,
+	proposal base.ProposalSignFact,
 	vs string,
 ) (*BlockSession, error) {
 	if st.Readonly() {
@@ -232,7 +236,7 @@ func (bs *BlockSession) Commit(ctx context.Context) error {
 
 		if len(bs.nftModels) > 0 {
 			for key := range bs.nftMap {
-				parsedKey, err := crcystate.ParseStateKey(key, nftstate.NFTPrefix, 4)
+				parsedKey, err := cstate.ParseStateKey(key, nstate.NFTPrefix, 4)
 				if err != nil {
 					return err
 				}
@@ -280,7 +284,7 @@ func (bs *BlockSession) Commit(ctx context.Context) error {
 
 		if len(bs.didCredentialModels) > 0 {
 			for key := range bs.credentialMap {
-				parsedKey, err := crcystate.ParseStateKey(key, didstate.CredentialPrefix, 5)
+				parsedKey, err := cstate.ParseStateKey(key, crstate.CredentialPrefix, 5)
 				if err != nil {
 					return err
 				}
@@ -315,73 +319,73 @@ func (bs *BlockSession) Commit(ctx context.Context) error {
 		}
 
 		if len(bs.timestampModels) > 0 {
-			if err := bs.writeModels(txnCtx, tdigest.DefaultColNameTimeStamp, bs.timestampModels); err != nil {
+			if err := bs.writeModels(txnCtx, tsdigest.DefaultColNameTimeStamp, bs.timestampModels); err != nil {
 				return err
 			}
 		}
 
 		if len(bs.tokenModels) > 0 {
-			if err := bs.writeModels(txnCtx, defaultColNameToken, bs.tokenModels); err != nil {
+			if err := bs.writeModels(txnCtx, tkdigest.DefaultColNameToken, bs.tokenModels); err != nil {
 				return err
 			}
 		}
 
 		if len(bs.tokenBalanceModels) > 0 {
-			if err := bs.writeModels(txnCtx, defaultColNameTokenBalance, bs.tokenBalanceModels); err != nil {
+			if err := bs.writeModels(txnCtx, tkdigest.DefaultColNameTokenBalance, bs.tokenBalanceModels); err != nil {
 				return err
 			}
 		}
 
 		if len(bs.pointModels) > 0 {
-			if err := bs.writeModels(txnCtx, defaultColNamePoint, bs.pointModels); err != nil {
+			if err := bs.writeModels(txnCtx, pdigest.DefaultColNamePoint, bs.pointModels); err != nil {
 				return err
 			}
 		}
 
 		if len(bs.pointBalanceModels) > 0 {
-			if err := bs.writeModels(txnCtx, defaultColNamePointBalance, bs.pointBalanceModels); err != nil {
+			if err := bs.writeModels(txnCtx, pdigest.DefaultColNamePointBalance, bs.pointBalanceModels); err != nil {
 				return err
 			}
 		}
 
 		if len(bs.daoDesignModels) > 0 {
-			if err := bs.writeModels(txnCtx, defaultColNameDAO, bs.daoDesignModels); err != nil {
+			if err := bs.writeModels(txnCtx, daodigest.DefaultColNameDAO, bs.daoDesignModels); err != nil {
 				return err
 			}
 		}
 
 		if len(bs.daoProposalModels) > 0 {
-			if err := bs.writeModels(txnCtx, defaultColNameDAOProposal, bs.daoProposalModels); err != nil {
+			if err := bs.writeModels(txnCtx, daodigest.DefaultColNameDAOProposal, bs.daoProposalModels); err != nil {
 				return err
 			}
 		}
 
 		if len(bs.daoDelegatorsModels) > 0 {
-			if err := bs.writeModels(txnCtx, defaultColNameDAODelegators, bs.daoDelegatorsModels); err != nil {
+			if err := bs.writeModels(txnCtx, daodigest.DefaultColNameDAODelegators, bs.daoDelegatorsModels); err != nil {
 				return err
 			}
 		}
 
 		if len(bs.daoVotersModels) > 0 {
-			if err := bs.writeModels(txnCtx, defaultColNameDAOVoters, bs.daoVotersModels); err != nil {
+			if err := bs.writeModels(txnCtx, daodigest.DefaultColNameDAOVoters, bs.daoVotersModels); err != nil {
 				return err
 			}
 		}
 
 		if len(bs.daoVotingPowerBoxModels) > 0 {
-			if err := bs.writeModels(txnCtx, defaultColNameDAOVotingPowerBox, bs.daoVotingPowerBoxModels); err != nil {
+			if err := bs.writeModels(txnCtx, daodigest.DefaultColNameDAOVotingPowerBox, bs.daoVotingPowerBoxModels); err != nil {
 				return err
 			}
 		}
 
 		if len(bs.storageModels) > 0 {
-			if err := bs.writeModels(txnCtx, defaultColNameStorage, bs.storageModels); err != nil {
+			if err := bs.writeModels(txnCtx, sdigest.DefaultColNameStorage, bs.storageModels); err != nil {
 				return err
 			}
 		}
 
 		if len(bs.storageDataModels) > 0 {
-			if err := bs.writeModels(txnCtx, defaultColNameStorageData, bs.storageDataModels); err != nil {
+			if err := bs.writeModels(txnCtx, sdigest.DefaultColNameStorageData, bs.storageDataModels); err != nil {
 				return err
 			}
 		}
@@ -613,10 +617,10 @@ func (bs *BlockSession) Close() error {
 }
 
 func (bs *BlockSession) prepareOperationsTree() error {
-	nodes := map[string]mitumbase.OperationFixedtreeNode{}
+	nodes := map[string]base.OperationFixedtreeNode{}
 
 	if err := bs.opsTree.Traverse(func(_ uint64, no fixedtree.Node) (bool, error) {
-		nno := no.(mitumbase.OperationFixedtreeNode)
+		nno := no.(base.OperationFixedtreeNode)
 
 		if nno.Reason() == nil {
 			nodes[nno.Key()] = nno
@@ -665,7 +669,7 @@ func (bs *BlockSession) prepareOperations() error {
 		return nil
 	}
 
-	node := func(h mitumutil.Hash) (bool, bool, mitumbase.OperationProcessReasonError) {
+	node := func(h util.Hash) (bool, bool, base.OperationProcessReasonError) {
 		no, found := bs.opsTreeNodes[h.String()]
 		if !found {
 			return false, false, nil
@@ -682,7 +686,7 @@ func (bs *BlockSession) prepareOperations() error {
 		var doc cdigest.OperationDoc
 		switch found, inState, reason := node(op.Fact().Hash()); {
 		case !found:
-			return mitumutil.ErrNotFound.Errorf("operation, %v in operations tree", op.Fact().Hash().String())
+			return util.ErrNotFound.Errorf("operation, %v in operations tree", op.Fact().Hash().String())
 		default:
 			var reasonMsg string
 			switch {
@@ -724,20 +728,20 @@ func (bs *BlockSession) prepareAccounts() error {
 		st := bs.sts[i]
 
 		switch {
-		case statecurrency.IsAccountStateKey(st.Key()):
+		case ccstate.IsAccountStateKey(st.Key()):
 			j, err := bs.handleAccountState(st)
 			if err != nil {
 				return err
 			}
 			accountModels = append(accountModels, j...)
-		case statecurrency.IsBalanceStateKey(st.Key()):
+		case ccstate.IsBalanceStateKey(st.Key()):
 			j, address, err := bs.handleBalanceState(st)
 			if err != nil {
 				return err
 			}
 			balanceModels = append(balanceModels, j...)
 			bs.balanceAddressList = append(bs.balanceAddressList, address)
-		case stateextension.IsStateContractAccountKey(st.Key()):
+		case cestate.IsStateContractAccountKey(st.Key()):
 			j, err := bs.handleContractAccountState(st)
 			if err != nil {
 				return err
@@ -764,7 +768,7 @@ func (bs *BlockSession) prepareCurrencies() error {
 	for i := range bs.sts {
 		st := bs.sts[i]
 		switch {
-		case statecurrency.IsDesignStateKey(st.Key()):
+		case ccstate.IsDesignStateKey(st.Key()):
 			j, err := bs.handleCurrencyState(st)
 			if err != nil {
 				return err

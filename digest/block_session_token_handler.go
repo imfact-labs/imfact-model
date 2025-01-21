@@ -1,8 +1,9 @@
 package digest
 
 import (
+	tkdigest "github.com/ProtoconNet/mitum-token/digest"
 	"github.com/ProtoconNet/mitum-token/state"
-	mitumbase "github.com/ProtoconNet/mitum2/base"
+	"github.com/ProtoconNet/mitum2/base"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -41,8 +42,8 @@ func (bs *BlockSession) prepareToken() error {
 	return nil
 }
 
-func (bs *BlockSession) handleTokenState(st mitumbase.State) ([]mongo.WriteModel, error) {
-	if tokenDoc, err := NewTokenDoc(st, bs.st.Encoder()); err != nil {
+func (bs *BlockSession) handleTokenState(st base.State) ([]mongo.WriteModel, error) {
+	if tokenDoc, err := tkdigest.NewTokenDoc(st, bs.st.Encoder()); err != nil {
 		return nil, err
 	} else {
 		return []mongo.WriteModel{
@@ -51,8 +52,8 @@ func (bs *BlockSession) handleTokenState(st mitumbase.State) ([]mongo.WriteModel
 	}
 }
 
-func (bs *BlockSession) handleTokenBalanceState(st mitumbase.State) ([]mongo.WriteModel, error) {
-	if tokenBalanceDoc, err := NewTokenBalanceDoc(st, bs.st.Encoder()); err != nil {
+func (bs *BlockSession) handleTokenBalanceState(st base.State) ([]mongo.WriteModel, error) {
+	if tokenBalanceDoc, err := tkdigest.NewTokenBalanceDoc(st, bs.st.Encoder()); err != nil {
 		return nil, err
 	} else {
 		return []mongo.WriteModel{

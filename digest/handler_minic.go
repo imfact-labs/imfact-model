@@ -1,26 +1,27 @@
 package digest
 
 import (
-	currencydigest "github.com/ProtoconNet/mitum-currency/v3/digest"
-	"github.com/shirou/gopsutil/mem"
 	"net/http"
 	"time"
+
+	cdigest "github.com/ProtoconNet/mitum-currency/v3/digest"
+	"github.com/shirou/gopsutil/mem"
 )
 
 func (hd *Handlers) handleResource(w http.ResponseWriter, r *http.Request) {
-	cacheKey := currencydigest.CacheKeyPath(r)
-	if err := currencydigest.LoadFromCache(hd.cache, cacheKey, w); err == nil {
+	cacheKey := cdigest.CacheKeyPath(r)
+	if err := cdigest.LoadFromCache(hd.cache, cacheKey, w); err == nil {
 		return
 	}
 
 	if v, err, shared := hd.rg.Do(cacheKey, func() (interface{}, error) {
 		return hd.handleResourceInGroup()
 	}); err != nil {
-		currencydigest.HTTP2HandleError(w, err)
+		cdigest.HTTP2HandleError(w, err)
 	} else {
-		currencydigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
+		cdigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
 		if !shared {
-			currencydigest.HTTP2WriteCache(w, cacheKey, time.Millisecond*500)
+			cdigest.HTTP2WriteCache(w, cacheKey, time.Millisecond*500)
 		}
 	}
 }
@@ -61,8 +62,8 @@ func (hd *Handlers) handleResourceInGroup() (interface{}, error) {
 
 }
 
-func (hd *Handlers) buildResourceHal(resource interface{}) (currencydigest.Hal, error) {
-	hal := currencydigest.NewBaseHal(resource, currencydigest.NewHalLink(HandlerPathResource, nil))
+func (hd *Handlers) buildResourceHal(resource interface{}) (cdigest.Hal, error) {
+	hal := cdigest.NewBaseHal(resource, cdigest.NewHalLink(HandlerPathResource, nil))
 
 	return hal, nil
 }

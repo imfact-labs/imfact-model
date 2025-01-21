@@ -5,20 +5,21 @@ import (
 	"time"
 
 	"github.com/ProtoconNet/mitum-currency/v3/common"
-	currencydigest "github.com/ProtoconNet/mitum-currency/v3/digest"
+	cdigest "github.com/ProtoconNet/mitum-currency/v3/digest"
+	tkdigest "github.com/ProtoconNet/mitum-token/digest"
 	"github.com/ProtoconNet/mitum-token/types"
 )
 
 func (hd *Handlers) handleToken(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	cachekey := currencydigest.CacheKeyPath(r)
-	if err := currencydigest.LoadFromCache(hd.cache, cachekey, w); err == nil {
+	cachekey := cdigest.CacheKeyPath(r)
+	if err := cdigest.LoadFromCache(hd.cache, cachekey, w); err == nil {
 		return
 	}
 
-	contract, err, status := currencydigest.ParseRequest(w, r, "contract")
+	contract, err, status := cdigest.ParseRequest(w, r, "contract")
 	if err != nil {
-		currencydigest.HTTP2ProblemWithError(w, err, status)
+		cdigest.HTTP2ProblemWithError(w, err, status)
 
 		return
 	}
@@ -26,17 +27,17 @@ func (hd *Handlers) handleToken(w http.ResponseWriter, r *http.Request) {
 	if v, err, shared := hd.rg.Do(cachekey, func() (interface{}, error) {
 		return hd.handleTokenInGroup(contract)
 	}); err != nil {
-		currencydigest.HTTP2HandleError(w, err)
+		cdigest.HTTP2HandleError(w, err)
 	} else {
-		currencydigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
+		cdigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
 		if !shared {
-			currencydigest.HTTP2WriteCache(w, cachekey, time.Second*1)
+			cdigest.HTTP2WriteCache(w, cachekey, time.Second*1)
 		}
 	}
 }
 
 func (hd *Handlers) handleTokenInGroup(contract string) (interface{}, error) {
-	switch design, err := Token(hd.database, contract); {
+	switch design, err := tkdigest.Token(hd.database, contract); {
 	case err != nil:
 		return nil, err
 	default:
@@ -48,34 +49,34 @@ func (hd *Handlers) handleTokenInGroup(contract string) (interface{}, error) {
 	}
 }
 
-func (hd *Handlers) buildTokenHal(contract string, design types.Design) (currencydigest.Hal, error) {
-	h, err := hd.combineURL(HandlerPathToken, "contract", contract)
+func (hd *Handlers) buildTokenHal(contract string, design types.Design) (cdigest.Hal, error) {
+	h, err := hd.combineURL(tkdigest.HandlerPathToken, "contract", contract)
 	if err != nil {
 		return nil, err
 	}
 
-	hal := currencydigest.NewBaseHal(design, currencydigest.NewHalLink(h, nil))
+	hal := cdigest.NewBaseHal(design, cdigest.NewHalLink(h, nil))
 
 	return hal, nil
 }
 
 func (hd *Handlers) handleTokenBalance(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	cachekey := currencydigest.CacheKeyPath(r)
-	if err := currencydigest.LoadFromCache(hd.cache, cachekey, w); err == nil {
+	cachekey := cdigest.CacheKeyPath(r)
+	if err := cdigest.LoadFromCache(hd.cache, cachekey, w); err == nil {
 		return
 	}
 
-	contract, err, status := currencydigest.ParseRequest(w, r, "contract")
+	contract, err, status := cdigest.ParseRequest(w, r, "contract")
 	if err != nil {
-		currencydigest.HTTP2ProblemWithError(w, err, status)
+		cdigest.HTTP2ProblemWithError(w, err, status)
 
 		return
 	}
 
-	account, err, status := currencydigest.ParseRequest(w, r, "address")
+	account, err, status := cdigest.ParseRequest(w, r, "address")
 	if err != nil {
-		currencydigest.HTTP2ProblemWithError(w, err, status)
+		cdigest.HTTP2ProblemWithError(w, err, status)
 
 		return
 	}
@@ -83,17 +84,17 @@ func (hd *Handlers) handleTokenBalance(w http.ResponseWriter, r *http.Request) {
 	if v, err, shared := hd.rg.Do(cachekey, func() (interface{}, error) {
 		return hd.handleTokenBalanceInGroup(contract, account)
 	}); err != nil {
-		currencydigest.HTTP2HandleError(w, err)
+		cdigest.HTTP2HandleError(w, err)
 	} else {
-		currencydigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
+		cdigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
 		if !shared {
-			currencydigest.HTTP2WriteCache(w, cachekey, time.Second*1)
+			cdigest.HTTP2WriteCache(w, cachekey, time.Second*1)
 		}
 	}
 }
 
 func (hd *Handlers) handleTokenBalanceInGroup(contract, account string) (interface{}, error) {
-	switch amount, err := TokenBalance(hd.database, contract, account); {
+	switch amount, err := tkdigest.TokenBalance(hd.database, contract, account); {
 	case err != nil:
 		return nil, err
 	default:
@@ -105,20 +106,20 @@ func (hd *Handlers) handleTokenBalanceInGroup(contract, account string) (interfa
 	}
 }
 
-func (hd *Handlers) buildTokenBalanceHal(contract, account string, amount *common.Big) (currencydigest.Hal, error) {
-	var hal currencydigest.Hal
+func (hd *Handlers) buildTokenBalanceHal(contract, account string, amount *common.Big) (cdigest.Hal, error) {
+	var hal cdigest.Hal
 
 	if amount == nil {
-		hal = currencydigest.NewEmptyHal()
+		hal = cdigest.NewEmptyHal()
 	} else {
-		h, err := hd.combineURL(HandlerPathTokenBalance, "contract", contract, "address", account)
+		h, err := hd.combineURL(tkdigest.HandlerPathTokenBalance, "contract", contract, "address", account)
 		if err != nil {
 			return nil, err
 		}
 
-		hal = currencydigest.NewBaseHal(struct {
+		hal = cdigest.NewBaseHal(struct {
 			Amount common.Big `json:"amount"`
-		}{Amount: *amount}, currencydigest.NewHalLink(h, nil))
+		}{Amount: *amount}, cdigest.NewHalLink(h, nil))
 	}
 
 	return hal, nil

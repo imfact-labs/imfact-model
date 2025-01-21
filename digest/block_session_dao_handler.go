@@ -1,8 +1,9 @@
 package digest
 
 import (
+	daodigest "github.com/ProtoconNet/mitum-dao/digest"
 	"github.com/ProtoconNet/mitum-dao/state"
-	mitumbase "github.com/ProtoconNet/mitum2/base"
+	"github.com/ProtoconNet/mitum2/base"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -64,8 +65,8 @@ func (bs *BlockSession) prepareDAO() error {
 	return nil
 }
 
-func (bs *BlockSession) handleDAODesignState(st mitumbase.State) ([]mongo.WriteModel, error) {
-	if designDoc, err := NewDAODesignDoc(st, bs.st.Encoder()); err != nil {
+func (bs *BlockSession) handleDAODesignState(st base.State) ([]mongo.WriteModel, error) {
+	if designDoc, err := daodigest.NewDAODesignDoc(st, bs.st.Encoder()); err != nil {
 		return nil, err
 	} else {
 		return []mongo.WriteModel{
@@ -74,8 +75,8 @@ func (bs *BlockSession) handleDAODesignState(st mitumbase.State) ([]mongo.WriteM
 	}
 }
 
-func (bs *BlockSession) handleDAOProposalState(st mitumbase.State) ([]mongo.WriteModel, error) {
-	if nftCollectionDoc, err := NewDAOProposalDoc(st, bs.st.Encoder()); err != nil {
+func (bs *BlockSession) handleDAOProposalState(st base.State) ([]mongo.WriteModel, error) {
+	if nftCollectionDoc, err := daodigest.NewDAOProposalDoc(st, bs.st.Encoder()); err != nil {
 		return nil, err
 	} else {
 		return []mongo.WriteModel{
@@ -84,8 +85,8 @@ func (bs *BlockSession) handleDAOProposalState(st mitumbase.State) ([]mongo.Writ
 	}
 }
 
-func (bs *BlockSession) handleDAODelegatorsState(st mitumbase.State) ([]mongo.WriteModel, error) {
-	if delegatorsDoc, err := NewDAODelegatorsDoc(st, bs.st.Encoder()); err != nil {
+func (bs *BlockSession) handleDAODelegatorsState(st base.State) ([]mongo.WriteModel, error) {
+	if delegatorsDoc, err := daodigest.NewDAODelegatorsDoc(st, bs.st.Encoder()); err != nil {
 		return nil, err
 	} else {
 		return []mongo.WriteModel{
@@ -94,8 +95,8 @@ func (bs *BlockSession) handleDAODelegatorsState(st mitumbase.State) ([]mongo.Wr
 	}
 }
 
-func (bs *BlockSession) handleDAOVotersState(st mitumbase.State) ([]mongo.WriteModel, error) {
-	if votersDoc, err := NewDAOVotersDoc(st, bs.st.Encoder()); err != nil {
+func (bs *BlockSession) handleDAOVotersState(st base.State) ([]mongo.WriteModel, error) {
+	if votersDoc, err := daodigest.NewDAOVotersDoc(st, bs.st.Encoder()); err != nil {
 		return nil, err
 	} else {
 		return []mongo.WriteModel{
@@ -104,8 +105,8 @@ func (bs *BlockSession) handleDAOVotersState(st mitumbase.State) ([]mongo.WriteM
 	}
 }
 
-func (bs *BlockSession) handleDAOVotingPowerBoxState(st mitumbase.State) ([]mongo.WriteModel, error) {
-	if nftLastIndexDoc, err := NewDAOVotingPowerBoxDoc(st, bs.st.Encoder()); err != nil {
+func (bs *BlockSession) handleDAOVotingPowerBoxState(st base.State) ([]mongo.WriteModel, error) {
+	if nftLastIndexDoc, err := daodigest.NewDAOVotingPowerBoxDoc(st, bs.st.Encoder()); err != nil {
 		return nil, err
 	} else {
 		return []mongo.WriteModel{

@@ -1,27 +1,27 @@
 package digest
 
 import (
-	crdigest "github.com/ProtoconNet/mitum-credential/digest"
-	"github.com/ProtoconNet/mitum-credential/types"
-	currencydigest "github.com/ProtoconNet/mitum-currency/v3/digest"
-	mitumutil "github.com/ProtoconNet/mitum2/util"
 	"net/http"
 	"time"
 
+	crdigest "github.com/ProtoconNet/mitum-credential/digest"
+	"github.com/ProtoconNet/mitum-credential/types"
+	cdigest "github.com/ProtoconNet/mitum-currency/v3/digest"
 	"github.com/ProtoconNet/mitum2/base"
+	"github.com/ProtoconNet/mitum2/util"
 	"github.com/pkg/errors"
 )
 
 func (hd *Handlers) handleCredentialService(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	cacheKey := currencydigest.CacheKeyPath(r)
-	if err := currencydigest.LoadFromCache(hd.cache, cacheKey, w); err == nil {
+	cacheKey := cdigest.CacheKeyPath(r)
+	if err := cdigest.LoadFromCache(hd.cache, cacheKey, w); err == nil {
 		return
 	}
 
-	contract, err, status := currencydigest.ParseRequest(w, r, "contract")
+	contract, err, status := cdigest.ParseRequest(w, r, "contract")
 	if err != nil {
-		currencydigest.HTTP2ProblemWithError(w, err, status)
+		cdigest.HTTP2ProblemWithError(w, err, status)
 
 		return
 	}
@@ -29,11 +29,11 @@ func (hd *Handlers) handleCredentialService(w http.ResponseWriter, r *http.Reque
 	if v, err, shared := hd.rg.Do(cacheKey, func() (interface{}, error) {
 		return hd.handleCredentialServiceInGroup(contract)
 	}); err != nil {
-		currencydigest.HTTP2HandleError(w, err)
+		cdigest.HTTP2HandleError(w, err)
 	} else {
-		currencydigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
+		cdigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
 		if !shared {
-			currencydigest.HTTP2WriteCache(w, cacheKey, time.Second*1)
+			cdigest.HTTP2WriteCache(w, cacheKey, time.Second*1)
 		}
 	}
 }
@@ -41,9 +41,9 @@ func (hd *Handlers) handleCredentialService(w http.ResponseWriter, r *http.Reque
 func (hd *Handlers) handleCredentialServiceInGroup(contract string) (interface{}, error) {
 	switch design, err := crdigest.CredentialService(hd.database, contract); {
 	case err != nil:
-		return nil, mitumutil.ErrNotFound.WithMessage(err, "credential design, contract %s", contract)
+		return nil, util.ErrNotFound.WithMessage(err, "credential design, contract %s", contract)
 	case design == nil:
-		return nil, mitumutil.ErrNotFound.Errorf("credential design, contract %s", contract)
+		return nil, util.ErrNotFound.Errorf("credential design, contract %s", contract)
 	default:
 		hal, err := hd.buildCredentialServiceHal(contract, *design)
 		if err != nil {
@@ -53,50 +53,50 @@ func (hd *Handlers) handleCredentialServiceInGroup(contract string) (interface{}
 	}
 }
 
-func (hd *Handlers) buildCredentialServiceHal(contract string, design types.Design) (currencydigest.Hal, error) {
-	h, err := hd.combineURL(HandlerPathDIDService, "contract", contract)
+func (hd *Handlers) buildCredentialServiceHal(contract string, design types.Design) (cdigest.Hal, error) {
+	h, err := hd.combineURL(crdigest.HandlerPathDIDService, "contract", contract)
 	if err != nil {
 		return nil, err
 	}
 
-	hal := currencydigest.NewBaseHal(design, currencydigest.NewHalLink(h, nil))
+	hal := cdigest.NewBaseHal(design, cdigest.NewHalLink(h, nil))
 
 	return hal, nil
 }
 
 func (hd *Handlers) handleCredential(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	cacheKey := currencydigest.CacheKeyPath(r)
-	if err := currencydigest.LoadFromCache(hd.cache, cacheKey, w); err == nil {
+	cacheKey := cdigest.CacheKeyPath(r)
+	if err := cdigest.LoadFromCache(hd.cache, cacheKey, w); err == nil {
 		return
 	}
 
-	contract, err, status := currencydigest.ParseRequest(w, r, "contract")
+	contract, err, status := cdigest.ParseRequest(w, r, "contract")
 	if err != nil {
-		currencydigest.HTTP2ProblemWithError(w, err, status)
+		cdigest.HTTP2ProblemWithError(w, err, status)
 		return
 	}
 
-	templateID, err, status := currencydigest.ParseRequest(w, r, "template_id")
+	templateID, err, status := cdigest.ParseRequest(w, r, "template_id")
 	if err != nil {
-		currencydigest.HTTP2ProblemWithError(w, err, status)
+		cdigest.HTTP2ProblemWithError(w, err, status)
 		return
 	}
 
-	credentialID, err, status := currencydigest.ParseRequest(w, r, "credential_id")
+	credentialID, err, status := cdigest.ParseRequest(w, r, "credential_id")
 	if err != nil {
-		currencydigest.HTTP2ProblemWithError(w, err, status)
+		cdigest.HTTP2ProblemWithError(w, err, status)
 		return
 	}
 
 	if v, err, shared := hd.rg.Do(cacheKey, func() (interface{}, error) {
 		return hd.handleCredentialInGroup(contract, templateID, credentialID)
 	}); err != nil {
-		currencydigest.HTTP2HandleError(w, err)
+		cdigest.HTTP2HandleError(w, err)
 	} else {
-		currencydigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
+		cdigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
 		if !shared {
-			currencydigest.HTTP2WriteCache(w, cacheKey, time.Second*1)
+			cdigest.HTTP2WriteCache(w, cacheKey, time.Second*1)
 		}
 	}
 }
@@ -104,9 +104,9 @@ func (hd *Handlers) handleCredential(w http.ResponseWriter, r *http.Request) {
 func (hd *Handlers) handleCredentialInGroup(contract, templateID, credentialID string) (interface{}, error) {
 	switch credential, isActive, err := crdigest.Credential(hd.database, contract, templateID, credentialID); {
 	case err != nil:
-		return nil, mitumutil.ErrNotFound.WithMessage(err, "credential by contract %s, template %s, id %s", contract, templateID, credentialID)
+		return nil, util.ErrNotFound.WithMessage(err, "credential by contract %s, template %s, id %s", contract, templateID, credentialID)
 	case credential == nil:
-		return nil, mitumutil.ErrNotFound.Errorf("credential by contract %s, template %s, id %s", contract, templateID, credentialID)
+		return nil, util.ErrNotFound.Errorf("credential by contract %s, template %s, id %s", contract, templateID, credentialID)
 	default:
 		hal, err := hd.buildCredentialHal(contract, *credential, isActive)
 		if err != nil {
@@ -120,9 +120,9 @@ func (hd *Handlers) buildCredentialHal(
 	contract string,
 	credential types.Credential,
 	isActive bool,
-) (currencydigest.Hal, error) {
+) (cdigest.Hal, error) {
 	h, err := hd.combineURL(
-		HandlerPathDIDCredential,
+		crdigest.HandlerPathDIDCredential,
 		"contract", contract,
 		"template_id", credential.TemplateID(),
 		"credential_id", credential.CredentialID(),
@@ -131,12 +131,12 @@ func (hd *Handlers) buildCredentialHal(
 		return nil, err
 	}
 
-	hal := currencydigest.NewBaseHal(
+	hal := cdigest.NewBaseHal(
 		struct {
 			Credential types.Credential `json:"credential"`
 			IsActive   bool             `json:"is_active"`
 		}{Credential: credential, IsActive: isActive},
-		currencydigest.NewHalLink(h, nil),
+		cdigest.NewHalLink(h, nil),
 	)
 
 	return hal, nil
@@ -144,25 +144,25 @@ func (hd *Handlers) buildCredentialHal(
 
 func (hd *Handlers) handleCredentials(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	limit := currencydigest.ParseLimitQuery(r.URL.Query().Get("limit"))
-	offset := currencydigest.ParseStringQuery(r.URL.Query().Get("offset"))
-	reverse := currencydigest.ParseBoolQuery(r.URL.Query().Get("reverse"))
+	limit := cdigest.ParseLimitQuery(r.URL.Query().Get("limit"))
+	offset := cdigest.ParseStringQuery(r.URL.Query().Get("offset"))
+	reverse := cdigest.ParseBoolQuery(r.URL.Query().Get("reverse"))
 
-	cachekey := currencydigest.CacheKey(
-		r.URL.Path, currencydigest.StringOffsetQuery(offset),
-		currencydigest.StringBoolQuery("reverse", reverse),
+	cachekey := cdigest.CacheKey(
+		r.URL.Path, cdigest.StringOffsetQuery(offset),
+		cdigest.StringBoolQuery("reverse", reverse),
 	)
 
-	contract, err, status := currencydigest.ParseRequest(w, r, "contract")
+	contract, err, status := cdigest.ParseRequest(w, r, "contract")
 	if err != nil {
-		currencydigest.HTTP2ProblemWithError(w, err, status)
+		cdigest.HTTP2ProblemWithError(w, err, status)
 
 		return
 	}
 
-	templateID, err, status := currencydigest.ParseRequest(w, r, "template_id")
+	templateID, err, status := cdigest.ParseRequest(w, r, "template_id")
 	if err != nil {
-		currencydigest.HTTP2ProblemWithError(w, err, status)
+		cdigest.HTTP2ProblemWithError(w, err, status)
 		return
 	}
 
@@ -174,7 +174,7 @@ func (hd *Handlers) handleCredentials(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		hd.Log().Err(err).Str("Issuer", contract).Msg("failed to get credentials")
-		currencydigest.HTTP2HandleError(w, err)
+		cdigest.HTTP2HandleError(w, err)
 
 		return
 	}
@@ -187,7 +187,7 @@ func (hd *Handlers) handleCredentials(w http.ResponseWriter, r *http.Request) {
 		filled = l[1].(bool)
 	}
 
-	currencydigest.HTTP2WriteHalBytes(hd.encoder, w, b, http.StatusOK)
+	cdigest.HTTP2WriteHalBytes(hd.encoder, w, b, http.StatusOK)
 
 	if !shared {
 		expire := hd.expireNotFilled
@@ -195,7 +195,7 @@ func (hd *Handlers) handleCredentials(w http.ResponseWriter, r *http.Request) {
 			expire = time.Minute
 		}
 
-		currencydigest.HTTP2WriteCache(w, cachekey, expire)
+		cdigest.HTTP2WriteCache(w, cachekey, expire)
 	}
 }
 
@@ -212,7 +212,7 @@ func (hd *Handlers) handleCredentialsInGroup(
 		limit = l
 	}
 
-	var vas []currencydigest.Hal
+	var vas []cdigest.Hal
 	if err := crdigest.CredentialsByServiceTemplate(
 		hd.database, contract, templateID, reverse, offset, limit,
 		func(credential types.Credential, isActive bool, st base.State) (bool, error) {
@@ -225,9 +225,9 @@ func (hd *Handlers) handleCredentialsInGroup(
 			return true, nil
 		},
 	); err != nil {
-		return nil, false, mitumutil.ErrNotFound.WithMessage(err, "credentials by contract %s, template %s", contract, templateID)
+		return nil, false, util.ErrNotFound.WithMessage(err, "credentials by contract %s, template %s", contract, templateID)
 	} else if len(vas) < 1 {
-		return nil, false, mitumutil.ErrNotFound.Errorf("credentials by contract %s, template %s", contract, templateID)
+		return nil, false, util.ErrNotFound.Errorf("credentials by contract %s, template %s", contract, templateID)
 	}
 
 	i, err := hd.buildCredentialsHal(contract, templateID, vas, offset, reverse)
@@ -241,12 +241,12 @@ func (hd *Handlers) handleCredentialsInGroup(
 
 func (hd *Handlers) buildCredentialsHal(
 	contract, templateID string,
-	vas []currencydigest.Hal,
+	vas []cdigest.Hal,
 	offset string,
 	reverse bool,
-) (currencydigest.Hal, error) {
+) (cdigest.Hal, error) {
 	baseSelf, err := hd.combineURL(
-		HandlerPathDIDCredentials,
+		crdigest.HandlerPathDIDCredentials,
 		"contract", contract,
 		"template_id", templateID,
 	)
@@ -256,20 +256,20 @@ func (hd *Handlers) buildCredentialsHal(
 
 	self := baseSelf
 	if len(offset) > 0 {
-		self = currencydigest.AddQueryValue(baseSelf, currencydigest.StringOffsetQuery(offset))
+		self = cdigest.AddQueryValue(baseSelf, cdigest.StringOffsetQuery(offset))
 	}
 	if reverse {
-		self = currencydigest.AddQueryValue(baseSelf, currencydigest.StringBoolQuery("reverse", reverse))
+		self = cdigest.AddQueryValue(baseSelf, cdigest.StringBoolQuery("reverse", reverse))
 	}
 
-	var hal currencydigest.Hal
-	hal = currencydigest.NewBaseHal(vas, currencydigest.NewHalLink(self, nil))
+	var hal cdigest.Hal
+	hal = cdigest.NewBaseHal(vas, cdigest.NewHalLink(self, nil))
 
-	h, err := hd.combineURL(HandlerPathDIDService, "contract", contract)
+	h, err := hd.combineURL(crdigest.HandlerPathDIDService, "contract", contract)
 	if err != nil {
 		return nil, err
 	}
-	hal = hal.AddLink("service", currencydigest.NewHalLink(h, nil))
+	hal = hal.AddLink("service", cdigest.NewHalLink(h, nil))
 
 	var nextOffset string
 
@@ -286,47 +286,47 @@ func (hd *Handlers) buildCredentialsHal(
 
 	if len(nextOffset) > 0 {
 		next := baseSelf
-		next = currencydigest.AddQueryValue(next, currencydigest.StringOffsetQuery(nextOffset))
+		next = cdigest.AddQueryValue(next, cdigest.StringOffsetQuery(nextOffset))
 
 		if reverse {
-			next = currencydigest.AddQueryValue(next, currencydigest.StringBoolQuery("reverse", reverse))
+			next = cdigest.AddQueryValue(next, cdigest.StringBoolQuery("reverse", reverse))
 		}
 
-		hal = hal.AddLink("next", currencydigest.NewHalLink(next, nil))
+		hal = hal.AddLink("next", cdigest.NewHalLink(next, nil))
 	}
 
-	hal = hal.AddLink("reverse", currencydigest.NewHalLink(currencydigest.AddQueryValue(baseSelf, currencydigest.StringBoolQuery("reverse", !reverse)), nil))
+	hal = hal.AddLink("reverse", cdigest.NewHalLink(cdigest.AddQueryValue(baseSelf, cdigest.StringBoolQuery("reverse", !reverse)), nil))
 
 	return hal, nil
 }
 
 func (hd *Handlers) handleHolderCredential(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	cacheKey := currencydigest.CacheKeyPath(r)
-	if err := currencydigest.LoadFromCache(hd.cache, cacheKey, w); err == nil {
+	cacheKey := cdigest.CacheKeyPath(r)
+	if err := cdigest.LoadFromCache(hd.cache, cacheKey, w); err == nil {
 		return
 	}
 
-	contract, err, status := currencydigest.ParseRequest(w, r, "contract")
+	contract, err, status := cdigest.ParseRequest(w, r, "contract")
 	if err != nil {
-		currencydigest.HTTP2ProblemWithError(w, err, status)
+		cdigest.HTTP2ProblemWithError(w, err, status)
 		return
 	}
 
-	holder, err, status := currencydigest.ParseRequest(w, r, "holder")
+	holder, err, status := cdigest.ParseRequest(w, r, "holder")
 	if err != nil {
-		currencydigest.HTTP2ProblemWithError(w, err, status)
+		cdigest.HTTP2ProblemWithError(w, err, status)
 		return
 	}
 
 	if v, err, shared := hd.rg.Do(cacheKey, func() (interface{}, error) {
 		return hd.handleHolderCredentialsInGroup(contract, holder)
 	}); err != nil {
-		currencydigest.HTTP2HandleError(w, err)
+		cdigest.HTTP2HandleError(w, err)
 	} else {
-		currencydigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
+		cdigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
 		if !shared {
-			currencydigest.HTTP2WriteCache(w, cacheKey, time.Second*1)
+			cdigest.HTTP2WriteCache(w, cacheKey, time.Second*1)
 		}
 	}
 }
@@ -335,14 +335,14 @@ func (hd *Handlers) handleHolderCredentialsInGroup(contract, holder string) (int
 	var did string
 	switch d, err := crdigest.HolderDID(hd.database, contract, holder); {
 	case err != nil:
-		return nil, mitumutil.ErrNotFound.WithMessage(err, "DID by contract %s, holder %s", contract, holder)
+		return nil, util.ErrNotFound.WithMessage(err, "DID by contract %s, holder %s", contract, holder)
 	case d == "":
-		return nil, mitumutil.ErrNotFound.Errorf("DID by contract %s, holder %s", contract, holder)
+		return nil, util.ErrNotFound.Errorf("DID by contract %s, holder %s", contract, holder)
 	default:
 		did = d
 	}
 
-	var vas []currencydigest.Hal
+	var vas []cdigest.Hal
 	if err := crdigest.CredentialsByServiceHolder(
 		hd.database, contract, holder,
 		func(credential types.Credential, isActive bool, st base.State) (bool, error) {
@@ -355,9 +355,9 @@ func (hd *Handlers) handleHolderCredentialsInGroup(contract, holder string) (int
 			return true, nil
 		},
 	); err != nil {
-		return nil, mitumutil.ErrNotFound.WithMessage(err, "credentials by contract %s, holder %s", contract, holder)
+		return nil, util.ErrNotFound.WithMessage(err, "credentials by contract %s, holder %s", contract, holder)
 	} else if len(vas) < 1 {
-		return nil, mitumutil.ErrNotFound.Errorf("credentials by contract %s, holder %s", contract, holder)
+		return nil, util.ErrNotFound.Errorf("credentials by contract %s, holder %s", contract, holder)
 	}
 	hal, err := hd.buildHolderDIDCredentialsHal(contract, holder, did, vas)
 	if err != nil {
@@ -368,52 +368,52 @@ func (hd *Handlers) handleHolderCredentialsInGroup(contract, holder string) (int
 
 func (hd *Handlers) buildHolderDIDCredentialsHal(
 	contract, holder, did string,
-	vas []currencydigest.Hal,
-) (currencydigest.Hal, error) {
-	h, err := hd.combineURL(HandlerPathDIDHolder, "contract", contract, "holder", holder)
+	vas []cdigest.Hal,
+) (cdigest.Hal, error) {
+	h, err := hd.combineURL(crdigest.HandlerPathDIDHolder, "contract", contract, "holder", holder)
 	if err != nil {
 		return nil, err
 	}
 
-	hal := currencydigest.NewBaseHal(
+	hal := cdigest.NewBaseHal(
 		struct {
-			DID         string               `json:"did"`
-			Credentials []currencydigest.Hal `json:"credentials"`
+			DID         string        `json:"did"`
+			Credentials []cdigest.Hal `json:"credentials"`
 		}{
 			DID:         did,
 			Credentials: vas,
-		}, currencydigest.NewHalLink(h, nil))
+		}, cdigest.NewHalLink(h, nil))
 
 	return hal, nil
 }
 
 func (hd *Handlers) handleTemplate(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	cacheKey := currencydigest.CacheKeyPath(r)
-	if err := currencydigest.LoadFromCache(hd.cache, cacheKey, w); err == nil {
+	cacheKey := cdigest.CacheKeyPath(r)
+	if err := cdigest.LoadFromCache(hd.cache, cacheKey, w); err == nil {
 		return
 	}
 
-	contract, err, status := currencydigest.ParseRequest(w, r, "contract")
+	contract, err, status := cdigest.ParseRequest(w, r, "contract")
 	if err != nil {
-		currencydigest.HTTP2ProblemWithError(w, err, status)
+		cdigest.HTTP2ProblemWithError(w, err, status)
 		return
 	}
 
-	templateID, err, status := currencydigest.ParseRequest(w, r, "template_id")
+	templateID, err, status := cdigest.ParseRequest(w, r, "template_id")
 	if err != nil {
-		currencydigest.HTTP2ProblemWithError(w, err, status)
+		cdigest.HTTP2ProblemWithError(w, err, status)
 		return
 	}
 
 	if v, err, shared := hd.rg.Do(cacheKey, func() (interface{}, error) {
 		return hd.handleTemplateInGroup(contract, templateID)
 	}); err != nil {
-		currencydigest.HTTP2HandleError(w, err)
+		cdigest.HTTP2HandleError(w, err)
 	} else {
-		currencydigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
+		cdigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
 		if !shared {
-			currencydigest.HTTP2WriteCache(w, cacheKey, time.Second*1)
+			cdigest.HTTP2WriteCache(w, cacheKey, time.Second*1)
 		}
 	}
 }
@@ -421,9 +421,9 @@ func (hd *Handlers) handleTemplate(w http.ResponseWriter, r *http.Request) {
 func (hd *Handlers) handleTemplateInGroup(contract, templateID string) (interface{}, error) {
 	switch template, err := crdigest.Template(hd.database, contract, templateID); {
 	case err != nil:
-		return nil, mitumutil.ErrNotFound.WithMessage(err, "template by contract %s, template %s", contract, templateID)
+		return nil, util.ErrNotFound.WithMessage(err, "template by contract %s, template %s", contract, templateID)
 	case template == nil:
-		return nil, mitumutil.ErrNotFound.Errorf("template by contract %s, template %s", contract, templateID)
+		return nil, util.ErrNotFound.Errorf("template by contract %s, template %s", contract, templateID)
 	default:
 		hal, err := hd.buildTemplateHal(contract, templateID, *template)
 		if err != nil {
@@ -436,9 +436,9 @@ func (hd *Handlers) handleTemplateInGroup(contract, templateID string) (interfac
 func (hd *Handlers) buildTemplateHal(
 	contract, templateID string,
 	template types.Template,
-) (currencydigest.Hal, error) {
+) (cdigest.Hal, error) {
 	h, err := hd.combineURL(
-		HandlerPathDIDTemplate,
+		crdigest.HandlerPathDIDTemplate,
 		"contract", contract,
 		"template_id", templateID,
 	)
@@ -446,7 +446,7 @@ func (hd *Handlers) buildTemplateHal(
 		return nil, err
 	}
 
-	hal := currencydigest.NewBaseHal(template, currencydigest.NewHalLink(h, nil))
+	hal := cdigest.NewBaseHal(template, cdigest.NewHalLink(h, nil))
 
 	return hal, nil
 }
