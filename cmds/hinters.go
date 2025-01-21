@@ -1,15 +1,14 @@
 package cmds
 
 import (
-	credentialcmds "github.com/ProtoconNet/mitum-credential/cmds"
-	currencycmds "github.com/ProtoconNet/mitum-currency/v3/cmds"
+	crcmds "github.com/ProtoconNet/mitum-credential/cmds"
+	ccmds "github.com/ProtoconNet/mitum-currency/v3/cmds"
 	daocmds "github.com/ProtoconNet/mitum-dao/cmds"
-	nftcmds "github.com/ProtoconNet/mitum-nft/cmds"
-	pointcmds "github.com/ProtoconNet/mitum-point/cmds"
-	storagecmds "github.com/ProtoconNet/mitum-storage/cmds"
-	timestampcmds "github.com/ProtoconNet/mitum-timestamp/cmds"
-	tokencmds "github.com/ProtoconNet/mitum-token/cmds"
-	"github.com/ProtoconNet/mitum2/launch"
+	ncmds "github.com/ProtoconNet/mitum-nft/cmds"
+	pcmds "github.com/ProtoconNet/mitum-point/cmds"
+	scmds "github.com/ProtoconNet/mitum-storage/cmds"
+	tscmds "github.com/ProtoconNet/mitum-timestamp/cmds"
+	tkcmds "github.com/ProtoconNet/mitum-token/cmds"
 	"github.com/ProtoconNet/mitum2/util/encoder"
 	"github.com/pkg/errors"
 )
@@ -18,49 +17,23 @@ var Hinters []encoder.DecodeDetail
 var SupportedProposalOperationFactHinters []encoder.DecodeDetail
 
 func init() {
-	defaultLen := len(launch.Hinters)
-	currencyExtendedLen := defaultLen + len(currencycmds.AddedHinters)
-	nftExtendedLen := currencyExtendedLen + len(nftcmds.AddedHinters)
-	timestampExtendedLen := nftExtendedLen + len(timestampcmds.AddedHinters)
-	credentialExtendedLen := timestampExtendedLen + len(credentialcmds.AddedHinters)
-	tokenExtendedLen := credentialExtendedLen + len(tokencmds.AddedHinters)
-	pointExtendedLen := tokenExtendedLen + len(pointcmds.AddedHinters)
-	daoExtendedLen := pointExtendedLen + len(daocmds.AddedHinters)
-	allExtendedLen := daoExtendedLen + len(storagecmds.AddedHinters)
+	Hinters = append(Hinters, ccmds.Hinters...)
+	Hinters = append(Hinters, ncmds.AddedHinters...)
+	Hinters = append(Hinters, tscmds.AddedHinters...)
+	Hinters = append(Hinters, crcmds.AddedHinters...)
+	Hinters = append(Hinters, tkcmds.AddedHinters...)
+	Hinters = append(Hinters, pcmds.AddedHinters...)
+	Hinters = append(Hinters, daocmds.AddedHinters...)
+	Hinters = append(Hinters, scmds.AddedHinters...)
 
-	Hinters = make([]encoder.DecodeDetail, allExtendedLen)
-	copy(Hinters, launch.Hinters)
-	copy(Hinters[defaultLen:currencyExtendedLen], currencycmds.AddedHinters)
-	copy(Hinters[currencyExtendedLen:nftExtendedLen], nftcmds.AddedHinters)
-	copy(Hinters[nftExtendedLen:timestampExtendedLen], timestampcmds.AddedHinters)
-	copy(Hinters[timestampExtendedLen:credentialExtendedLen], credentialcmds.AddedHinters)
-	copy(Hinters[credentialExtendedLen:tokenExtendedLen], tokencmds.AddedHinters)
-	copy(Hinters[tokenExtendedLen:pointExtendedLen], pointcmds.AddedHinters)
-	copy(Hinters[pointExtendedLen:daoExtendedLen], daocmds.AddedHinters)
-	copy(Hinters[daoExtendedLen:], storagecmds.AddedHinters)
-
-	defaultSupportedLen := len(launch.SupportedProposalOperationFactHinters)
-	currencySupportedExtendedLen := defaultSupportedLen + len(currencycmds.AddedSupportedHinters)
-	nftSupportedExtendedLen := currencySupportedExtendedLen + len(nftcmds.AddedSupportedHinters)
-	timestampSupportedExtendedLen := nftSupportedExtendedLen + len(timestampcmds.AddedSupportedHinters)
-	credentialSupportedExtendedLen := timestampSupportedExtendedLen + len(credentialcmds.AddedSupportedHinters)
-	tokenSupportedExtendedLen := credentialSupportedExtendedLen + len(tokencmds.AddedSupportedHinters)
-	pointSupportedExtendedLen := tokenSupportedExtendedLen + len(pointcmds.AddedSupportedHinters)
-	daoSupportedExtendedLen := pointSupportedExtendedLen + len(daocmds.AddedSupportedHinters)
-	allSupportedExtendedLen := daoSupportedExtendedLen + len(storagecmds.AddedSupportedHinters)
-
-	SupportedProposalOperationFactHinters = make(
-		[]encoder.DecodeDetail,
-		allSupportedExtendedLen)
-	copy(SupportedProposalOperationFactHinters, launch.SupportedProposalOperationFactHinters)
-	copy(SupportedProposalOperationFactHinters[defaultSupportedLen:currencySupportedExtendedLen], currencycmds.AddedSupportedHinters)
-	copy(SupportedProposalOperationFactHinters[currencySupportedExtendedLen:nftSupportedExtendedLen], nftcmds.AddedSupportedHinters)
-	copy(SupportedProposalOperationFactHinters[nftSupportedExtendedLen:timestampSupportedExtendedLen], timestampcmds.AddedSupportedHinters)
-	copy(SupportedProposalOperationFactHinters[timestampSupportedExtendedLen:credentialSupportedExtendedLen], credentialcmds.AddedSupportedHinters)
-	copy(SupportedProposalOperationFactHinters[credentialSupportedExtendedLen:tokenSupportedExtendedLen], tokencmds.AddedSupportedHinters)
-	copy(SupportedProposalOperationFactHinters[tokenSupportedExtendedLen:pointSupportedExtendedLen], pointcmds.AddedSupportedHinters)
-	copy(SupportedProposalOperationFactHinters[pointSupportedExtendedLen:daoSupportedExtendedLen], daocmds.AddedSupportedHinters)
-	copy(SupportedProposalOperationFactHinters[daoSupportedExtendedLen:], storagecmds.AddedSupportedHinters)
+	SupportedProposalOperationFactHinters = append(SupportedProposalOperationFactHinters, ccmds.SupportedProposalOperationFactHinters...)
+	SupportedProposalOperationFactHinters = append(SupportedProposalOperationFactHinters, ncmds.AddedSupportedHinters...)
+	SupportedProposalOperationFactHinters = append(SupportedProposalOperationFactHinters, tscmds.AddedSupportedHinters...)
+	SupportedProposalOperationFactHinters = append(SupportedProposalOperationFactHinters, crcmds.AddedSupportedHinters...)
+	SupportedProposalOperationFactHinters = append(SupportedProposalOperationFactHinters, tkcmds.AddedSupportedHinters...)
+	SupportedProposalOperationFactHinters = append(SupportedProposalOperationFactHinters, pcmds.AddedSupportedHinters...)
+	SupportedProposalOperationFactHinters = append(SupportedProposalOperationFactHinters, daocmds.AddedSupportedHinters...)
+	SupportedProposalOperationFactHinters = append(SupportedProposalOperationFactHinters, scmds.AddedSupportedHinters...)
 }
 
 func LoadHinters(encs *encoder.Encoders) error {
