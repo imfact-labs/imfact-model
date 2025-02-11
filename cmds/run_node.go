@@ -2,6 +2,7 @@ package cmds
 
 import (
 	"context"
+	pmcmds "github.com/ProtoconNet/mitum-payment/cmds"
 	"net"
 	"net/http"
 	"os"
@@ -93,6 +94,7 @@ func (cmd *RunCommand) Run(pctx context.Context) error {
 		PreAddOK(pcmds.PNameOperationProcessorsMap, pcmds.POperationProcessorsMap).
 		PreAddOK(daocmds.PNameOperationProcessorsMap, daocmds.POperationProcessorsMap).
 		PreAddOK(scmds.PNameOperationProcessorsMap, scmds.POperationProcessorsMap).
+		PreAddOK(pmcmds.PNameOperationProcessorsMap, pmcmds.POperationProcessorsMap).
 		PreAddOK(PNameOperationProcessorsMap, POperationProcessorsMap).
 		PreAddOK(ps.Name("when-new-block-saved-in-consensus-state-func"), cmd.pWhenNewBlockSavedInConsensusStateFunc).
 		PreAddOK(ps.Name("when-new-block-saved-in-syncing-state-func"), cmd.pWhenNewBlockSavedInSyncingStateFunc).

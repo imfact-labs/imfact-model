@@ -5,6 +5,7 @@ import (
 	crdigest "github.com/ProtoconNet/mitum-credential/digest"
 	daodigest "github.com/ProtoconNet/mitum-dao/digest"
 	ndigest "github.com/ProtoconNet/mitum-nft/digest"
+	pmdigest "github.com/ProtoconNet/mitum-payment/digest"
 	pdigest "github.com/ProtoconNet/mitum-point/digest"
 	sdigest "github.com/ProtoconNet/mitum-storage/digest"
 	tsdigest "github.com/ProtoconNet/mitum-timestamp/digest"
@@ -169,6 +170,10 @@ func (hd *Handlers) setHandlers() {
 	_ = hd.setHandler(sdigest.HandlerPathStorageDataHistory, hd.handleStorageDataHistory, true, get, get).
 		Methods(http.MethodOptions, "GET")
 	_ = hd.setHandler(sdigest.HandlerPathStorageDataCount, hd.handleStorageDataCount, true, get, get).
+		Methods(http.MethodOptions, "GET")
+	_ = hd.setHandler(pmdigest.HandlerPathPaymentAccountInfo, hd.handlePaymentAccountInfo, true, get, get).
+		Methods(http.MethodOptions, "GET")
+	_ = hd.setHandler(pmdigest.HandlerPathPaymentDesign, hd.handlePaymentDesign, true, get, get).
 		Methods(http.MethodOptions, "GET")
 	//_ = hd.setHandler(HandlerPathResource, hd.handleResource, true, get, get).
 	//	Methods(http.MethodOptions, "GET")

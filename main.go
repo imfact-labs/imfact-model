@@ -8,6 +8,7 @@ import (
 	daocmds "github.com/ProtoconNet/mitum-dao/cmds"
 	"github.com/ProtoconNet/mitum-minic/cmds"
 	nftcmds "github.com/ProtoconNet/mitum-nft/cmds"
+	pmcmds "github.com/ProtoconNet/mitum-payment/cmds"
 	pointcmds "github.com/ProtoconNet/mitum-point/cmds"
 	storagecmds "github.com/ProtoconNet/mitum-storage/cmds"
 	timestampcmds "github.com/ProtoconNet/mitum-timestamp/cmds"
@@ -47,6 +48,7 @@ var CLI struct { //nolint:govet //...
 		Point       pointcmds.PointCommand           `cmd:"" help:"point operation"`
 		StorageData storagecmds.StorageCommand       `cmd:"" help:"data storage operation"`
 		DID         currencycmds.DIDCommand          `cmd:"" help:"did operation"`
+		Payment     pmcmds.PaymentCommand            `cmd:"" help:"payment operation"`
 	} `cmd:"" help:"create operation"`
 	Network struct {
 		Client cmds.NetworkClientCommand `cmd:"" help:"network client"`

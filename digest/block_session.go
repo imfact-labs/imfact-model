@@ -17,6 +17,7 @@ import (
 	daodigest "github.com/ProtoconNet/mitum-dao/digest"
 	ndigest "github.com/ProtoconNet/mitum-nft/digest"
 	nstate "github.com/ProtoconNet/mitum-nft/state"
+	pmdigest "github.com/ProtoconNet/mitum-payment/digest"
 	pdigest "github.com/ProtoconNet/mitum-point/digest"
 	sdigest "github.com/ProtoconNet/mitum-storage/digest"
 	tsdigest "github.com/ProtoconNet/mitum-timestamp/digest"
@@ -77,6 +78,8 @@ type BlockSession struct {
 	didDocumentModels          []mongo.WriteModel
 	dMileModels                []mongo.WriteModel
 	dMileDataModels            []mongo.WriteModel
+	paymentDesignModels        []mongo.WriteModel
+	paymentAccountModels       []mongo.WriteModel
 	statesValue                *sync.Map
 	balanceAddressList         []string
 	nftMap                     map[string]struct{}
@@ -153,6 +156,9 @@ func (bs *BlockSession) Prepare() error {
 		return err
 	}
 	if err := bs.prepareDIDRegistry(); err != nil {
+		return err
+	}
+	if err := bs.preparePayment(); err != nil {
 		return err
 	}
 
@@ -404,6 +410,18 @@ func (bs *BlockSession) Commit(ctx context.Context) error {
 
 		if len(bs.didDocumentModels) > 0 {
 			if err := bs.writeModels(txnCtx, cdigest.DefaultColNameDIDDocument, bs.didDocumentModels); err != nil {
+				return err
+			}
+		}
+
+		if len(bs.paymentDesignModels) > 0 {
+			if err := bs.writeModels(txnCtx, pmdigest.DefaultColNamePayment, bs.paymentDesignModels); err != nil {
+				return err
+			}
+		}
+
+		if len(bs.paymentAccountModels) > 0 {
+			if err := bs.writeModels(txnCtx, pmdigest.DefaultColNamePaymentAccount, bs.paymentAccountModels); err != nil {
 				return err
 			}
 		}
@@ -863,6 +881,8 @@ func (bs *BlockSession) close() error {
 	bs.dMileModels = nil
 	bs.dMileDataModels = nil
 	bs.contractAccountModels = nil
+	bs.paymentDesignModels = nil
+	bs.paymentAccountModels = nil
 	bs.nftMap = nil
 	bs.credentialMap = nil
 

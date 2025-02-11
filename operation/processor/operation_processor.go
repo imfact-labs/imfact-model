@@ -9,6 +9,7 @@ import (
 	currencyprocessor "github.com/ProtoconNet/mitum-currency/v3/operation/processor"
 	currencytypes "github.com/ProtoconNet/mitum-currency/v3/types"
 	"github.com/ProtoconNet/mitum-nft/operation/nft"
+	"github.com/ProtoconNet/mitum-payment/operation/payment"
 	"github.com/ProtoconNet/mitum-point/operation/point"
 	"github.com/ProtoconNet/mitum-storage/operation/storage"
 	"github.com/ProtoconNet/mitum-timestamp/operation/timestamp"
@@ -362,6 +363,37 @@ func CheckDuplication(opr *currencyprocessor.OperationProcessor, op base.Operati
 		}
 		duplicationTypeDIDPubKey = []string{currencyprocessor.DuplicationKey(
 			fmt.Sprintf("%s:%s", fact.Contract().String(), fact.Sender()), DuplicationTypeDIDPubKey)}
+		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
+	case payment.RegisterModel:
+		fact, ok := t.Fact().(payment.RegisterModelFact)
+		if !ok {
+			return errors.Errorf("expected CreateServiceFact, not %T", t.Fact())
+		}
+		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
+		duplicationTypeContractID = currencyprocessor.DuplicationKey(fact.Contract().String(), DuplicationTypeContract)
+	case payment.Deposit:
+		fact, ok := t.Fact().(payment.DepositFact)
+		if !ok {
+			return errors.Errorf("expected DepositFact, not %T", t.Fact())
+		}
+		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
+	case payment.Transfer:
+		fact, ok := t.Fact().(payment.TransferFact)
+		if !ok {
+			return errors.Errorf("expected TransferFact, not %T", t.Fact())
+		}
+		duplicationTypeContractID = currencyprocessor.DuplicationKey(fact.Contract().String(), DuplicationTypeContract)
+	case payment.UpdateAccountSetting:
+		fact, ok := t.Fact().(payment.UpdateAccountSettingFact)
+		if !ok {
+			return errors.Errorf("expected UpdateAccountSettingFact, not %T", t.Fact())
+		}
+		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
+	case payment.Withdraw:
+		fact, ok := t.Fact().(payment.WithdrawFact)
+		if !ok {
+			return errors.Errorf("expected UpdateAccountInfoFact, not %T", t.Fact())
+		}
 		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
 	default:
 		return nil

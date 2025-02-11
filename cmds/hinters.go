@@ -5,6 +5,7 @@ import (
 	ccmds "github.com/ProtoconNet/mitum-currency/v3/cmds"
 	daocmds "github.com/ProtoconNet/mitum-dao/cmds"
 	ncmds "github.com/ProtoconNet/mitum-nft/cmds"
+	pmcmds "github.com/ProtoconNet/mitum-payment/cmds"
 	pcmds "github.com/ProtoconNet/mitum-point/cmds"
 	scmds "github.com/ProtoconNet/mitum-storage/cmds"
 	tscmds "github.com/ProtoconNet/mitum-timestamp/cmds"
@@ -25,6 +26,7 @@ func init() {
 	Hinters = append(Hinters, pcmds.AddedHinters...)
 	Hinters = append(Hinters, daocmds.AddedHinters...)
 	Hinters = append(Hinters, scmds.AddedHinters...)
+	Hinters = append(Hinters, pmcmds.AddedHinters...)
 
 	SupportedProposalOperationFactHinters = append(SupportedProposalOperationFactHinters, ccmds.SupportedProposalOperationFactHinters...)
 	SupportedProposalOperationFactHinters = append(SupportedProposalOperationFactHinters, ncmds.AddedSupportedHinters...)
@@ -34,6 +36,7 @@ func init() {
 	SupportedProposalOperationFactHinters = append(SupportedProposalOperationFactHinters, pcmds.AddedSupportedHinters...)
 	SupportedProposalOperationFactHinters = append(SupportedProposalOperationFactHinters, daocmds.AddedSupportedHinters...)
 	SupportedProposalOperationFactHinters = append(SupportedProposalOperationFactHinters, scmds.AddedSupportedHinters...)
+	SupportedProposalOperationFactHinters = append(SupportedProposalOperationFactHinters, pmcmds.AddedSupportedHinters...)
 }
 
 func LoadHinters(encs *encoder.Encoders) error {
