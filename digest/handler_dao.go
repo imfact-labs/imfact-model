@@ -1,14 +1,12 @@
 package digest
 
 import (
-	"net/http"
-	"time"
-
 	cdigest "github.com/ProtoconNet/mitum-currency/v3/digest"
 	daodigest "github.com/ProtoconNet/mitum-dao/digest"
 	"github.com/ProtoconNet/mitum-dao/state"
 	"github.com/ProtoconNet/mitum-dao/types"
 	"github.com/ProtoconNet/mitum2/util"
+	"net/http"
 )
 
 func (hd *Handlers) handleDAOService(w http.ResponseWriter, r *http.Request) {
@@ -32,7 +30,7 @@ func (hd *Handlers) handleDAOService(w http.ResponseWriter, r *http.Request) {
 	} else {
 		cdigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
 		if !shared {
-			cdigest.HTTP2WriteCache(w, cacheKey, time.Millisecond*500)
+			cdigest.HTTP2WriteCache(w, cacheKey, hd.expireShortLived)
 		}
 	}
 }
@@ -90,7 +88,7 @@ func (hd *Handlers) handleDAOProposal(w http.ResponseWriter, r *http.Request) {
 	} else {
 		cdigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
 		if !shared {
-			cdigest.HTTP2WriteCache(w, cacheKey, time.Millisecond*500)
+			cdigest.HTTP2WriteCache(w, cacheKey, hd.expireShortLived)
 		}
 	}
 }
@@ -153,7 +151,7 @@ func (hd *Handlers) handleDAODelegator(w http.ResponseWriter, r *http.Request) {
 	} else {
 		cdigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
 		if !shared {
-			cdigest.HTTP2WriteCache(w, cacheKey, time.Millisecond*500)
+			cdigest.HTTP2WriteCache(w, cacheKey, hd.expireShortLived)
 		}
 	}
 }
@@ -218,7 +216,7 @@ func (hd *Handlers) handleDAOVoters(w http.ResponseWriter, r *http.Request) {
 	} else {
 		cdigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
 		if !shared {
-			cdigest.HTTP2WriteCache(w, cacheKey, time.Millisecond*500)
+			cdigest.HTTP2WriteCache(w, cacheKey, hd.expireShortLived)
 		}
 	}
 }
@@ -277,7 +275,7 @@ func (hd *Handlers) handleDAOVotingPowerBox(w http.ResponseWriter, r *http.Reque
 	} else {
 		cdigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
 		if !shared {
-			cdigest.HTTP2WriteCache(w, cacheKey, time.Millisecond*500)
+			cdigest.HTTP2WriteCache(w, cacheKey, hd.expireShortLived)
 		}
 	}
 }

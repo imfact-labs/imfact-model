@@ -34,7 +34,7 @@ func (hd *Handlers) handleStorageDesign(w http.ResponseWriter, r *http.Request) 
 		cdigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
 
 		if !shared {
-			cdigest.HTTP2WriteCache(w, cacheKey, time.Second*3)
+			cdigest.HTTP2WriteCache(w, cacheKey, hd.expireShortLived)
 		}
 	}
 }
@@ -108,7 +108,7 @@ func (hd *Handlers) handleStorageData(w http.ResponseWriter, r *http.Request) {
 		cdigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
 
 		if !shared {
-			cdigest.HTTP2WriteCache(w, cacheKey, time.Second*3)
+			cdigest.HTTP2WriteCache(w, cacheKey, hd.expireShortLived)
 		}
 	}
 }

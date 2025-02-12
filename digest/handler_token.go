@@ -1,13 +1,11 @@
 package digest
 
 import (
-	"net/http"
-	"time"
-
 	"github.com/ProtoconNet/mitum-currency/v3/common"
 	cdigest "github.com/ProtoconNet/mitum-currency/v3/digest"
 	tkdigest "github.com/ProtoconNet/mitum-token/digest"
 	"github.com/ProtoconNet/mitum-token/types"
+	"net/http"
 )
 
 func (hd *Handlers) handleToken(w http.ResponseWriter, r *http.Request) {
@@ -31,7 +29,7 @@ func (hd *Handlers) handleToken(w http.ResponseWriter, r *http.Request) {
 	} else {
 		cdigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
 		if !shared {
-			cdigest.HTTP2WriteCache(w, cachekey, time.Second*1)
+			cdigest.HTTP2WriteCache(w, cachekey, hd.expireShortLived)
 		}
 	}
 }
@@ -88,7 +86,7 @@ func (hd *Handlers) handleTokenBalance(w http.ResponseWriter, r *http.Request) {
 	} else {
 		cdigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
 		if !shared {
-			cdigest.HTTP2WriteCache(w, cachekey, time.Second*1)
+			cdigest.HTTP2WriteCache(w, cachekey, hd.expireShortLived)
 		}
 	}
 }

@@ -1,11 +1,9 @@
 package digest
 
 import (
-	"net/http"
-	"time"
-
 	cdigest "github.com/ProtoconNet/mitum-currency/v3/digest"
 	"github.com/shirou/gopsutil/mem"
+	"net/http"
 )
 
 func (hd *Handlers) handleResource(w http.ResponseWriter, r *http.Request) {
@@ -21,7 +19,7 @@ func (hd *Handlers) handleResource(w http.ResponseWriter, r *http.Request) {
 	} else {
 		cdigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
 		if !shared {
-			cdigest.HTTP2WriteCache(w, cacheKey, time.Millisecond*500)
+			cdigest.HTTP2WriteCache(w, cacheKey, hd.expireShortLived)
 		}
 	}
 }

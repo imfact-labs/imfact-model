@@ -38,7 +38,7 @@ func (hd *Handlers) handleNFT(w http.ResponseWriter, r *http.Request) {
 	} else {
 		cdigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
 		if !shared {
-			cdigest.HTTP2WriteCache(w, cachekey, time.Second*1)
+			cdigest.HTTP2WriteCache(w, cachekey, hd.expireShortLived)
 		}
 	}
 }
@@ -88,7 +88,7 @@ func (hd *Handlers) handleNFTCollection(w http.ResponseWriter, r *http.Request) 
 	} else {
 		cdigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
 		if !shared {
-			cdigest.HTTP2WriteCache(w, cachekey, time.Second*1)
+			cdigest.HTTP2WriteCache(w, cachekey, hd.expireShortLived)
 		}
 	}
 }
@@ -389,7 +389,7 @@ func (hd *Handlers) handleNFTOperators(w http.ResponseWriter, r *http.Request) {
 	} else {
 		cdigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
 		if !shared {
-			cdigest.HTTP2WriteCache(w, cachekey, time.Second*1)
+			cdigest.HTTP2WriteCache(w, cachekey, hd.expireShortLived)
 		}
 	}
 }

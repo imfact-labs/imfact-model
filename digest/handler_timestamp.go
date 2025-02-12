@@ -1,15 +1,13 @@
 package digest
 
 import (
-	"net/http"
-	"strconv"
-	"time"
-
 	cdigest "github.com/ProtoconNet/mitum-currency/v3/digest"
 	tsdigest "github.com/ProtoconNet/mitum-timestamp/digest"
 	"github.com/ProtoconNet/mitum-timestamp/types"
 	"github.com/ProtoconNet/mitum2/base"
 	"github.com/gorilla/mux"
+	"net/http"
+	"strconv"
 )
 
 func (hd *Handlers) handleTimeStampDesign(w http.ResponseWriter, r *http.Request) {
@@ -34,7 +32,7 @@ func (hd *Handlers) handleTimeStampDesign(w http.ResponseWriter, r *http.Request
 		cdigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
 
 		if !shared {
-			cdigest.HTTP2WriteCache(w, cacheKey, time.Second*1)
+			cdigest.HTTP2WriteCache(w, cacheKey, hd.expireShortLived)
 		}
 	}
 }
@@ -123,7 +121,7 @@ func (hd *Handlers) handleTimeStampItem(w http.ResponseWriter, r *http.Request) 
 		cdigest.HTTP2WriteHalBytes(hd.encoder, w, v.([]byte), http.StatusOK)
 
 		if !shared {
-			cdigest.HTTP2WriteCache(w, cachekey, time.Second*1)
+			cdigest.HTTP2WriteCache(w, cachekey, hd.expireShortLived)
 		}
 	}
 }
