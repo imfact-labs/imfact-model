@@ -7,8 +7,8 @@ github.com/ProtoconNet/mitum-currency/v3 v3.0.0-alpha.0.20250224065711-c8ae918fa
 github.com/ProtoconNet/mitum-currency/v3 v3.0.0-alpha.0.20250224065711-c8ae918fa577/go.mod h1:PJIwiI0RuvZJdCcHi5k49/0BSelsUpjdHy2uTCVKqp8=
 github.com/ProtoconNet/mitum-dao v0.0.0-20250212052136-938f00ab1c82 h1:0X/nSKwxjFLPA2IPPuIB/p/0af4LpiQfs8Z+zWr5Ri0=
 github.com/ProtoconNet/mitum-dao v0.0.0-20250212052136-938f00ab1c82/go.mod h1:0QP55rQmRhmhZNauy3vZKnJLUnminc5DdF6CWlBkDpY=
-github.com/ProtoconNet/mitum-nft v0.0.0-20250212062201-a6c7cb68e7d1 h1:39/UJuvlN1Ab1/6ipQBcYiKTmfR+FQzmMtdR3FUCnwQ=
-github.com/ProtoconNet/mitum-nft v0.0.0-20250212062201-a6c7cb68e7d1/go.mod h1:zuCxp6K9IAVeo1941b1dUaxE20t145nndpc5I1jP/Q0=
+github.com/ProtoconNet/mitum-nft v0.0.0-20250520083146-ed71a8cbc1cb h1:Onr8voHJ6l9qszROhRU5tgw3K4EaT6jW8F3Y3vtYioY=
+github.com/ProtoconNet/mitum-nft v0.0.0-20250520083146-ed71a8cbc1cb/go.mod h1:zuCxp6K9IAVeo1941b1dUaxE20t145nndpc5I1jP/Q0=
 github.com/ProtoconNet/mitum-payment v0.0.0-20250212052141-c59a9cd391fb h1:mgEWlRoFiWMdZYKHZX18zt3RMY7730/xLKf7pNgHjTU=
 github.com/ProtoconNet/mitum-payment v0.0.0-20250212052141-c59a9cd391fb/go.mod h1:yA2czuaCZ8e9uEIr3IDGQKYxvq4QGb3ZXVP9H4sfqhQ=
 github.com/ProtoconNet/mitum-point v0.0.0-20250212062004-bc09bed53d2f h1:ggmp7gODyraVJ24G08aF6ENXxTa5ZbZosnbBtjvXosk=
