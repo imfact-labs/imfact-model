@@ -37,3 +37,4 @@ tests/*/*/coverage/
 .envrc
 /config.yml
 /genesis.yml
+/config*

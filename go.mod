@@ -6,7 +6,7 @@ toolchain go1.22.1
 
 require (
 	github.com/ProtoconNet/mitum-credential v0.0.0-20250212052116-050d95ef9dd9
-	github.com/ProtoconNet/mitum-currency/v3 v3.0.0-alpha.0.20250224065711-c8ae918fa577
+	github.com/ProtoconNet/mitum-currency/v3 v3.0.0-alpha.0.20250612113756-4ac00b6a16a8
 	github.com/ProtoconNet/mitum-dao v0.0.0-20250212052136-938f00ab1c82
 	github.com/ProtoconNet/mitum-nft v0.0.0-20250520083146-ed71a8cbc1cb
 	github.com/ProtoconNet/mitum-payment v0.0.0-20250212052141-c59a9cd391fb
@@ -14,7 +14,7 @@ require (
 	github.com/ProtoconNet/mitum-storage v0.0.0-20250212052132-a19e898e879b
 	github.com/ProtoconNet/mitum-timestamp v0.0.0-20250212052127-2d10bc1f8c7a
 	github.com/ProtoconNet/mitum-token v0.0.0-20250212062531-93dfb0349fba
-	github.com/ProtoconNet/mitum2 v0.0.0-20241101032300-fbbe79d8122c
+	github.com/ProtoconNet/mitum2 v0.0.0-20250612112846-83e5237de28b
 	github.com/alecthomas/kong v0.9.0
 	github.com/arl/statsviz v0.6.0
 	github.com/gorilla/mux v1.8.1
@@ -22,7 +22,7 @@ require (
 	github.com/rs/zerolog v1.32.0
 	github.com/shirou/gopsutil v3.21.11+incompatible
 	go.mongodb.org/mongo-driver v1.15.0
-	golang.org/x/sync v0.7.0
+	golang.org/x/sync v0.10.0
 )
 
 require (
@@ -104,13 +104,13 @@ require (
 	github.com/zeebo/blake3 v0.2.3 // indirect
 	go.uber.org/mock v0.4.0 // indirect
 	golang.org/x/arch v0.7.0 // indirect
-	golang.org/x/crypto v0.23.0 // indirect
+	golang.org/x/crypto v0.31.0 // indirect
 	golang.org/x/exp v0.0.0-20240506185415-9bf2ced13842 // indirect
 	golang.org/x/mod v0.17.0 // indirect
 	golang.org/x/net v0.25.0 // indirect
-	golang.org/x/sys v0.20.0 // indirect
-	golang.org/x/text v0.15.0 // indirect
+	golang.org/x/sys v0.28.0 // indirect
+	golang.org/x/text v0.21.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
-	golang.org/x/tools v0.21.0 // indirect
+	golang.org/x/tools v0.21.1-0.20240508182429-e35e4ccd0d2d // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
