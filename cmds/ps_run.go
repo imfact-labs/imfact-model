@@ -21,11 +21,11 @@ func DefaultRunPS() *ps.PS {
 		AddOK(ccmds.PNameDigestDesign, ccmds.PLoadDigestDesign, nil, launch.PNameEncoder).
 		AddOK(launch.PNameTimeSyncer, launch.PStartTimeSyncer, launch.PCloseTimeSyncer, launch.PNameDesign).
 		AddOK(launch.PNameLocal, launch.PLocal, nil, launch.PNameDesign).
-		AddOK(launch.PNameStorage, launch.PStorage, nil, launch.PNameLocal).
+		AddOK(launch.PNameBlockItemReaders, launch.PBlockItemReaders, nil, launch.PNameDesign).
+		AddOK(launch.PNameStorage, launch.PStorage, nil, launch.PNameLocal, launch.PNameBlockItemReaders).
 		AddOK(launch.PNameProposalMaker, ccmds.PProposalMaker, nil, launch.PNameStorage).
 		AddOK(launch.PNameNetwork, launch.PNetwork, nil, launch.PNameStorage).
 		AddOK(launch.PNameMemberlist, ccmds.PMemberlist, nil, launch.PNameNetwork).
-		AddOK(launch.PNameBlockItemReaders, launch.PBlockItemReaders, nil, launch.PNameDesign).
 		AddOK(launch.PNameStartStorage, launch.PStartStorage, launch.PCloseStorage, launch.PNameStartNetwork).
 		AddOK(launch.PNameStartNetwork, launch.PStartNetwork, launch.PCloseNetwork, launch.PNameStates).
 		AddOK(launch.PNameStartMemberlist, ccmds.PStartMemberlist, ccmds.PCloseMemberlist, launch.PNameStartNetwork).
@@ -40,11 +40,9 @@ func DefaultRunPS() *ps.PS {
 			launch.PNameStartMemberlist,
 			launch.PNameStartNetwork,
 			launch.PNameStates).
-		AddOK(PNameMongoDBsDataBase, ProcessDatabase, nil, ccmds.PNameDigestDesign, launch.PNameStorage).
-		//AddOK(PNameDigester, ProcessDigester, nil, PNameMongoDBsDataBase).
-		AddOK(PNameDigest, ccmds.ProcessDigestAPI, nil, ccmds.PNameDigestDesign, PNameMongoDBsDataBase, launch.PNameMemberlist).
-		AddOK(PNameDigestStart, ccmds.ProcessStartDigestAPI, nil, PNameDigest)
-	//AddOK(PNameStartDigester, ProcessStartDigester, nil, PNameDigestStart)
+		AddOK(ccmds.PNameDigesterDataBase, ccmds.ProcessDigesterDatabase, nil, ccmds.PNameDigestDesign, launch.PNameStorage).
+		AddOK(ccmds.PNameAPI, ccmds.ProcessAPI, nil, ccmds.PNameDigestDesign, ccmds.PNameDigesterDataBase, launch.PNameMemberlist).
+		AddOK(ccmds.PNameStartAPI, ccmds.ProcessStartAPI, nil, ccmds.PNameAPI)
 
 	_ = pps.POK(launch.PNameDesign).
 		PostAddOK(launch.PNameCheckDesign, launch.PCheckDesign).
@@ -65,7 +63,8 @@ func DefaultRunPS() *ps.PS {
 		PostAddOK(launch.PNameLoadFromDatabase, launch.PLoadFromDatabase).
 		PostAddOK(launch.PNameCheckBlocksOfStorage, launch.PCheckBlocksOfStorage).
 		PostAddOK(launch.PNamePatchBlockItemReaders, launch.PPatchBlockItemReaders).
-		PostAddOK(launch.PNameNodeInfo, launch.PNodeInfo)
+		PostAddOK(launch.PNameNodeInfo, launch.PNodeInfo).
+		PostAddOK(launch.PNameNodeMetric, launch.PNodeMetric)
 
 	_ = pps.POK(launch.PNameNetwork).
 		PreAddOK(launch.PNameQuicstreamClient, launch.PQuicstreamClient).
@@ -89,7 +88,7 @@ func DefaultRunPS() *ps.PS {
 		PreAddOK(launch.PNameBallotStuckResolver, launch.PBallotStuckResolver).
 		PostAddOK(launch.PNamePatchLastConsensusNodesWatcher, launch.PPatchLastConsensusNodesWatcher).
 		PostAddOK(launch.PNameStatesSetHandlers, launch.PStatesSetHandlers).
-		PostAddOK(launch.PNameNetworkHandlersReadWriteNode, launch.PNetworkHandlersReadWriteNode).
+		PostAddOK(launch.PNameNetworkHandlersReadWriteNode, ccmds.PNetworkHandlersReadWriteNode).
 		PostAddOK(launch.PNamePatchMemberlist, ccmds.PPatchMemberlist).
 		PostAddOK(launch.PNameStatesNetworkHandlers, ccmds.PStatesNetworkHandlers).
 		PostAddOK(launch.PNameHandoverNetworkHandlers, launch.PHandoverNetworkHandlers)

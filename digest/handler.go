@@ -2,6 +2,9 @@ package digest
 
 import (
 	"context"
+	"net/http"
+	"time"
+
 	crdigest "github.com/ProtoconNet/mitum-credential/digest"
 	daodigest "github.com/ProtoconNet/mitum-dao/digest"
 	ndigest "github.com/ProtoconNet/mitum-nft/digest"
@@ -10,8 +13,6 @@ import (
 	sdigest "github.com/ProtoconNet/mitum-storage/digest"
 	tsdigest "github.com/ProtoconNet/mitum-timestamp/digest"
 	tkdigest "github.com/ProtoconNet/mitum-token/digest"
-	"net/http"
-	"time"
 
 	cdigest "github.com/ProtoconNet/mitum-currency/v3/digest"
 	"github.com/ProtoconNet/mitum-currency/v3/digest/network"
@@ -29,7 +30,8 @@ import (
 )
 
 var (
-	HandlerPathResource = `/resource`
+	HandlerPathResource     = `/resource`
+	HandlerPathResourceProm = `/resource/prom`
 )
 
 func init() {
@@ -125,6 +127,10 @@ func (hd *Handlers) Handler() http.Handler {
 
 func (hd *Handlers) setHandlers() {
 	get := 1000
+	_ = hd.setHandler(HandlerPathResource, hd.handleResource, true, get, get).
+		Methods(http.MethodOptions, "GET")
+	_ = hd.setHandler(HandlerPathResourceProm, hd.handleResourceProm, false, get, get).
+		Methods(http.MethodOptions, "GET")
 	_ = hd.setHandler(ndigest.HandlerPathNFTCollection, hd.handleNFTCollection, true, get, get).
 		Methods(http.MethodOptions, "GET")
 	_ = hd.setHandler(ndigest.HandlerPathNFTs, hd.handleNFTs, true, get, get).

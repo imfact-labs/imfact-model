@@ -2,7 +2,6 @@ package cmds
 
 import (
 	"context"
-	pmcmds "github.com/ProtoconNet/mitum-payment/cmds"
 	"net"
 	"net/http"
 	"os"
@@ -10,11 +9,12 @@ import (
 	"syscall"
 
 	crcmds "github.com/ProtoconNet/mitum-credential/cmds"
-	ccmds "github.com/ProtoconNet/mitum-currency/v3/cmds"
-	cdigest "github.com/ProtoconNet/mitum-currency/v3/digest"
+	currencycmds "github.com/ProtoconNet/mitum-currency/v3/cmds"
+	currencydigest "github.com/ProtoconNet/mitum-currency/v3/digest"
 	daocmds "github.com/ProtoconNet/mitum-dao/cmds"
 	"github.com/ProtoconNet/mitum-minic/digest"
 	ncmds "github.com/ProtoconNet/mitum-nft/cmds"
+	pmcmds "github.com/ProtoconNet/mitum-payment/cmds"
 	pcmds "github.com/ProtoconNet/mitum-point/cmds"
 	scmds "github.com/ProtoconNet/mitum-storage/cmds"
 	tscmds "github.com/ProtoconNet/mitum-timestamp/cmds"
@@ -69,7 +69,7 @@ func (cmd *RunCommand) Run(pctx context.Context) error {
 
 	if len(cmd.HTTPState) > 0 {
 		if err := cmd.runHTTPState(cmd.HTTPState); err != nil {
-			return errors.Wrap(err, "run http state")
+			return errors.Wrap(err, "failed to run http state")
 		}
 	}
 
@@ -81,10 +81,10 @@ func (cmd *RunCommand) Run(pctx context.Context) error {
 		launch.ACLFlagsContextKey:      cmd.ACLFlags,
 	})
 
-	pps := DefaultRunPS()
+	pps := currencycmds.DefaultRunPS()
 
-	_ = pps.AddOK(ccmds.PNameDigester, ProcessDigester, nil, ccmds.PNameMongoDBsDataBase).
-		AddOK(ccmds.PNameStartDigester, ProcessStartDigester, nil, ccmds.PNameDigestStart)
+	_ = pps.AddOK(currencycmds.PNameDigester, ProcessDigester, nil, currencycmds.PNameDigesterDataBase).
+		AddOK(currencycmds.PNameStartDigester, ProcessStartDigester, nil, currencycmds.PNameStartAPI)
 	_ = pps.POK(launch.PNameStorage).PostAddOK(ps.Name("check-hold"), cmd.pCheckHold)
 	_ = pps.POK(launch.PNameStates).
 		PreAddOK(ncmds.PNameOperationProcessorsMap, ncmds.POperationProcessorsMap).
@@ -101,10 +101,10 @@ func (cmd *RunCommand) Run(pctx context.Context) error {
 		PreAddOK(ps.Name("when-new-block-confirmed-func"), cmd.pWhenNewBlockConfirmed)
 	_ = pps.POK(launch.PNameEncoder).
 		PostAddOK(launch.PNameAddHinters, PAddHinters)
-	_ = pps.POK(ccmds.PNameDigest).
-		PostAddOK(ccmds.PNameDigestAPIHandlers, cmd.pDigestAPIHandlers)
-	_ = pps.POK(ccmds.PNameDigester).
-		PostAddOK(ccmds.PNameDigesterFollowUp, PDigesterFollowUp)
+	_ = pps.POK(currencycmds.PNameAPI).
+		PostAddOK(currencycmds.PNameDigestAPIHandlers, cmd.pDigestAPIHandlers)
+	_ = pps.POK(currencycmds.PNameDigester).
+		PostAddOK(currencycmds.PNameDigesterFollowUp, PDigesterFollowUp)
 
 	_ = pps.SetLogging(log)
 
@@ -114,7 +114,7 @@ func (cmd *RunCommand) Run(pctx context.Context) error {
 	defer func() {
 		log.Log().Debug().Interface("process", pps.Verbose()).Msg("process will be closed")
 
-		if _, err = pps.Close(nctx); err != nil {
+		if _, err = pps.Close(pctx); err != nil {
 			log.Log().Error().Err(err).Msg("failed to close")
 		}
 	}()
@@ -203,21 +203,25 @@ func (cmd *RunCommand) runStates(ctx, pctx context.Context) (func(), error) {
 func (cmd *RunCommand) pWhenNewBlockSavedInSyncingStateFunc(pctx context.Context) (context.Context, error) {
 	var log *logging.Logging
 	var db isaac.Database
-	var di *digest.Digester
+	var design currencydigest.YamlDigestDesign
 
 	if err := util.LoadFromContextOK(pctx,
 		launch.LoggingContextKey, &log,
 		launch.CenterDatabaseContextKey, &db,
+		currencydigest.ContextValueDigestDesign, &design,
 	); err != nil {
 		return pctx, err
 	}
 
-	if err := util.LoadFromContext(pctx, cdigest.ContextValueDigester, &di); err != nil {
-		return pctx, err
-	}
-
 	var f func(height base.Height)
-	if di != nil {
+	if !design.Equal(currencydigest.YamlDigestDesign{}) && design.Digest {
+		var di *digest.Digester
+		if err := util.LoadFromContextOK(pctx,
+			currencydigest.ContextValueDigester, &di,
+		); err != nil {
+			return pctx, err
+		}
+
 		g := cmd.whenBlockSaved(db, di)
 
 		f = func(height base.Height) {
@@ -279,21 +283,18 @@ func (cmd *RunCommand) pWhenNewBlockSavedInConsensusStateFunc(pctx context.Conte
 func (cmd *RunCommand) pWhenNewBlockConfirmed(pctx context.Context) (context.Context, error) {
 	var log *logging.Logging
 	var db isaac.Database
-	var di *digest.Digester
+	var design currencydigest.YamlDigestDesign
 
 	if err := util.LoadFromContextOK(pctx,
 		launch.LoggingContextKey, &log,
 		launch.CenterDatabaseContextKey, &db,
+		currencydigest.ContextValueDigestDesign, &design,
 	); err != nil {
 		return pctx, err
 	}
 
-	if err := util.LoadFromContext(pctx, cdigest.ContextValueDigester, &di); err != nil {
-		return pctx, err
-	}
-
 	var f func(height base.Height)
-	if di != nil {
+	if !design.Equal(currencydigest.YamlDigestDesign{}) && design.Digest {
 		f = func(height base.Height) {
 			l := log.Log().With().Interface("height", height).Logger()
 
@@ -396,24 +397,17 @@ func (cmd *RunCommand) runHTTPState(bind string) error {
 func (cmd *RunCommand) pDigestAPIHandlers(ctx context.Context) (context.Context, error) {
 	var params *launch.LocalParams
 	var local base.LocalNode
+	var design currencydigest.YamlDigestDesign
 
 	if err := util.LoadFromContextOK(ctx,
 		launch.LocalContextKey, &local,
 		launch.LocalParamsContextKey, &params,
+		currencydigest.ContextValueDigestDesign, &design,
 	); err != nil {
 		return nil, err
 	}
 
-	var design cdigest.YamlDigestDesign
-	if err := util.LoadFromContext(ctx, cdigest.ContextValueDigestDesign, &design); err != nil {
-		if errors.Is(err, util.ErrNotFound) {
-			return ctx, nil
-		}
-
-		return nil, err
-	}
-
-	if design.Equal(cdigest.YamlDigestDesign{}) {
+	if design.Equal(currencydigest.YamlDigestDesign{}) {
 		return ctx, nil
 	}
 
@@ -422,18 +416,20 @@ func (cmd *RunCommand) pDigestAPIHandlers(ctx context.Context) (context.Context,
 		return ctx, err
 	}
 
-	var dnt *cdigest.HTTP2Server
-	if err := util.LoadFromContext(ctx, cdigest.ContextValueDigestNetwork, &dnt); err != nil {
+	var dnt *currencydigest.HTTP2Server
+	if err := util.LoadFromContext(ctx, currencydigest.ContextValueDigestNetwork, &dnt); err != nil {
 		return ctx, err
 	}
-	router := dnt.Router()
 
-	defaultHandlers, err := cmd.setDigestDefaultHandlers(ctx, params, cache, router, dnt.Queue())
+	router := dnt.Router()
+	router.PathPrefix("/debug/pprof/").Handler(http.DefaultServeMux)
+
+	defaultHandlers, err := cmd.setDigestAPIDefaultHandlers(ctx, params, cache, router, dnt.Queue())
 	if err != nil {
 		return ctx, err
 	}
 
-	if err := defaultHandlers.Initialize(); err != nil {
+	if err := defaultHandlers.Initialize(design.Digest); err != nil {
 		return ctx, err
 	}
 
@@ -451,8 +447,8 @@ func (cmd *RunCommand) pDigestAPIHandlers(ctx context.Context) (context.Context,
 	return ctx, nil
 }
 
-func (cmd *RunCommand) loadCache(_ context.Context, design cdigest.YamlDigestDesign) (cdigest.Cache, error) {
-	c, err := cdigest.NewCacheFromURI(design.Cache().String())
+func (cmd *RunCommand) loadCache(_ context.Context, design currencydigest.YamlDigestDesign) (currencydigest.Cache, error) {
+	c, err := currencydigest.NewCacheFromURI(design.Cache().String())
 	if err != nil {
 		cmd.log.Err(err).Str("cache", design.Cache().String()).Msg("failed to connect cache server")
 		cmd.log.Warn().Msg("instead of remote cache server, internal mem cache can be available, `memory://`")
@@ -462,21 +458,36 @@ func (cmd *RunCommand) loadCache(_ context.Context, design cdigest.YamlDigestDes
 	return c, nil
 }
 
-func (cmd *RunCommand) setDigestDefaultHandlers(
+func (cmd *RunCommand) setDigestAPIDefaultHandlers(
 	ctx context.Context,
 	params *launch.LocalParams,
-	cache cdigest.Cache,
+	cache currencydigest.Cache,
 	router *mux.Router,
-	queue chan cdigest.RequestWrapper,
-) (*cdigest.Handlers, error) {
-	var st *cdigest.Database
-	if err := util.LoadFromContext(ctx, cdigest.ContextValueDigestDatabase, &st); err != nil {
+	queue chan currencydigest.RequestWrapper,
+) (*currencydigest.Handlers, error) {
+	var nodeDesign launch.NodeDesign
+	var design currencydigest.YamlDigestDesign
+	var st *currencydigest.Database
+	if err := util.LoadFromContext(ctx,
+		launch.DesignContextKey, &nodeDesign,
+		currencydigest.ContextValueDigestDesign, &design,
+	); err != nil {
+		return nil, err
+	}
+	if design.Digest {
+		if err := util.LoadFromContext(ctx, currencydigest.ContextValueDigestDatabase, &st); err != nil {
+			return nil, err
+		}
+	}
+
+	node, err := quicstream.NewConnInfoFromStringAddr(nodeDesign.Network.PublishString, nodeDesign.Network.TLSInsecure)
+	if err != nil {
 		return nil, err
 	}
 
-	handlers := cdigest.NewHandlers(ctx, params.ISAAC.NetworkID(), encs, enc, st, cache, router, queue)
+	handlers := currencydigest.NewHandlers(ctx, params.ISAAC.NetworkID(), encs, enc, st, cache, router, queue, node)
 
-	h, err := cmd.setDigestNetworkClient(ctx, params, handlers)
+	h, err := cmd.setDigestAPINetworkClient(ctx, params, handlers)
 	if err != nil {
 		return nil, err
 	}
@@ -488,12 +499,12 @@ func (cmd *RunCommand) setDigestDefaultHandlers(
 func (cmd *RunCommand) setDigestHandlers(
 	ctx context.Context,
 	params *launch.LocalParams,
-	cache cdigest.Cache,
+	cache currencydigest.Cache,
 	router *mux.Router,
 	routes map[string]*mux.Route,
 ) (*digest.Handlers, error) {
-	var st *cdigest.Database
-	if err := util.LoadFromContext(ctx, cdigest.ContextValueDigestDatabase, &st); err != nil {
+	var st *currencydigest.Database
+	if err := util.LoadFromContext(ctx, currencydigest.ContextValueDigestDatabase, &st); err != nil {
 		return nil, err
 	}
 
@@ -502,24 +513,11 @@ func (cmd *RunCommand) setDigestHandlers(
 	return handlers, nil
 }
 
-func (cmd *RunCommand) setDigestNetworkClient(
+func (cmd *RunCommand) setDigestAPINetworkClient(
 	ctx context.Context,
 	params *launch.LocalParams,
-	handlers *cdigest.Handlers,
-) (*cdigest.Handlers, error) {
-	var design cdigest.YamlDigestDesign
-	if err := util.LoadFromContext(ctx, cdigest.ContextValueDigestDesign, &design); err != nil {
-		if errors.Is(err, util.ErrNotFound) {
-			return handlers, nil
-		}
-
-		return nil, err
-	}
-
-	if design.Equal(cdigest.YamlDigestDesign{}) {
-		return handlers, nil
-	}
-
+	handlers *currencydigest.Handlers,
+) (*currencydigest.Handlers, error) {
 	var memberList *quicmemberlist.Memberlist
 	if err := util.LoadFromContextOK(ctx, launch.MemberlistContextKey, &memberList); err != nil {
 		return nil, err
@@ -530,11 +528,29 @@ func (cmd *RunCommand) setDigestNetworkClient(
 		params.ISAAC.NetworkID(),
 		nil,
 	)
+
 	if err != nil {
 		return nil, err
 	}
 
-	//handlers = handlers.SetConnectionPool(connectionPool)
+	handlers = handlers.SetNetworkClientFunc(
+		func() (*quicstream.ConnectionPool, *quicmemberlist.Memberlist, []quicstream.ConnInfo, error) { // nolint:contextcheck
+			return connectionPool, memberList, []quicstream.ConnInfo{}, nil
+		},
+	)
+
+	var design currencydigest.YamlDigestDesign
+	if err := util.LoadFromContext(ctx, currencydigest.ContextValueDigestDesign, &design); err != nil {
+		if errors.Is(err, util.ErrNotFound) {
+			return handlers, nil
+		}
+
+		return nil, err
+	}
+
+	if design.Equal(currencydigest.YamlDigestDesign{}) {
+		return handlers, nil
+	}
 
 	handlers = handlers.SetNetworkClientFunc(
 		func() (*quicstream.ConnectionPool, *quicmemberlist.Memberlist, []quicstream.ConnInfo, error) { // nolint:contextcheck
