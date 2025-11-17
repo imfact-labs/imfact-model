@@ -1,10 +1,12 @@
 github.com/DataDog/datadog-go v3.2.0+incompatible/go.mod h1:LButxg5PwREeZtORoXG3tL4fMGNddJ+vMq1mwgfaqoQ=
+github.com/HayoungOh5/memberlist v0.0.0-20251120091718-913bc68ce0d2 h1:bbPmccnva4F5KQOkUwOsBqYKTDvSCXQu8XV+cKqGEG8=
+github.com/HayoungOh5/memberlist v0.0.0-20251120091718-913bc68ce0d2/go.mod h1:yvyXLpo0QaGE59Y7hDTsTzDD25JYBZ4mHgHUZ8lrOI0=
 github.com/Masterminds/semver/v3 v3.4.0 h1:Zog+i5UMtVoCU8oKka5P7i9q9HgrJeGzI9SA1Xbatp0=
 github.com/Masterminds/semver/v3 v3.4.0/go.mod h1:4V+yj/TJE1HU9XfppCwVMZq3I84lprf4nC11bSS5beM=
 github.com/ProtoconNet/mitum-credential v0.0.0-20251105025531-b9a858afe3c0 h1:y8PTVQX8cjXAaTGaX2MxFOGyd4pkAYqdvURdR1fRxjs=
 github.com/ProtoconNet/mitum-credential v0.0.0-20251105025531-b9a858afe3c0/go.mod h1:Xjm7NgJuq5GYHuKKF9wT4YGJCofeizLYU9QB+eDo9Hw=
-github.com/ProtoconNet/mitum-currency/v3 v3.0.0-alpha.0.20251112060645-79793c83fcac h1:X/TbiVgcsbA0oATRZoAPs47vYJJydqqD1pIOFb9RIWk=
-github.com/ProtoconNet/mitum-currency/v3 v3.0.0-alpha.0.20251112060645-79793c83fcac/go.mod h1:JwSoOa56yP9vjXtO93QJEWQ56pKesczIVCOCXjIrA0U=
+github.com/ProtoconNet/mitum-currency/v3 v3.0.0-alpha.0.20251125031141-e637ab831792 h1:vLR+DGmk2vrz2bE4i5z/9T86e/BQ3DzbwGxzaBQqo40=
+github.com/ProtoconNet/mitum-currency/v3 v3.0.0-alpha.0.20251125031141-e637ab831792/go.mod h1:8pSxjRp7WYjG6UYDLeKDKyySvegSgVsZeErdjm5oGyY=
 github.com/ProtoconNet/mitum-dao v0.0.0-20251105025909-22695450fd19 h1:TeG2O6MiuBJDRUctIduRiiSRDQ3AdCBxH809LAqh3IA=
 github.com/ProtoconNet/mitum-dao v0.0.0-20251105025909-22695450fd19/go.mod h1:QqFFZw+uuOTOjLLx/yp26r1k8+nA7OcjVYc/CU0qusI=
 github.com/ProtoconNet/mitum-nft v0.0.0-20251105031334-c3246d935b7c h1:X2XFxa6KQQ8qoRX29N4R4heas4rd5oS2hYWevOBxERs=
@@ -19,8 +21,8 @@ github.com/ProtoconNet/mitum-timestamp v0.0.0-20251105033940-d475ae29b22e h1:vw5
 github.com/ProtoconNet/mitum-timestamp v0.0.0-20251105033940-d475ae29b22e/go.mod h1:i4HRGCJpMqECyfPgahyfFA3VOu2IWB+TSWqxxK4+Atw=
 github.com/ProtoconNet/mitum-token v0.0.0-20251105025637-f7fbc62835ba h1:muuZSlCLtHC7BnMSpa3IvLi2fvAm2CD0Qe99tTOLMpA=
 github.com/ProtoconNet/mitum-token v0.0.0-20251105025637-f7fbc62835ba/go.mod h1:z+p8drWLsnx4BtPKMU+5se8Lu9Qx5aWsC2QB1H6nMU4=
-github.com/ProtoconNet/mitum2 v0.0.0-20251112060246-1414868f243f h1:xRnY3olrkAYFqBh4Bw4pP0ziUFm4cxTu1xoZqrSFiDk=
-github.com/ProtoconNet/mitum2 v0.0.0-20251112060246-1414868f243f/go.mod h1:67qHJ1CeusaaVuv7wGb+zUh51Yd0mpbyjWrnKrHhcMs=
+github.com/ProtoconNet/mitum2 v0.0.0-20251120100758-79abd30e11fe h1:YsLJLv05UodKstMROotXjjhB/zuJacKm+Vru1roq1xw=
+github.com/ProtoconNet/mitum2 v0.0.0-20251120100758-79abd30e11fe/go.mod h1:+z/1sBeEOwm+Tu8c9IR5GDghTmi7SlO84XWeL8zRaio=
 github.com/aead/siphash v1.0.1/go.mod h1:Nywa3cDsYNNK3gaciGTWPwHt0wlpNV15vwmswBAUSII=
 github.com/alecthomas/assert/v2 v2.11.0 h1:2Q9r3ki8+JYXvGsDyBXwH3LcJ+WK5D0gc5E8vS6K3D0=
 github.com/alecthomas/assert/v2 v2.11.0/go.mod h1:Bze95FyfUr7x34QZrjL+XP+0qgp/zg8yS+TtBj1WA3k=
@@ -168,8 +170,6 @@ github.com/hashicorp/go-immutable-radix v1.3.1/go.mod h1:0y9vanUI8NX6FsYoO3zeMjh
 github.com/hashicorp/go-msgpack v0.5.3/go.mod h1:ahLV/dePpqEmjfWmKiqvPkv/twdG7iPBM1vqhUKIvfM=
 github.com/hashicorp/go-msgpack v0.5.5 h1:i9R9JSrqIz0QVLz3sz+i3YJdT7TTSLcfLLzJi9aZTuI=
 github.com/hashicorp/go-msgpack v0.5.5/go.mod h1:ahLV/dePpqEmjfWmKiqvPkv/twdG7iPBM1vqhUKIvfM=
-github.com/hashicorp/go-msgpack/v2 v2.1.1 h1:xQEY9yB2wnHitoSzk/B9UjXWRQ67QKu5AOm8aFp8N3I=
-github.com/hashicorp/go-msgpack/v2 v2.1.1/go.mod h1:upybraOAblm4S7rx0+jeNy+CWWhzywQsSRV5033mMu4=
 github.com/hashicorp/go-multierror v1.0.0/go.mod h1:dHtQlpGsu+cZNNAkkCN/P3hoUDHhCYQXV3UM06sGGrk=
 github.com/hashicorp/go-multierror v1.1.0/go.mod h1:spPvp8C1qA32ftKqdAHm4hHTbPw+vmowP0z+KUhOZdA=
 github.com/hashicorp/go-multierror v1.1.1 h1:H5DkEtf6CXdFp0N0Em5UCwQpXMWke8IA0+lD48awMYo=
@@ -200,9 +200,6 @@ github.com/hashicorp/hcl v1.0.1-vault-7 h1:ag5OxFVy3QYTFTJODRzTKVZ6xvdfLLCA1cy/Y
 github.com/hashicorp/hcl v1.0.1-vault-7/go.mod h1:XYhtn6ijBSAj6n4YqAaf7RBPS4I06AItNorpy+MoQNM=
 github.com/hashicorp/logutils v1.0.0/go.mod h1:QIAnNjmIWmVIIkWDTG1z5v++HQmx9WQRO+LraFDTW64=
 github.com/hashicorp/mdns v1.0.4/go.mod h1:mtBihi+LeNXGtG8L9dX59gAEa12BDtBQSp4v/YAJqrc=
-github.com/hashicorp/memberlist v0.5.0/go.mod h1:yvyXLpo0QaGE59Y7hDTsTzDD25JYBZ4mHgHUZ8lrOI0=
-github.com/hashicorp/memberlist v0.5.1 h1:mk5dRuzeDNis2bi6LLoQIXfMH7JQvAzt3mQD0vNZZUo=
-github.com/hashicorp/memberlist v0.5.1/go.mod h1:zGDXV6AqbDTKTM6yxW0I4+JtFzZAJVoIPvss4hV8F24=
 github.com/hashicorp/serf v0.10.1 h1:Z1H2J60yRKvfDYAOZLd2MU0ND4AH/WDz7xYHDWQsIPY=
 github.com/hashicorp/serf v0.10.1/go.mod h1:yL2t6BqATOLGc5HF7qbFkTfXoPIY0WZdWHfEvMqbG+4=
 github.com/hashicorp/vault/api v1.20.0 h1:KQMHElgudOsr+IbJgmbjHnCTxEpKs9LnozA1D3nozU4=

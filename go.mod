@@ -1,12 +1,12 @@
 module github.com/ProtoconNet/mitum-minic
 
-go 1.24.0
+go 1.24.4
 
-toolchain go1.24.5
+toolchain go1.24.10
 
 require (
 	github.com/ProtoconNet/mitum-credential v0.0.0-20251105025531-b9a858afe3c0
-	github.com/ProtoconNet/mitum-currency/v3 v3.0.0-alpha.0.20251112060645-79793c83fcac
+	github.com/ProtoconNet/mitum-currency/v3 v3.0.0-alpha.0.20251125031141-e637ab831792
 	github.com/ProtoconNet/mitum-dao v0.0.0-20251105025909-22695450fd19
 	github.com/ProtoconNet/mitum-nft v0.0.0-20251105031334-c3246d935b7c
 	github.com/ProtoconNet/mitum-payment v0.0.0-20251105032300-a82b3ad32689
@@ -14,7 +14,7 @@ require (
 	github.com/ProtoconNet/mitum-storage v0.0.0-20251105033424-9912429104d9
 	github.com/ProtoconNet/mitum-timestamp v0.0.0-20251105033940-d475ae29b22e
 	github.com/ProtoconNet/mitum-token v0.0.0-20251105025637-f7fbc62835ba
-	github.com/ProtoconNet/mitum2 v0.0.0-20251112060246-1414868f243f
+	github.com/ProtoconNet/mitum2 v0.0.0-20251120100758-79abd30e11fe
 	github.com/alecthomas/kong v1.12.1
 	github.com/arl/statsviz v0.7.1
 	github.com/gorilla/mux v1.8.1
@@ -58,7 +58,7 @@ require (
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-hclog v1.6.3 // indirect
 	github.com/hashicorp/go-immutable-radix v1.3.1 // indirect
-	github.com/hashicorp/go-msgpack/v2 v2.1.1 // indirect
+	github.com/hashicorp/go-msgpack v0.5.5 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hashicorp/go-retryablehttp v0.7.7 // indirect
 	github.com/hashicorp/go-rootcerts v1.0.2 // indirect
@@ -109,3 +109,5 @@ require (
 	golang.org/x/time v0.13.0 // indirect
 	golang.org/x/tools v0.36.0 // indirect
 )
+
+replace github.com/hashicorp/memberlist => github.com/HayoungOh5/memberlist v0.0.0-20251120091718-913bc68ce0d2
