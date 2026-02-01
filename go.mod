@@ -5,16 +5,16 @@ go 1.24.4
 toolchain go1.24.10
 
 require (
-	github.com/ProtoconNet/mitum-credential v0.0.0-20251105025531-b9a858afe3c0
-	github.com/ProtoconNet/mitum-currency/v3 v3.0.0-alpha.0.20251125031141-e637ab831792
-	github.com/ProtoconNet/mitum-dao v0.0.0-20251105025909-22695450fd19
-	github.com/ProtoconNet/mitum-nft v0.0.0-20251105031334-c3246d935b7c
-	github.com/ProtoconNet/mitum-payment v0.0.0-20251105032300-a82b3ad32689
-	github.com/ProtoconNet/mitum-point v0.0.0-20251105033002-417ee74f6230
-	github.com/ProtoconNet/mitum-storage v0.0.0-20251105033424-9912429104d9
-	github.com/ProtoconNet/mitum-timestamp v0.0.0-20251105033940-d475ae29b22e
-	github.com/ProtoconNet/mitum-token v0.0.0-20251105025637-f7fbc62835ba
-	github.com/ProtoconNet/mitum2 v0.0.0-20251120100758-79abd30e11fe
+	github.com/ProtoconNet/mitum-credential v0.0.0-20260130152135-7b73592209d9
+	github.com/ProtoconNet/mitum-currency/v3 v3.0.0-alpha.0.20260130023337-c4878fdc2027
+	github.com/ProtoconNet/mitum-dao v0.0.0-20260129071857-cc28f04422b0
+	github.com/ProtoconNet/mitum-nft v0.0.0-20260129061518-7b01264c868e
+	github.com/ProtoconNet/mitum-payment v0.0.0-20260129065842-6b81474704cd
+	github.com/ProtoconNet/mitum-point v0.0.0-20260129084113-2d2ec2047cae
+	github.com/ProtoconNet/mitum-storage v0.0.0-20260129080854-185876c7e134
+	github.com/ProtoconNet/mitum-timestamp v0.0.0-20260129075214-840ceaa909c8
+	github.com/ProtoconNet/mitum-token v0.0.0-20260129063359-9b4fdb350016
+	github.com/ProtoconNet/mitum2 v0.0.0-20251029064552-48aef1088f5f
 	github.com/alecthomas/kong v1.12.1
 	github.com/arl/statsviz v0.7.1
 	github.com/gorilla/mux v1.8.1
@@ -83,6 +83,10 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/montanaflynn/stats v0.7.1 // indirect
+	github.com/mr-tron/base58 v1.1.0 // indirect
+	github.com/multiformats/go-base32 v0.0.3 // indirect
+	github.com/multiformats/go-base36 v0.1.0 // indirect
+	github.com/multiformats/go-multibase v0.2.0 // indirect
 	github.com/oklog/ulid/v2 v2.1.1 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/quic-go/quic-go v0.54.1 // indirect

@@ -135,8 +135,6 @@ func (hd *Handlers) setHandlers() {
 		Methods(http.MethodOptions, "GET")
 	_ = hd.setHandler(ndigest.HandlerPathNFTs, hd.handleNFTs, true, get, get).
 		Methods(http.MethodOptions, "GET")
-	_ = hd.setHandler(ndigest.HandlerPathNFTCount, hd.handleNFTCount, true, get, get).
-		Methods(http.MethodOptions, "GET")
 	_ = hd.setHandler(ndigest.HandlerPathNFTAllApproved, hd.handleNFTOperators, true, get, get).
 		Methods(http.MethodOptions, "GET")
 	_ = hd.setHandler(ndigest.HandlerPathNFT, hd.handleNFT, true, get, get).

@@ -84,7 +84,7 @@ func (cmd *RunCommand) Run(pctx context.Context) error {
 	pps := currencycmds.DefaultRunPS()
 
 	_ = pps.AddOK(currencycmds.PNameDigester, ProcessDigester, nil, currencycmds.PNameDigesterDataBase).
-		AddOK(currencycmds.PNameStartDigester, ProcessStartDigester, nil, currencycmds.PNameStartAPI)
+		AddOK(currencycmds.PNameStartDigester, currencycmds.ProcessStartDigester, nil, currencycmds.PNameStartAPI)
 	_ = pps.POK(launch.PNameStorage).PostAddOK(ps.Name("check-hold"), cmd.pCheckHold)
 	_ = pps.POK(launch.PNameStates).
 		PreAddOK(ncmds.PNameOperationProcessorsMap, ncmds.POperationProcessorsMap).
@@ -104,7 +104,7 @@ func (cmd *RunCommand) Run(pctx context.Context) error {
 	_ = pps.POK(currencycmds.PNameAPI).
 		PostAddOK(currencycmds.PNameDigestAPIHandlers, cmd.pDigestAPIHandlers)
 	_ = pps.POK(currencycmds.PNameDigester).
-		PostAddOK(currencycmds.PNameDigesterFollowUp, PDigesterFollowUp)
+		PostAddOK(currencycmds.PNameDigesterFollowUp, currencycmds.PdigesterFollowUp)
 
 	_ = pps.SetLogging(log)
 
@@ -215,7 +215,7 @@ func (cmd *RunCommand) pWhenNewBlockSavedInSyncingStateFunc(pctx context.Context
 
 	var f func(height base.Height)
 	if !design.Equal(currencydigest.YamlDigestDesign{}) && design.Digest {
-		var di *digest.Digester
+		var di *currencydigest.Digester
 		if err := util.LoadFromContextOK(pctx,
 			currencydigest.ContextValueDigester, &di,
 		); err != nil {
@@ -298,7 +298,7 @@ func (cmd *RunCommand) pWhenNewBlockConfirmed(pctx context.Context) (context.Con
 		f = func(height base.Height) {
 			l := log.Log().With().Interface("height", height).Logger()
 
-			err := digestFollowup(pctx, height)
+			err := currencycmds.DigestFollowup(pctx, height)
 			if err != nil {
 				cmd.exitf(err)
 
@@ -332,7 +332,7 @@ func (cmd *RunCommand) pWhenNewBlockConfirmed(pctx context.Context) (context.Con
 
 func (cmd *RunCommand) whenBlockSaved(
 	db isaac.Database,
-	di *digest.Digester,
+	di *currencydigest.Digester,
 ) ps.Func {
 	return func(ctx context.Context) (context.Context, error) {
 		switch m, found, err := db.LastBlockMap(); {
