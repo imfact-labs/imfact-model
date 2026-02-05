@@ -44,6 +44,28 @@ func ProcessDigester(ctx context.Context) (context.Context, error) {
 		return ctx, nil
 	}
 
+	if err := st.CreateIndex(ndigest.DefaultIndexes); err != nil {
+		return ctx, err
+	}
+	if err := st.CreateIndex(crdigest.DefaultIndexes); err != nil {
+		return ctx, err
+	}
+	if err := st.CreateIndex(tsdigest.DefaultIndexes); err != nil {
+		return ctx, err
+	}
+	if err := st.CreateIndex(tdigest.DefaultIndexes); err != nil {
+		return ctx, err
+	}
+	if err := st.CreateIndex(pdigest.DefaultIndexes); err != nil {
+		return ctx, err
+	}
+	if err := st.CreateIndex(daodigest.DefaultIndexes); err != nil {
+		return ctx, err
+	}
+	if err := st.CreateIndex(pmdigest.DefaultIndexes); err != nil {
+		return ctx, err
+	}
+
 	var design launch.NodeDesign
 	if err := util.LoadFromContext(ctx,
 		launch.DesignContextKey, &design,
