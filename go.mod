@@ -8,7 +8,7 @@ require (
 	github.com/ProtoconNet/mitum-credential v0.0.0-20260205034243-331cb8fa9a26
 	github.com/ProtoconNet/mitum-currency/v3 v3.0.0-alpha.0.20260205062013-d16dfbacb2be
 	github.com/ProtoconNet/mitum-dao v0.0.0-20260205034513-bb53c9a09b91
-	github.com/ProtoconNet/mitum-nft v0.0.0-20260205024153-1e6f6b96fbd2
+	github.com/ProtoconNet/mitum-nft v0.0.0-20260205073138-dec55f8569ca
 	github.com/ProtoconNet/mitum-payment v0.0.0-20260204104319-61daf25d7c24
 	github.com/ProtoconNet/mitum-point v0.0.0-20260204100740-e3b8eee56ce1
 	github.com/ProtoconNet/mitum-storage v0.0.0-20260205011704-37da3f0e88bb
