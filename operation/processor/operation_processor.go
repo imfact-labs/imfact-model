@@ -2,6 +2,7 @@ package processor
 
 import (
 	"fmt"
+
 	"github.com/ProtoconNet/mitum-credential/operation/credential"
 	"github.com/ProtoconNet/mitum-currency/v3/operation/currency"
 	did "github.com/ProtoconNet/mitum-currency/v3/operation/did-registry"
@@ -216,34 +217,16 @@ func CheckDuplication(opr *currencyprocessor.OperationProcessor, op base.Operati
 			return errors.Errorf("expected ApproveFact, not %T", t.Fact())
 		}
 		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
-	case token.Approves:
-		fact, ok := t.Fact().(token.ApprovesFact)
-		if !ok {
-			return errors.Errorf("expected ApprovesFact, not %T", t.Fact())
-		}
-		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
 	case token.Transfer:
 		fact, ok := t.Fact().(token.TransferFact)
 		if !ok {
 			return errors.Errorf("expected TransferFact, not %T", t.Fact())
 		}
 		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
-	case token.Transfers:
-		fact, ok := t.Fact().(token.TransfersFact)
-		if !ok {
-			return errors.Errorf("expected TransfersFact, not %T", t.Fact())
-		}
-		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
 	case token.TransferFrom:
 		fact, ok := t.Fact().(token.TransferFromFact)
 		if !ok {
 			return errors.Errorf("expected TransferFromFact, not %T", t.Fact())
-		}
-		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
-	case token.TransfersFrom:
-		fact, ok := t.Fact().(token.TransfersFromFact)
-		if !ok {
-			return errors.Errorf("expected TransfersFromFact, not %T", t.Fact())
 		}
 		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
 	case point.Mint:
@@ -271,34 +254,16 @@ func CheckDuplication(opr *currencyprocessor.OperationProcessor, op base.Operati
 			return errors.Errorf("expected ApproveFact, not %T", t.Fact())
 		}
 		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
-	case point.Approves:
-		fact, ok := t.Fact().(point.ApprovesFact)
-		if !ok {
-			return errors.Errorf("expected ApprovesFact, not %T", t.Fact())
-		}
-		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
 	case point.Transfer:
 		fact, ok := t.Fact().(point.TransferFact)
 		if !ok {
 			return errors.Errorf("expected TransferFact, not %T", t.Fact())
 		}
 		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
-	case point.Transfers:
-		fact, ok := t.Fact().(point.TransfersFact)
-		if !ok {
-			return errors.Errorf("expected TransfersFact, not %T", t.Fact())
-		}
-		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
 	case point.TransferFrom:
 		fact, ok := t.Fact().(point.TransferFromFact)
 		if !ok {
 			return errors.Errorf("expected TransferFromFact, not %T", t.Fact())
-		}
-		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
-	case point.TransfersFrom:
-		fact, ok := t.Fact().(point.TransfersFromFact)
-		if !ok {
-			return errors.Errorf("expected TransfersFromFact, not %T", t.Fact())
 		}
 		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
 	case storage.RegisterModel:
@@ -308,22 +273,6 @@ func CheckDuplication(opr *currencyprocessor.OperationProcessor, op base.Operati
 		}
 		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
 		duplicationTypeContractID = currencyprocessor.DuplicationKey(fact.Contract().String(), DuplicationTypeContract)
-	case storage.CreateData:
-		fact, ok := t.Fact().(storage.CreateDataFact)
-		if !ok {
-			return errors.Errorf("expected CreateDataFact, not %T", t.Fact())
-		}
-		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
-		duplicationTypeStorageData = []string{currencyprocessor.DuplicationKey(
-			fmt.Sprintf("%s:%s", fact.Contract().String(), fact.DataKey()), DuplicationTypeStorageData)}
-	case storage.UpdateData:
-		fact, ok := t.Fact().(storage.UpdateDataFact)
-		if !ok {
-			return errors.Errorf("expected UpdateDataFact, not %T", t.Fact())
-		}
-		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
-		duplicationTypeStorageData = []string{currencyprocessor.DuplicationKey(
-			fmt.Sprintf("%s:%s", fact.Contract().String(), fact.DataKey()), DuplicationTypeStorageData)}
 	case storage.DeleteData:
 		fact, ok := t.Fact().(storage.DeleteDataFact)
 		if !ok {
@@ -332,8 +281,8 @@ func CheckDuplication(opr *currencyprocessor.OperationProcessor, op base.Operati
 		duplicationTypeSenderID = currencyprocessor.DuplicationKey(fact.Sender().String(), DuplicationTypeSender)
 		duplicationTypeStorageData = []string{currencyprocessor.DuplicationKey(
 			fmt.Sprintf("%s:%s", fact.Contract().String(), fact.DataKey()), DuplicationTypeStorageData)}
-	case storage.CreateDatas:
-		fact, ok := t.Fact().(storage.CreateDatasFact)
+	case storage.CreateData:
+		fact, ok := t.Fact().(storage.CreateDataFact)
 		if !ok {
 			return errors.Errorf("expected CreateDatasFact, not %T", t.Fact())
 		}
@@ -344,8 +293,8 @@ func CheckDuplication(opr *currencyprocessor.OperationProcessor, op base.Operati
 			datas = append(datas, key)
 		}
 		duplicationTypeStorageData = datas
-	case storage.UpdateDatas:
-		fact, ok := t.Fact().(storage.UpdateDatasFact)
+	case storage.UpdateData:
+		fact, ok := t.Fact().(storage.UpdateDataFact)
 		if !ok {
 			return errors.Errorf("expected UpdateDatasFact, not %T", t.Fact())
 		}
