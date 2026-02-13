@@ -6,7 +6,7 @@ toolchain go1.24.10
 
 require (
 	github.com/ProtoconNet/mitum-credential v0.0.0-20260206024930-483c94320859
-	github.com/ProtoconNet/mitum-currency/v3 v3.0.0-alpha.0.20260206014232-484db6c4d43d
+	github.com/ProtoconNet/mitum-currency/v3 v3.0.0-alpha.0.20260213025613-8dfeb5136fbb
 	github.com/ProtoconNet/mitum-dao v0.0.0-20260206033610-41dae36ff292
 	github.com/ProtoconNet/mitum-nft v0.0.0-20260206060614-49b273700bb7
 	github.com/ProtoconNet/mitum-payment v0.0.0-20260206025753-9c705b881654
