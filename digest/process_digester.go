@@ -1,21 +1,20 @@
-package cmds
+package digest
 
 import (
 	"context"
 
-	crdigest "github.com/ProtoconNet/mitum-credential/digest"
-	cdigest "github.com/ProtoconNet/mitum-currency/v3/digest"
-	daodigest "github.com/ProtoconNet/mitum-dao/digest"
-	ndigest "github.com/ProtoconNet/mitum-nft/digest"
-	pmdigest "github.com/ProtoconNet/mitum-payment/digest"
-	pdigest "github.com/ProtoconNet/mitum-point/digest"
-	sdigest "github.com/ProtoconNet/mitum-storage/digest"
-	tsdigest "github.com/ProtoconNet/mitum-timestamp/digest"
-	tdigest "github.com/ProtoconNet/mitum-token/digest"
-	"github.com/ProtoconNet/mitum2/isaac"
-	"github.com/ProtoconNet/mitum2/launch"
-	"github.com/ProtoconNet/mitum2/util"
-	"github.com/ProtoconNet/mitum2/util/logging"
+	crdigest "github.com/imfact-labs/credential-model/digest"
+	cdigest "github.com/imfact-labs/currency-model/digest"
+	daodigest "github.com/imfact-labs/dao-model/digest"
+	"github.com/imfact-labs/mitum2/isaac"
+	"github.com/imfact-labs/mitum2/launch"
+	"github.com/imfact-labs/mitum2/util"
+	"github.com/imfact-labs/mitum2/util/logging"
+	ndigest "github.com/imfact-labs/nft-model/digest"
+	pmdigest "github.com/imfact-labs/payment-model/digest"
+	sdigest "github.com/imfact-labs/storage-model/digest"
+	tsdigest "github.com/imfact-labs/timestamp-model/digest"
+	tdigest "github.com/imfact-labs/token-model/digest"
 )
 
 func ProcessDigester(ctx context.Context) (context.Context, error) {
@@ -54,9 +53,6 @@ func ProcessDigester(ctx context.Context) (context.Context, error) {
 		return ctx, err
 	}
 	if err := st.CreateIndex(tdigest.DefaultIndexes); err != nil {
-		return ctx, err
-	}
-	if err := st.CreateIndex(pdigest.DefaultIndexes); err != nil {
 		return ctx, err
 	}
 	if err := st.CreateIndex(daodigest.DefaultIndexes); err != nil {
@@ -98,7 +94,7 @@ func ProcessDigester(ctx context.Context) (context.Context, error) {
 	di.PrepareFunc = []cdigest.BlockSessionPrepareFunc{
 		cdigest.PrepareCurrencies, cdigest.PrepareAccounts, cdigest.PrepareDIDRegistry,
 		crdigest.PrepareDIDCredential, daodigest.PrepareDAO, ndigest.PrepareNFTs, pmdigest.PreparePayment,
-		pdigest.PreparePoint, sdigest.PrepareStorage, tsdigest.PrepareTimeStamps, tdigest.PrepareToken,
+		sdigest.PrepareStorage, tsdigest.PrepareTimeStamps, tdigest.PrepareToken,
 	}
 
 	return context.WithValue(ctx, cdigest.ContextValueDigester, di), nil

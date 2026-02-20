@@ -3,25 +3,25 @@ package main
 import (
 	"context"
 	"fmt"
-	credentialcmds "github.com/ProtoconNet/mitum-credential/cmds"
-	currencycmds "github.com/ProtoconNet/mitum-currency/v3/cmds"
-	daocmds "github.com/ProtoconNet/mitum-dao/cmds"
-	"github.com/ProtoconNet/mitum-minic/cmds"
-	nftcmds "github.com/ProtoconNet/mitum-nft/cmds"
-	pmcmds "github.com/ProtoconNet/mitum-payment/cmds"
-	pointcmds "github.com/ProtoconNet/mitum-point/cmds"
-	storagecmds "github.com/ProtoconNet/mitum-storage/cmds"
-	timestampcmds "github.com/ProtoconNet/mitum-timestamp/cmds"
-	tokencmds "github.com/ProtoconNet/mitum-token/cmds"
-	"github.com/ProtoconNet/mitum2/base"
-	"github.com/ProtoconNet/mitum2/launch"
-	launchcmd "github.com/ProtoconNet/mitum2/launch/cmd"
-	"github.com/ProtoconNet/mitum2/util"
-	"github.com/ProtoconNet/mitum2/util/logging"
-	"github.com/alecthomas/kong"
-	"github.com/pkg/errors"
 	_ "net/http/pprof"
 	"os"
+
+	"github.com/alecthomas/kong"
+	crcmds "github.com/imfact-labs/credential-model/cmds"
+	ccmds "github.com/imfact-labs/currency-model/app/cmds"
+	dcmds "github.com/imfact-labs/dao-model/cmds"
+	"github.com/imfact-labs/imfact-model/cmds"
+	"github.com/imfact-labs/mitum2/base"
+	"github.com/imfact-labs/mitum2/launch"
+	launchcmd "github.com/imfact-labs/mitum2/launch/cmd"
+	"github.com/imfact-labs/mitum2/util"
+	"github.com/imfact-labs/mitum2/util/logging"
+	ncmds "github.com/imfact-labs/nft-model/cmds"
+	pmcmds "github.com/imfact-labs/payment-model/cmds"
+	scmds "github.com/imfact-labs/storage-model/cmds"
+	tscmds "github.com/imfact-labs/timestamp-model/cmds"
+	tcmds "github.com/imfact-labs/token-model/cmds"
+	"github.com/pkg/errors"
 )
 
 var (
@@ -34,30 +34,29 @@ var (
 //revive:disable:nested-structs
 var CLI struct { //nolint:govet //...
 	launch.BaseFlags
-	Init      currencycmds.INITCommand `cmd:"" help:"init node"`
-	Run       cmds.RunCommand          `cmd:"" help:"run node"`
-	Storage   cmds.Storage             `cmd:""`
+	Init      ccmds.INITCommand `cmd:"" help:"init node"`
+	Run       cmds.RunCommand   `cmd:"" help:"run node"`
+	Storage   cmds.Storage      `cmd:""`
 	Operation struct {
-		Currency    currencycmds.CurrencyCommand     `cmd:"" help:"currency operation"`
-		Suffrage    currencycmds.SuffrageCommand     `cmd:"" help:"suffrage operation"`
-		NFT         nftcmds.NFTCommand               `cmd:"" help:"nft operation"`
-		Credential  credentialcmds.CredentialCommand `cmd:"" help:"credential operation"`
-		Dao         daocmds.DAOCommand               `cmd:"" help:"dao operation"`
-		Timestamp   timestampcmds.TimestampCommand   `cmd:"" help:"timestamp operation"`
-		Token       tokencmds.TokenCommand           `cmd:"" help:"token operation"`
-		Point       pointcmds.PointCommand           `cmd:"" help:"point operation"`
-		StorageData storagecmds.StorageCommand       `cmd:"" help:"data storage operation"`
-		DID         currencycmds.DIDCommand          `cmd:"" help:"did operation"`
-		Payment     pmcmds.PaymentCommand            `cmd:"" help:"payment operation"`
+		Currency    ccmds.CurrencyCommand    `cmd:"" help:"currency operation"`
+		Suffrage    ccmds.SuffrageCommand    `cmd:"" help:"suffrage operation"`
+		NFT         ncmds.NFTCommand         `cmd:"" help:"nft operation"`
+		Credential  crcmds.CredentialCommand `cmd:"" help:"credential operation"`
+		Dao         dcmds.DAOCommand         `cmd:"" help:"dao operation"`
+		Timestamp   tscmds.TimestampCommand  `cmd:"" help:"timestamp operation"`
+		Token       tcmds.TokenCommand       `cmd:"" help:"token operation"`
+		StorageData scmds.StorageCommand     `cmd:"" help:"data storage operation"`
+		DID         ccmds.DIDCommand         `cmd:"" help:"did operation"`
+		Payment     pmcmds.PaymentCommand    `cmd:"" help:"payment operation"`
 	} `cmd:"" help:"create operation"`
 	Network struct {
 		Client cmds.NetworkClientCommand `cmd:"" help:"network client"`
 	} `cmd:"" help:"network"`
 	Key struct {
-		New     currencycmds.KeyNewCommand     `cmd:"" help:"generate new key"`
-		Address currencycmds.KeyAddressCommand `cmd:"" help:"generate address from key"`
-		Load    currencycmds.KeyLoadCommand    `cmd:"" help:"load key"`
-		Sign    currencycmds.KeySignCommand    `cmd:"" help:"sign"`
+		New     ccmds.KeyNewCommand     `cmd:"" help:"generate new key"`
+		Address ccmds.KeyAddressCommand `cmd:"" help:"generate address from key"`
+		Load    ccmds.KeyLoadCommand    `cmd:"" help:"load key"`
+		Sign    ccmds.KeySignCommand    `cmd:"" help:"sign"`
 	} `cmd:"" help:"key"`
 	Handover launchcmd.HandoverCommands `cmd:""`
 	Version  struct{}                   `cmd:"" help:"version"`

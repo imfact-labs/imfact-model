@@ -1,22 +1,23 @@
-module github.com/ProtoconNet/mitum-minic
+module github.com/imfact-labs/imfact-model
 
-go 1.24.4
+go 1.24.0
 
-toolchain go1.24.10
+toolchain go1.24.9
 
 require (
-	github.com/ProtoconNet/mitum-credential v0.0.0-20260206024930-483c94320859
-	github.com/ProtoconNet/mitum-currency/v3 v3.0.0-alpha.0.20260213025613-8dfeb5136fbb
-	github.com/ProtoconNet/mitum-dao v0.0.0-20260206033610-41dae36ff292
-	github.com/ProtoconNet/mitum-nft v0.0.0-20260206060614-49b273700bb7
-	github.com/ProtoconNet/mitum-payment v0.0.0-20260206025753-9c705b881654
-	github.com/ProtoconNet/mitum-point v0.0.0-20260210033558-829bd4714346
-	github.com/ProtoconNet/mitum-storage v0.0.0-20260210033822-2b2d109e1282
-	github.com/ProtoconNet/mitum-timestamp v0.0.0-20260206053216-2bdc6582cb43
-	github.com/ProtoconNet/mitum-token v0.0.0-20260210033455-9f7d74ad4c2a
-	github.com/ProtoconNet/mitum2 v0.0.0-20251029064552-48aef1088f5f
 	github.com/alecthomas/kong v1.12.1
-	github.com/arl/statsviz v0.7.1
+	github.com/imfact-labs/credential-model v0.0.0-20260220025534-cfa9d5550e55
+	github.com/imfact-labs/currency-model v0.0.6
+	github.com/imfact-labs/currency-model/api v0.0.6
+	github.com/imfact-labs/currency-model/app v0.0.6
+	github.com/imfact-labs/currency-model/digest v0.0.6
+	github.com/imfact-labs/dao-model v0.0.0-20260220025441-0e2c1b99f9d6
+	github.com/imfact-labs/mitum2 v0.0.0-20260219060841-f51dacce1321
+	github.com/imfact-labs/nft-model v0.0.0-20260220025608-7f704f6f5ef5
+	github.com/imfact-labs/payment-model v0.0.0-20260220025631-96282ace8cda
+	github.com/imfact-labs/storage-model v0.0.0-20260220011152-f3f62a008639
+	github.com/imfact-labs/timestamp-model v0.0.0-20260220025511-795f9bfe69d3
+	github.com/imfact-labs/token-model v0.0.0-20260220025400-22ae0d0b9262
 	github.com/pkg/errors v0.9.1
 	github.com/rs/zerolog v1.34.0
 	golang.org/x/exp v0.0.0-20250819193227-8b4c13bb791b
@@ -25,6 +26,7 @@ require (
 
 require (
 	github.com/Masterminds/semver/v3 v3.4.0 // indirect
+	github.com/arl/statsviz v0.7.1 // indirect
 	github.com/armon/go-metrics v0.4.1 // indirect
 	github.com/beevik/ntp v1.4.3 // indirect
 	github.com/bluele/gcache v0.0.2 // indirect
