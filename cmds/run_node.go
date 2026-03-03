@@ -4,29 +4,17 @@ import (
 	"context"
 	"net/http"
 
-	crapi "github.com/imfact-labs/credential-model/api"
-	crcmds "github.com/imfact-labs/credential-model/cmds"
 	apic "github.com/imfact-labs/currency-model/api"
 	ccmds "github.com/imfact-labs/currency-model/app/cmds"
+	cpipeline "github.com/imfact-labs/currency-model/app/runtime/pipeline"
 	cdigest "github.com/imfact-labs/currency-model/digest"
-	daoapi "github.com/imfact-labs/dao-model/api"
-	daocmds "github.com/imfact-labs/dao-model/cmds"
 	"github.com/imfact-labs/imfact-model/digest"
+	"github.com/imfact-labs/imfact-model/runtime/steps"
 	"github.com/imfact-labs/mitum2/base"
 	"github.com/imfact-labs/mitum2/launch"
 	"github.com/imfact-labs/mitum2/util"
 	"github.com/imfact-labs/mitum2/util/logging"
 	"github.com/imfact-labs/mitum2/util/ps"
-	napi "github.com/imfact-labs/nft-model/api"
-	ncmds "github.com/imfact-labs/nft-model/cmds"
-	pmapi "github.com/imfact-labs/payment-model/api"
-	pmcmds "github.com/imfact-labs/payment-model/cmds"
-	sapi "github.com/imfact-labs/storage-model/api"
-	scmds "github.com/imfact-labs/storage-model/cmds"
-	tsapi "github.com/imfact-labs/timestamp-model/api"
-	tscmds "github.com/imfact-labs/timestamp-model/cmds"
-	tkapi "github.com/imfact-labs/token-model/api"
-	tkcmds "github.com/imfact-labs/token-model/cmds"
 	"github.com/pkg/errors"
 )
 
@@ -66,25 +54,32 @@ func (cmd *RunCommand) Run(pctx context.Context) error {
 		launch.ACLFlagsContextKey:      cmd.ACLFlags,
 	})
 
-	pps := ccmds.DefaultRunPS()
+	pps := cpipeline.DefaultRunPS()
+	registry := mustBuildModuleRegistry()
 
 	_ = pps.AddOK(cdigest.PNameDigester, digest.ProcessDigester, nil, cdigest.PNameDigesterDataBase).
 		AddOK(cdigest.PNameStartDigester, cdigest.ProcessStartDigester, nil, apic.PNameStartAPI)
 	_ = pps.POK(launch.PNameStorage).PostAddOK(ps.Name("check-hold"), cmd.RunCommand.PCheckHold)
-	_ = pps.POK(launch.PNameStates).
-		PreAddOK(ncmds.PNameOperationProcessorsMap, ncmds.POperationProcessorsMap).
-		PreAddOK(tscmds.PNameOperationProcessorsMap, tscmds.POperationProcessorsMap).
-		PreAddOK(crcmds.PNameOperationProcessorsMap, crcmds.POperationProcessorsMap).
-		PreAddOK(tkcmds.PNameOperationProcessorsMap, tkcmds.POperationProcessorsMap).
-		PreAddOK(daocmds.PNameOperationProcessorsMap, daocmds.POperationProcessorsMap).
-		PreAddOK(scmds.PNameOperationProcessorsMap, scmds.POperationProcessorsMap).
-		PreAddOK(pmcmds.PNameOperationProcessorsMap, pmcmds.POperationProcessorsMap).
-		PreAddOK(PNameOperationProcessorsMap, POperationProcessorsMap).
+	pstates := pps.POK(launch.PNameStates)
+	entries := registry.Entries()
+	for i := range entries {
+		entry := entries[i]
+		for j := range entry.OperationProcessors {
+			if entry.OperationProcessors[j].Name == launch.PNameOperationProcessorsMap {
+				// currency default processor map is already set in ccmds.DefaultRunPS.
+				continue
+			}
+
+			_ = pstates.PreAddOK(entry.OperationProcessors[j].Name, entry.OperationProcessors[j].Func)
+		}
+	}
+
+	_ = pstates.
 		PreAddOK(ps.Name("when-new-block-saved-in-consensus-state-func"), cmd.RunCommand.PWhenNewBlockSavedInConsensusStateFunc).
 		PreAddOK(ps.Name("when-new-block-saved-in-syncing-state-func"), cmd.RunCommand.PWhenNewBlockSavedInSyncingStateFunc).
 		PreAddOK(ps.Name("when-new-block-confirmed-func"), cmd.RunCommand.PWhenNewBlockConfirmed)
 	_ = pps.POK(launch.PNameEncoder).
-		PostAddOK(launch.PNameAddHinters, PAddHinters)
+		PostAddOK(launch.PNameAddHinters, steps.PAddHinters)
 	_ = pps.POK(apic.PNameAPI).
 		PostAddOK(ccmds.PNameDigestAPIHandlers, cmd.pDigestAPIHandlers)
 	_ = pps.POK(cdigest.PNameDigester).
@@ -98,7 +93,7 @@ func (cmd *RunCommand) Run(pctx context.Context) error {
 	defer func() {
 		log.Log().Debug().Interface("process", pps.Verbose()).Msg("process will be closed")
 
-		if _, err = pps.Close(pctx); err != nil {
+		if _, err = pps.Close(nctx); err != nil {
 			log.Log().Error().Err(err).Msg("failed to close")
 		}
 	}()
@@ -157,14 +152,14 @@ func (cmd *RunCommand) pDigestAPIHandlers(ctx context.Context) (context.Context,
 	handlers.SetEncoders(encs)
 	handlers.SetEncoder(enc)
 
-	apic.SetHandlers(handlers, design.Digest)
-	napi.SetHandlers(handlers)
-	crapi.SetHandlers(handlers)
-	tsapi.SetHandlers(handlers)
-	tkapi.SetHandlers(handlers)
-	sapi.SetHandlers(handlers)
-	pmapi.SetHandlers(handlers)
-	daoapi.SetHandlers(handlers)
+	registry := mustBuildModuleRegistry()
+	entries := registry.Entries()
+	for i := range entries {
+		entry := entries[i]
+		for j := range entry.APIHandlers {
+			entry.APIHandlers[j].Register(handlers, design.Digest)
+		}
+	}
 
 	dnt.SetEncoder(encs)
 

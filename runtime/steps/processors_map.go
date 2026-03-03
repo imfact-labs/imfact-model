@@ -1,10 +1,10 @@
-package cmds
+package steps
 
 import (
 	"context"
 
-	ccmds "github.com/imfact-labs/currency-model/app/cmds"
 	cprocessor "github.com/imfact-labs/currency-model/operation/processor"
+	"github.com/imfact-labs/imfact-model/runtime/contracts"
 	"github.com/imfact-labs/mitum2/util"
 	"github.com/imfact-labs/mitum2/util/ps"
 )
@@ -15,7 +15,7 @@ func POperationProcessorsMap(pctx context.Context) (context.Context, error) {
 	var opr *cprocessor.OperationProcessor
 
 	if err := util.LoadFromContextOK(pctx,
-		ccmds.OperationProcessorContextKey, &opr,
+		contracts.OperationProcessorContextKey, &opr,
 	); err != nil {
 		return pctx, err
 	}
