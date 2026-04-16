@@ -7,7 +7,6 @@ import (
 	"os"
 
 	"github.com/alecthomas/kong"
-	crcmds "github.com/imfact-labs/credential-model/cmds"
 	ccmds "github.com/imfact-labs/currency-model/app/cmds"
 	dcmds "github.com/imfact-labs/dao-model/cmds"
 	"github.com/imfact-labs/imfact-model/cmds"
@@ -38,16 +37,15 @@ var CLI struct { //nolint:govet //...
 	Run       cmds.RunCommand   `cmd:"" help:"run node"`
 	Storage   cmds.Storage      `cmd:""`
 	Operation struct {
-		Currency    ccmds.CurrencyCommand    `cmd:"" help:"currency operation"`
-		Suffrage    ccmds.SuffrageCommand    `cmd:"" help:"suffrage operation"`
-		NFT         ncmds.NFTCommand         `cmd:"" help:"nft operation"`
-		Credential  crcmds.CredentialCommand `cmd:"" help:"credential operation"`
-		Dao         dcmds.DAOCommand         `cmd:"" help:"dao operation"`
-		Timestamp   tscmds.TimestampCommand  `cmd:"" help:"timestamp operation"`
-		Token       tcmds.TokenCommand       `cmd:"" help:"token operation"`
-		StorageData scmds.StorageCommand     `cmd:"" help:"data storage operation"`
-		DID         ccmds.DIDCommand         `cmd:"" help:"did operation"`
-		Payment     pmcmds.PaymentCommand    `cmd:"" help:"payment operation"`
+		Currency    ccmds.CurrencyCommand   `cmd:"" help:"currency operation"`
+		Suffrage    ccmds.SuffrageCommand   `cmd:"" help:"suffrage operation"`
+		NFT         ncmds.NFTCommand        `cmd:"" help:"nft operation"`
+		Dao         dcmds.DAOCommand        `cmd:"" help:"dao operation"`
+		Timestamp   tscmds.TimestampCommand `cmd:"" help:"timestamp operation"`
+		Token       tcmds.TokenCommand      `cmd:"" help:"token operation"`
+		StorageData scmds.StorageCommand    `cmd:"" help:"data storage operation"`
+		DID         ccmds.DIDCommand        `cmd:"" help:"did operation"`
+		Payment     pmcmds.PaymentCommand   `cmd:"" help:"payment operation"`
 	} `cmd:"" help:"create operation"`
 	Network struct {
 		Client cmds.NetworkClientCommand `cmd:"" help:"network client"`

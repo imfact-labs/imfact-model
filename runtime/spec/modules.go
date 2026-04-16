@@ -3,7 +3,6 @@ package spec
 import (
 	"sync"
 
-	crmodule "github.com/imfact-labs/credential-model/module"
 	ccmodule "github.com/imfact-labs/currency-model/app/module"
 	"github.com/imfact-labs/currency-model/app/modulekit"
 	daomodule "github.com/imfact-labs/dao-model/module"
@@ -18,7 +17,6 @@ var composedModules = []modulekit.ModelModule{
 	ccmodule.Module{},
 	nmodule.Module{},
 	tsmodule.Module{},
-	crmodule.Module{},
 	tkmodule.Module{},
 	daomodule.Module{},
 	smodule.Module{},

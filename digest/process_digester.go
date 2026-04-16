@@ -3,7 +3,6 @@ package digest
 import (
 	"context"
 
-	crdigest "github.com/imfact-labs/credential-model/digest"
 	cdigest "github.com/imfact-labs/currency-model/digest"
 	daodigest "github.com/imfact-labs/dao-model/digest"
 	"github.com/imfact-labs/mitum2/isaac"
@@ -44,9 +43,6 @@ func ProcessDigester(ctx context.Context) (context.Context, error) {
 	}
 
 	if err := st.CreateIndex(ndigest.DefaultIndexes); err != nil {
-		return ctx, err
-	}
-	if err := st.CreateIndex(crdigest.DefaultIndexes); err != nil {
 		return ctx, err
 	}
 	if err := st.CreateIndex(tsdigest.DefaultIndexes); err != nil {
@@ -93,7 +89,7 @@ func ProcessDigester(ctx context.Context) (context.Context, error) {
 	_ = di.SetLogging(log)
 	di.PrepareFunc = []cdigest.BlockSessionPrepareFunc{
 		cdigest.PrepareCurrencies, cdigest.PrepareAccounts, cdigest.PrepareDIDRegistry,
-		crdigest.PrepareDIDCredential, daodigest.PrepareDAO, ndigest.PrepareNFTs, pmdigest.PreparePayment,
+		daodigest.PrepareDAO, ndigest.PrepareNFTs, pmdigest.PreparePayment,
 		sdigest.PrepareStorage, tsdigest.PrepareTimeStamps, tdigest.PrepareToken,
 	}
 

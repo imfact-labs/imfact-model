@@ -6,15 +6,14 @@ toolchain go1.24.9
 
 require (
 	github.com/alecthomas/kong v1.12.1
-	github.com/imfact-labs/credential-model v0.0.0-20260303084157-e4a595146213
-	github.com/imfact-labs/currency-model v0.0.0-20260303075407-3f4e54e31e60
-	github.com/imfact-labs/dao-model v0.0.0-20260301051428-e80827180697
-	github.com/imfact-labs/mitum2 v0.0.0-20260219060841-f51dacce1321
-	github.com/imfact-labs/nft-model v0.0.0-20260303092642-08f5ced031f7
-	github.com/imfact-labs/payment-model v0.0.0-20260301052904-e8f20f8bc9b8
-	github.com/imfact-labs/storage-model v0.0.0-20260301052249-355a62e12dad
-	github.com/imfact-labs/timestamp-model v0.0.0-20260301052453-8870916fbc8b
-	github.com/imfact-labs/token-model v0.0.0-20260303095335-7aa81ba11647
+	github.com/imfact-labs/currency-model v0.0.0-20260417044029-45ddb0b0a9f2
+	github.com/imfact-labs/dao-model v0.0.0-20260416070405-f4eb91a3f588
+	github.com/imfact-labs/mitum2 v0.0.0-20260410075537-0fc3877ecf42
+	github.com/imfact-labs/nft-model v0.0.0-20260416063930-2495dfb60013
+	github.com/imfact-labs/payment-model v0.0.0-20260416065824-bdbd306ff797
+	github.com/imfact-labs/storage-model v0.0.0-20260416063750-39660c5816cf
+	github.com/imfact-labs/timestamp-model v0.0.0-20260416064825-51b648f6f31e
+	github.com/imfact-labs/token-model v0.0.0-20260416064615-3d2921b27451
 	github.com/pkg/errors v0.9.1
 	github.com/rs/zerolog v1.34.0
 	golang.org/x/exp v0.0.0-20250819193227-8b4c13bb791b
@@ -46,7 +45,7 @@ require (
 	github.com/gofrs/uuid v4.4.0+incompatible // indirect
 	github.com/golang/snappy v0.0.5-0.20220116011046-fa5810519dcb // indirect
 	github.com/google/btree v1.1.2 // indirect
-	github.com/google/pprof v0.0.0-20250903194437-c28834ac2320 // indirect
+	github.com/google/pprof v0.0.0-20260302011040-a15ffb7f9dcc // indirect
 	github.com/gorilla/handlers v1.5.2 // indirect
 	github.com/gorilla/mux v1.8.1 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect
