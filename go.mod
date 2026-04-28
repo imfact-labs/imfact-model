@@ -6,14 +6,14 @@ toolchain go1.24.9
 
 require (
 	github.com/alecthomas/kong v1.12.1
-	github.com/imfact-labs/currency-model v0.0.0-20260417044029-45ddb0b0a9f2
-	github.com/imfact-labs/dao-model v0.0.0-20260416070405-f4eb91a3f588
+	github.com/imfact-labs/currency-model v0.0.0-20260428032920-7ae7cefc4ff6
+	github.com/imfact-labs/dao-model v0.0.0-20260428050434-93da70f22c4e
 	github.com/imfact-labs/mitum2 v0.0.0-20260410075537-0fc3877ecf42
-	github.com/imfact-labs/nft-model v0.0.0-20260416063930-2495dfb60013
-	github.com/imfact-labs/payment-model v0.0.0-20260416065824-bdbd306ff797
-	github.com/imfact-labs/storage-model v0.0.0-20260416063750-39660c5816cf
-	github.com/imfact-labs/timestamp-model v0.0.0-20260416064825-51b648f6f31e
-	github.com/imfact-labs/token-model v0.0.0-20260416064615-3d2921b27451
+	github.com/imfact-labs/nft-model v0.0.0-20260428051629-75e6b6993bee
+	github.com/imfact-labs/payment-model v0.0.0-20260428050349-583991bfa392
+	github.com/imfact-labs/storage-model v0.0.0-20260428051154-a1113b128f03
+	github.com/imfact-labs/timestamp-model v0.0.0-20260428050816-ea76d8cb7218
+	github.com/imfact-labs/token-model v0.0.0-20260428044715-1b25507f8d6a
 	github.com/pkg/errors v0.9.1
 	github.com/rs/zerolog v1.34.0
 	golang.org/x/exp v0.0.0-20250819193227-8b4c13bb791b
