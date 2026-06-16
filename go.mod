@@ -6,10 +6,10 @@ toolchain go1.24.9
 
 require (
 	github.com/alecthomas/kong v1.12.1
-	github.com/imfact-labs/currency-model v0.0.10-0.20260609062806-416623f01993
+	github.com/imfact-labs/currency-model v0.0.10-0.20260618020603-e16a352e236d
 	github.com/imfact-labs/dao-model v0.0.0-20260428050434-93da70f22c4e
-	github.com/imfact-labs/mitum2 v0.0.0-20260410075537-0fc3877ecf42
-	github.com/imfact-labs/nft-model v0.0.0-20260428051629-75e6b6993bee
+	github.com/imfact-labs/mitum2 v0.0.0-20260612040141-539650dea884
+	github.com/imfact-labs/nft-model v0.0.0-20260616052938-adb0baed201f
 	github.com/imfact-labs/payment-model v0.0.0-20260428050349-583991bfa392
 	github.com/imfact-labs/storage-model v0.0.0-20260428051154-a1113b128f03
 	github.com/imfact-labs/timestamp-model v0.0.0-20260428050816-ea76d8cb7218
