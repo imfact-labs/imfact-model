@@ -189,8 +189,8 @@ github.com/hexops/gotextdiff v1.0.3/go.mod h1:pSWU5MAI3yDq+fZBTazCSJysOMbxWL1BSo
 github.com/holiman/uint256 v1.3.1 h1:JfTzmih28bittyHM8z360dCjIA9dbPIBlcTI6lmctQs=
 github.com/holiman/uint256 v1.3.1/go.mod h1:EOMSn4q6Nyt9P6efbI3bueV4e1b3dGlUCXeiRV4ng7E=
 github.com/hpcloud/tail v1.0.0/go.mod h1:ab1qPbhIpdTxEkNHXyeSf5vhxWSCs/tWer42PpOxQnU=
-github.com/imfact-labs/currency-model v0.0.10-0.20260628020612-402151710669 h1:kPPNwbdrQc1eDsBo3gSPv0derZpP9qmIiS+YbqLDG3c=
-github.com/imfact-labs/currency-model v0.0.10-0.20260628020612-402151710669/go.mod h1:X229FVAHBxQRU2dE0ZuIvX76rOb85SfYXVqoFZOpGbs=
+github.com/imfact-labs/currency-model v0.0.10-0.20260703003302-6e4bcaaa7bab h1:Su/f60y5XY6np3sjAubQa4yYwDvmn313tGV9JUxVAGA=
+github.com/imfact-labs/currency-model v0.0.10-0.20260703003302-6e4bcaaa7bab/go.mod h1:X229FVAHBxQRU2dE0ZuIvX76rOb85SfYXVqoFZOpGbs=
 github.com/imfact-labs/dao-model v0.0.0-20260428050434-93da70f22c4e h1:dEaYMNIjxHx/rvhDRW7XVMcRsx0DYcqkGf34FVlYheg=
 github.com/imfact-labs/dao-model v0.0.0-20260428050434-93da70f22c4e/go.mod h1:34Xa58lC2RbuYJ7kRj9MHImWSIIsMHsRd+18kQgyFgg=
 github.com/imfact-labs/mitum2 v0.0.0-20260628020035-24f932f4aa3d h1:AZIN94XBM5v/HU/H0FIt4rZilvCt5OK+Jq6mjOoI1Jg=
