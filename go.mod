@@ -4,11 +4,15 @@ go 1.24.0
 
 toolchain go1.24.9
 
+replace github.com/imfact-labs/currency-model => ../currency-model-fix-joining-problem
+
+replace github.com/imfact-labs/mitum2 => ../mitum2-joining-problem
+
 require (
 	github.com/alecthomas/kong v1.12.1
-	github.com/imfact-labs/currency-model v0.0.10-0.20260708014740-4462f240abe6
+	github.com/imfact-labs/currency-model v0.0.10-0.20260805001855-9d9ed152aaee
 	github.com/imfact-labs/dao-model v0.0.0-20260428050434-93da70f22c4e
-	github.com/imfact-labs/mitum2 v0.0.0-20260707085800-8b29fa4de993
+	github.com/imfact-labs/mitum2 v0.0.0-20260804075810-8ec7a55af469
 	github.com/imfact-labs/nft-model v0.0.0-20260616052938-adb0baed201f
 	github.com/imfact-labs/payment-model v0.0.0-20260428050349-583991bfa392
 	github.com/imfact-labs/storage-model v0.0.0-20260428051154-a1113b128f03
